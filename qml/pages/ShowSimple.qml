@@ -85,6 +85,12 @@ Page {
                     fillMode: Image.PreserveAspectFit
                     source: "image://barcode/" + barcodeType + "/" + barcodeEncoding + "/" + barcodeContent;
                 }
+
+                MouseArea {
+                    anchors.fill: parent
+                    enabled: settingsStore.barcodeTap
+                    onClicked: pageStack.push(Qt.resolvedUrl("ShowCodeFullscreen.qml"), { barcodeContent: barcodeContent, barcodeEncoding: barcodeEncoding, barcodeType: barcodeType })
+                }
             }
 
             Label {

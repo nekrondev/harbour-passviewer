@@ -1,0 +1,11 @@
+This is a simple viewer for PassBook® files.
+
+The app searches the file system, starting in the home directory, for passes,
+and shows them in a list. A tap on the pass shows the details including the
+barcode (usually the most important thing). The design is simplified compared
+to the original app, but should be readable.
+
+Passes close to the relevant time are highlighted. It's also possible to
+highlight passes close to relevant coordinates (check settings). The top
+highlighted pass is shown on the cover, with the cover action opening the pass
+directly.

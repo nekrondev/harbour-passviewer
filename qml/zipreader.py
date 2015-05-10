@@ -27,10 +27,28 @@ def scan_home():
             try:
                 with ZipFile(fullname) as zip:
                     with zip.open('pass.json') as json:
-                        passes.append({'name': name, 'path': fullname, 'data': json.read()})
+                        # encoding may be UTF-16, UTF-8 or Latin-1
+                        data = json.read()
+                        if data[:2] in (b'\xfe\xff', b'\xff\xfe'):
+                            data = data.decode('utf-16')
+                        else:
+                            try:
+                                data = data.decode('utf-8')
+                            except UnicodeDecodeError:
+                                data = data.decode('latin-1', 'ignore')
+                        passes.append({'name': name, 'path': fullname, 'data': data})
             except Exception:
                 continue
     return visible_paths, passes
+
+def remove_pass(path):
+    '''Remove the pass identified by the path.'''
+    if not path.endswith('.pkpass'):
+        return
+    try:
+        os.remove(path)
+    except Exception:
+        pass
 
 def image_provider(id, requested_size):
     '''Provide images from within ZIP files.'''
@@ -39,8 +57,17 @@ def image_provider(id, requested_size):
         zipname, imgname = id.rsplit('/',1)
         imgdata = b''
         with ZipFile('/' + zipname) as zip:
-            with zip.open(imgname) as img:
-                imgdata = img.read()
+            # check for HD icon
+            if imgname == 'icon.png':
+                try:
+                    with zip.open('icon@2x.png') as img:
+                        imgdata = img.read()
+                except KeyError:
+                    imgdata = b''
+            # normal search
+            if imgdata == b'':
+                with zip.open(imgname) as img:
+                    imgdata = img.read()
     except Exception:
         return bytearray(), (0, 0), pyotherside.format_rgb32
     return bytearray(imgdata), (-1, -1), pyotherside.format_data

@@ -4,6 +4,10 @@ import "pages"
 
 ApplicationWindow
 {
+    id: appWindow
+    property string topIcon: ""
+    property string topPath: ""
+    property string topData: ""
     initialPage: Component { FirstPage { } }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
 }

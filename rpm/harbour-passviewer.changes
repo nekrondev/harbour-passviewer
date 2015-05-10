@@ -8,8 +8,9 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
-* Sun Apr 13 2014 Jack Tar <jack.tar@example.com> 0.0.1-1
-- Scrubbed the deck
-- Hoisted the sails
-
-
+* Sat May 9 2015 Christof Bürgi <christof@buergi.lugs.ch> 0.2-1
+- Settings page added
+- Passes close to target time or coordinates may be higlighted (check settings)
+- Topmost highlighted pass shown on cover, with cover action opening the pass
+- Passes may be deleted from the list (deletes the actual file)
+- UI fixes

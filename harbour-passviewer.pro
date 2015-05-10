@@ -24,12 +24,12 @@ SOURCES += src/harbour-passviewer.cpp \
     src/zint/library.c \
     src/zint/bmp.c \
     src/barcodeimageprovider.cpp \
-    src/homewatcher.cpp
+    src/homewatcher.cpp \
+    src/settingsstore.cpp
 
 OTHER_FILES += qml/harbour-passviewer.qml \
     qml/cover/CoverPage.qml \
     qml/pages/FirstPage.qml \
-    rpm/harbour-passviewer.changes.in \
     rpm/harbour-passviewer.spec \
     rpm/harbour-passviewer.yaml \
     translations/*.ts \
@@ -41,7 +41,9 @@ OTHER_FILES += qml/harbour-passviewer.qml \
     qml/utils.js \
     qml/pages/ShowCodeFullscreen.qml \
     qml/pages/Copyright.qml \
-    qml/dtformat.py
+    qml/dtformat.py \
+    qml/pages/Settings.qml \
+    rpm/harbour-passviewer.changes
 
 # to disable building translations every time, comment out the
 # following CONFIG line
@@ -65,5 +67,7 @@ HEADERS += \
     src/zint/maxipng.h \
     src/zint/font.h \
     src/barcodeimageprovider.h \
-    src/homewatcher.h
+    src/homewatcher.h \
+    src/settingsstore.h
 
+QT += positioning

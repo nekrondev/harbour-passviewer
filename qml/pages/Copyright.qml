@@ -32,6 +32,8 @@ Page {
                     "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, " +
                     "OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN " +
                     "THE SOFTWARE.\n\n\n" +
+                    "App icon courtesy of Moth, under the terms of CC-BY 3.0\n" +
+                    "see: http://creativecommons.org/licenses/by/3.0/\n\n\n" +
                     "Contains parts of libzint, licensed as follows:\n\n" +
                     "libzint - the open source barcode library\n" +
                     "Copyright (C) 2009 Robin Stuart <robin@zint.org.uk>\n" +
