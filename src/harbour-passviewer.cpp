@@ -25,7 +25,6 @@ int main(int argc, char *argv[])
 
     //return SailfishApp::main(argc, argv);
     QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
-    app->setOrganizationName("p2501.ch");
     QScopedPointer<QQuickView> view(SailfishApp::createView());
 
     SettingsStore settingsStore;
