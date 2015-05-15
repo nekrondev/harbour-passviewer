@@ -9,7 +9,7 @@ CoverBackground {
         anchors.topMargin: Theme.paddingLarge
         width: 116  // 2 times the recommended pass icon size
         height: 116
-        source: topIcon != "" ? topIcon : "file://usr/share/icons/hicolor/86x86/apps/harbour-passviewer.png"
+        source: topIcon != "" ? topIcon : "image://theme/harbour-passviewer"
     }
 
     CoverActionList {

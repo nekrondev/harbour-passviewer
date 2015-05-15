@@ -10,6 +10,7 @@
 #include "settingsstore.h"
 #include "barcodeimageprovider.h"
 #include "homewatcher.h"
+#include "notificator.h"
 
 
 int main(int argc, char *argv[])
@@ -34,6 +35,9 @@ int main(int argc, char *argv[])
 
     HomeWatcher homeWatcher;
     view->rootContext()->setContextProperty("homeWatcher", &homeWatcher);
+
+    Notificator notificator;
+    view->rootContext()->setContextProperty("notificator", &notificator);
 
     view->setSource(SailfishApp::pathTo("qml/harbour-passviewer.qml"));
 

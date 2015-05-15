@@ -25,7 +25,10 @@ SOURCES += src/harbour-passviewer.cpp \
     src/zint/bmp.c \
     src/barcodeimageprovider.cpp \
     src/homewatcher.cpp \
-    src/settingsstore.cpp
+    src/settingsstore.cpp \
+    src/notificationsproxy.cpp \
+    src/notificator.cpp \
+    src/notificationlist.cpp
 
 OTHER_FILES += qml/harbour-passviewer.qml \
     qml/cover/CoverPage.qml \
@@ -68,6 +71,10 @@ HEADERS += \
     src/zint/font.h \
     src/barcodeimageprovider.h \
     src/homewatcher.h \
-    src/settingsstore.h
+    src/settingsstore.h \
+    src/notificationsproxy.h \
+    src/notificator.h \
+    src/notificationlist.h
 
 QT += positioning
+QT += dbus
