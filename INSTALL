@@ -1,0 +1,16 @@
+This is a project prepared and ready for the official Sailfish SDK. However,
+to build the project, you need to load the "openssl-devel" package into the
+build environment:
+
+ 1. Make sure you have a working internet connection, as the package is pulled
+    from the internet.
+ 2. Start QTCreator from the SDK, and open the project.
+ 3. Start the build engine.
+ 4. Click the "Sailfish OS" icon (fifth from the top).
+ 5. Click on "manage" for the i486 target.
+ 6. Type "openssl-devel" into the search field.
+ 7. Click the "install" check box, then the "install" button.
+ 8. Wait until the task has been reported as successful.
+ 9. Click "clear".
+10. Repeat steps 5 - 9 for the arm target.
+

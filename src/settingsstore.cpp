@@ -93,3 +93,14 @@ void SettingsStore::setBarcodeTap(bool value) {
     if (value != oldValue)
         emit barcodeTapChanged();
 }
+
+bool SettingsStore::acceptFaultySig() {
+    return m_settings.value("security/accept_faulty", false).toBool();
+}
+
+void SettingsStore::setAcceptFaultySig(bool value) {
+    bool oldValue = acceptFaultySig();
+    m_settings.setValue("security/accept_faulty", value);
+    if (value != oldValue)
+        emit acceptFaultySigChanged();
+}

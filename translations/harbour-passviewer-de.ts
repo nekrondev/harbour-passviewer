@@ -78,6 +78,14 @@
         <source>Saves battery. &lt;b&gt;Requires&lt;/b&gt; &amp;quot;Faster position fix&amp;quot; switched on in the system settings.</source>
         <translation>Spart Strom. &lt;b&gt;Erfordert&lt;/b&gt; &amp;quot;Schnellere Positionserkennung&amp;quot; in den Systemeinstellungen eingeschaltet.</translation>
     </message>
+    <message>
+        <source>Security</source>
+        <translation>Sicherheit</translation>
+    </message>
+    <message>
+        <source>Accept faulty signatures</source>
+        <translation>Akzeptiere ungültige Signaturen</translation>
+    </message>
 </context>
 <context>
     <name>ShowBack</name>

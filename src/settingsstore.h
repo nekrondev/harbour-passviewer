@@ -18,6 +18,7 @@ public:
     Q_PROPERTY(int maxDistance READ maxDistance WRITE setMaxDistance NOTIFY maxDistanceChanged)
     Q_PROPERTY(bool overrideDistance READ overrideDistance WRITE setOverrideDistance NOTIFY overrideDistanceChanged)
     Q_PROPERTY(bool barcodeTap READ barcodeTap WRITE setBarcodeTap NOTIFY barcodeTapChanged)
+    Q_PROPERTY(bool acceptFaultySig READ acceptFaultySig WRITE setAcceptFaultySig NOTIFY acceptFaultySigChanged)
 
     bool checkTime();
     void setCheckTime(bool value);
@@ -35,6 +36,8 @@ public:
     void setOverrideDistance(bool value);
     bool barcodeTap();
     void setBarcodeTap(bool value);
+    bool acceptFaultySig();
+    void setAcceptFaultySig(bool value);
 
 signals:
     void checkTimeChanged();
@@ -45,6 +48,7 @@ signals:
     void maxDistanceChanged();
     void overrideDistanceChanged();
     void barcodeTapChanged();
+    void acceptFaultySigChanged();
 
 public slots:
 

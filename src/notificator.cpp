@@ -2,6 +2,8 @@
 
 Notificator::Notificator(QObject *parent) :
     QObject(parent),
+    m_entries(),
+    m_reverseEntries(),
     m_notifications("org.freedesktop.Notifications", "/org/freedesktop/Notifications", QDBusConnection::sessionBus())
 {
     qDBusRegisterMetaType<NotificationInfo>();
@@ -21,18 +23,25 @@ void Notificator::addNotification(QString path, QString text) {
     QVariantHash hints;
     hints.insert("x-nemo-user-removable", false);
     hints.insert("x-nemo-icon", "harbour-passviewer");
-    QDBusPendingReply<uint> uidReply = m_notifications.Notify("harbour-passviewer", 0, "", text, "", actions, hints, 0);
+    uint replaceUid = 0;
+    if (m_entries.contains(path))
+        replaceUid = m_entries.value(path);
+    QDBusPendingReply<uint> uidReply = m_notifications.Notify("harbour-passviewer", replaceUid, "", text, "", actions, hints, 0);
     uidReply.waitForFinished();
-    if (!uidReply.isError())
-        m_entries.insert(path, uidReply.value());
+    if (uidReply.isValid()) {
+        m_entries[path] = uidReply.value();
+        m_reverseEntries[uidReply.value()] = path;
+    }
+}
+
+void Notificator::removeNotification(QString path) {
+    m_notifications.CloseNotification(m_entries.value(path));
+    m_reverseEntries.remove(m_entries.value(path));
+    m_entries.remove(path);
 }
 
 void Notificator::handleAction(uint id, const QString &action_key) {
-    for (int key = 0; key < m_entries.keys().size(); key++) {
-        QString path = m_entries.keys().at(key);
-        if (m_entries.value(path) == id)
-            notificationClicked(path);
-    }
+    notificationClicked(m_reverseEntries.value(id));
 }
 
 void Notificator::clearNotifications() {

@@ -140,10 +140,11 @@ Page {
                 homeWatcher.updatePaths(directories);
                 // get proper names
                 var loadlist = [];
-                var close = false;
                 for (var pass = 0; pass < passes.length; pass++) {
                     try {
                         var current = passes[pass];
+                        if ((!settingsStore.acceptFaultySignature) && (current.manifest === null || current.signature === null || !signatureChecker.signatureValid(current.manifest, current.signature)))
+                            continue;
                         var data = JSON.parse(current.data);
                         var name = "";
                         if ('description' in data && data.description !== '') {
@@ -154,19 +155,15 @@ Page {
                             if (name.substring(name.length - 7) === '.pkpass')
                                 name = name.substring(0, name.length - 7);
                         }
-                        var active = isActive(current.data);
-                        loadlist[loadlist.length] = {name: name, path: current.path, points: active[0], jsondata: current.data};
-                        if (active[1])
-                            close = true;
+                        loadlist[loadlist.length] = {name: name, path: current.path, points: -1, jsondata: current.data};
                     }
                     catch(e) {}
                 }
                 loadlist.sort(page.comparePasses);
+                page.checkPassList();
                 page.updatePassList(loadlist);
                 if (settingsStore.checkTime)
                     checkTimer.start();
-                if (locator.precise !== close)
-                    locator.precise = close;
             });
         }
 
@@ -199,6 +196,21 @@ Page {
         onCheckDistanceChanged: checkPassList()
         onMaxDistanceChanged: checkPassList()
         onOverrideDistanceChanged: checkPassList()
+    }
+
+    Connections {
+        target: notificator
+        onNotificationClicked: {
+            for (var pass = 0; pass < passList.count; pass++) {
+                if (passList.get(pass).path === path) {
+                    var properties = { path: passList.get(pass).path, jsondata: passList.get(pass).jsondata };
+                    pageStack.pop(page, PageStackAction.Immediate);
+                    pageStack.push(Qt.resolvedUrl("ShowPass.qml"), properties, PageStackAction.Immediate);
+                    pageStack.pushAttached(Qt.resolvedUrl("ShowBack.qml"), properties);
+                    appWindow.activate();
+                }
+            }
+        }
     }
 
     function isActive(jsondata) {
@@ -317,6 +329,10 @@ Page {
         var close = false;
         for (var pass = 0; pass < passList.count; pass++) {
             var active = isActive(passList.get(pass).jsondata);
+            if (active[0] > -1 && passList.get(pass).points)
+                notificator.addNotification(passList.get(pass).path, passList.get(pass).name);
+            if (active[0] === -1 && passList.get(pass).points)
+                notificator.removeNotification(passList.get(pass).path);
             if (active[0] !== passList.get(pass).points) {
                 passList.setProperty(pass, "points", active[0]);
                 changed = true;

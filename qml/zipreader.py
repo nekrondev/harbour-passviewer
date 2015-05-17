@@ -5,6 +5,9 @@
 
 import os
 from zipfile import ZipFile
+import json
+import hashlib
+from base64 import b64encode
 import pyotherside
 
 def scan_home():
@@ -22,24 +25,57 @@ def scan_home():
                 if name.startswith('.') or name.lower() == 'tmp' or name.lower() == 'temp' or fullname in inspect_paths or fullname in visible_paths:
                     continue
                 inspect_paths.append(fullname)
+                continue
+            # only look at pkpass files
             if not name.endswith('.pkpass'):
                 continue
             try:
+                # pass must be a zip archive with a "pass.json" file in it
                 with ZipFile(fullname) as zip:
                     with zip.open('pass.json') as json:
-                        # encoding may be UTF-16, UTF-8 or Latin-1
-                        data = json.read()
-                        if data[:2] in (b'\xfe\xff', b'\xff\xfe'):
-                            data = data.decode('utf-16')
-                        else:
-                            try:
-                                data = data.decode('utf-8')
-                            except UnicodeDecodeError:
-                                data = data.decode('latin-1', 'ignore')
-                        passes.append({'name': name, 'path': fullname, 'data': data})
+                        data = decode_binary(json.read())
+                        manifest, signature = check_manifest(fullname)
+                        passes.append({'name': name, 'path': fullname, 'data': data, 'manifest': manifest, 'signature': signature})
             except Exception:
                 continue
     return visible_paths, passes
+
+def check_manifest(path):
+    '''Return manifest and signature, if they are available and if the manifest is vaild.'''
+    manifest = None
+    signature = None
+    try:
+        with ZipFile(path) as zip:
+            with zip.open('manifest.json') as manifest_file:
+                manifest = json.loads(decode_binary(manifest_file.read()))
+            for filename in manifest:
+                with zip.open(filename) as check_file:
+                    sha1 = hashlib.sha1(check_file.read())
+                    if sha1.hexdigest().lower() != manifest[filename].lower():
+                        raise ValueError('faulty hash')
+            for filename in zip.namelist():
+                if filename not in ('signature', 'manifest.json') and filename not in manifest:
+                    raise ValueError('unsigned files')
+            with zip.open('manifest.json') as manifest_file:
+                manifest = b64encode(manifest_file.read())
+            with zip.open('signature') as signature_file:
+                signature = b64encode(signature_file.read())
+    except Exception:
+        manifest = None
+        signature = None
+    return (manifest, signature)
+
+def decode_binary(bintext):
+    '''Decode a text that may be UTF-16, UTF-8 or Latin-1.'''
+    text = ''
+    try:
+        if bintext[:2] in (b'\xfe\xff', b'\xff\xfe'):
+            text = bintext.decode('utf-16')
+        else:
+            text = bintext.decode('utf-8')
+    except Exception:
+        text = bintext.decode('latin-1', 'ignore')
+    return text
 
 def remove_pass(path):
     '''Remove the pass identified by the path.'''

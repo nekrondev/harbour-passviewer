@@ -78,6 +78,14 @@
         <source>Saves battery. &lt;b&gt;Requires&lt;/b&gt; &amp;quot;Faster position fix&amp;quot; switched on in the system settings.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Security</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Accept faulty signatures</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ShowBack</name>
