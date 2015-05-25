@@ -31,7 +31,7 @@ Page {
 
         model: ListModel {
             id: passList
-            ListElement { name: ""; filename: ""; path: ""; points: -1; jsondata: "" }
+            ListElement { name: ""; filename: ""; path: ""; points: -1; jsondata: ""; typeId: "" }
         }
 
         delegate: ListItem {
@@ -131,6 +131,28 @@ Page {
         id: py
 
         function scanHome() {
+            function nameFromData(data, defName) {
+                try {
+                    var styles = ["boardingPass", "coupon", "eventTicket", "storeCard", "generic"];
+                    var style = '';
+                    for (var key = 0; key < styles.length; key++) {
+                        if (styles[key] in data) {
+                            style = styles[key];
+                            break;
+                        }
+                    }
+                    if (style === "boardingPass")
+                        return data.boardingPass.primaryFields[0].value + " → " + data.boardingPass.primaryFields[1].value;
+                    else
+                        return data[style].primaryFields[0].label + " " + data[style].primaryFields[0].value;
+                }
+                catch(e) {
+                    if (defName.substring(defName.length - 7) === ".pkpass")
+                        defName = defName.substring(0, defName.length - 7);
+                    return defName;
+                }
+            }
+
             checkTimer.stop();
             call("zipreader.scan_home", [], function(answers) {
                 busy.running = false;
@@ -138,30 +160,34 @@ Page {
                 var passes = answers[1];
                 // set directories on watchlist
                 homeWatcher.updatePaths(directories);
-                // get proper names
+                // handle the passes
                 var loadlist = [];
                 for (var pass = 0; pass < passes.length; pass++) {
                     try {
                         var current = passes[pass];
+                        // check signature
                         if ((!settingsStore.acceptFaultySignature) && (current.manifest === null || current.signature === null || !signatureChecker.signatureValid(current.manifest, current.signature)))
                             continue;
-                        var data = JSON.parse(current.data);
-                        var name = "";
-                        if ('description' in data && data.description !== '') {
-                            name = data.description;
+                        // get proper names
+                        var data = undefined;
+                        try {
+                            data = JSON.parse(current.data);
                         }
-                        else {
-                            name = current.name;
-                            if (name.substring(name.length - 7) === '.pkpass')
-                                name = name.substring(0, name.length - 7);
+                        catch(e) {}
+                        var name = nameFromData(data, current.name);
+                        // and the pass type id
+                        var typeId = "";
+                        try {
+                            typeId = data.passTypeIdentifier;
                         }
-                        loadlist[loadlist.length] = {name: name, path: current.path, points: -1, jsondata: current.data};
+                        catch(e) {}
+                        loadlist[loadlist.length] = {name: name, path: current.path, points: -1, jsondata: current.data, typeId: typeId};
                     }
                     catch(e) {}
                 }
                 loadlist.sort(page.comparePasses);
-                page.checkPassList();
                 page.updatePassList(loadlist);
+                page.checkPassList();
                 if (settingsStore.checkTime)
                     checkTimer.start();
             });
@@ -262,6 +288,9 @@ Page {
         // if both are active, check who's more active
         if (a.points > 0 && b.points > 0 && a.points !== b.points)
             return a.points - b.points;
+        // group by pass type ID
+        if (a.typeId !== b.typeId)
+            return a.typeId.localeCompare(b.typeId);
         // otherwise order by name
         return a.name.localeCompare(b.name);
     }
@@ -329,9 +358,9 @@ Page {
         var close = false;
         for (var pass = 0; pass < passList.count; pass++) {
             var active = isActive(passList.get(pass).jsondata);
-            if (active[0] > -1 && passList.get(pass).points)
+            if (active[0] > -1 && passList.get(pass).points === -1)
                 notificator.addNotification(passList.get(pass).path, passList.get(pass).name);
-            if (active[0] === -1 && passList.get(pass).points)
+            if (active[0] === -1 && passList.get(pass).points > -1)
                 notificator.removeNotification(passList.get(pass).path);
             if (active[0] !== passList.get(pass).points) {
                 passList.setProperty(pass, "points", active[0]);

@@ -8,7 +8,15 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Fri May 22 2015 Christof Bürgi <christof@buergi.lugs.ch> 0.3-1
+- Highlighted passes are shown in event view while app is running
+- More informative texts in the pass list
+- Passes in the pass list are grouped by issuer
+- Enlarged primary text in pass view for non boarding passes
+- Signatures are now checked
+
 * Sat May 9 2015 Christof Bürgi <christof@buergi.lugs.ch> 0.2-1
+- New icon courtesy of Moth
 - Settings page added
 - Passes close to target time or coordinates may be higlighted (check settings)
 - Topmost highlighted pass shown on cover, with cover action opening the pass

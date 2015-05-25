@@ -155,7 +155,7 @@ Page {
 
                 Column {
                     id: standardPrimary
-                    visible: standardPrimaryFields.count > 0
+                    visible: primaryTitle !== "" || primaryValue !== ""
 
                     Image {
                         source: "image://python" + path + "/strip.png"
@@ -166,30 +166,23 @@ Page {
                             id: standardPrimaryRow
                             spacing: Theme.paddingLarge
 
-                            Flow {
+                            Column {
                                 width: body.width - thumbnailImage.width - parent.spacing
-                                spacing: Theme.paddingLarge
 
-                                Repeater {
-                                    model: ListModel {
-                                        id: standardPrimaryFields
-                                        ListElement { title: ""; value: "" }
-                                    }
+                                Label {
+                                    id: primaryTitle
+                                    text: ""
+                                    color: page.labelColor
+                                    font.pixelSize: Theme.fontSizeExtraSmall
+                                }
 
-                                    Column {
-
-                                        Label {
-                                            text: title
-                                            color: page.labelColor
-                                            font.pixelSize: Theme.fontSizeExtraSmall
-                                        }
-
-                                        Label {
-                                            text: value
-                                            color: page.foreColor
-                                            font.pixelSize: Theme.fontSizeSmall
-                                        }
-                                    }
+                                Label {
+                                    id: primaryValue
+                                    width: parent.width
+                                    text: ""
+                                    color: page.foreColor
+                                    font.pixelSize: Theme.fontSizeLarge
+                                    wrapMode: Text.Wrap
                                 }
                             }
 
@@ -314,8 +307,6 @@ Page {
             if (fieldType in pass[style]) {
                 for (var field = 0; field < pass[style][fieldType].length; field++) {
                     var data = pass[style][fieldType][field];
-                    /*if ("dateStyle" in data && "timeStyle" in data)
-                        data.value = Utils.formatDate(data.value);*/
                     if ("dateStyle" in data && "timeStyle" in data) {
                         var dateFormat = data.dateStyle.substring(11).toLowerCase();
                         var timeFormat = data.timeStyle.substring(11).toLowerCase();
@@ -360,9 +351,8 @@ Page {
             getFields(pass, style, 'secondaryFields', tertiaryFields);
         }
         else {
-            standardPrimaryFields.clear();
-            if ('primaryFields' in pass[style])
-                getFields(pass, style, 'primaryFields', standardPrimaryFields);
+            primaryTitle.text = pass[style].primaryFields[0].label;
+            primaryValue.text = pass[style].primaryFields[0].value;
             secondaryFields.clear();
             tertiaryFields.clear();
             getFields(pass, style, 'secondaryFields', secondaryFields);
