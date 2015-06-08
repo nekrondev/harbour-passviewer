@@ -49,6 +49,8 @@ Page {
 
             Label {
                 text: name
+                width: parent.width - passIcon.width - Theme.paddingLarge * 2 - Theme.paddingMedium
+                truncationMode: TruncationMode.Fade
                 color: entry.highlighted ? Theme.highlightColor : points >= 0 ? Theme.primaryColor : Theme.secondaryColor
                 anchors.left: passIcon.right
                 anchors.verticalCenter: parent.verticalCenter
@@ -166,7 +168,7 @@ Page {
                     try {
                         var current = passes[pass];
                         // check signature
-                        if ((!settingsStore.acceptFaultySignature) && (current.manifest === null || current.signature === null || !signatureChecker.signatureValid(current.manifest, current.signature)))
+                        if ((!settingsStore.acceptFaultySig) && (current.manifest === null || current.signature === null || !signatureChecker.signatureValid(current.manifest, current.signature)))
                             continue;
                         // get proper names
                         var data = undefined;
