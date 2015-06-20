@@ -16,6 +16,7 @@ public:
 
     Q_INVOKABLE void addNotification(QString path, QString text);
     Q_INVOKABLE void removeNotification(QString path);
+    Q_INVOKABLE void errorNotification(QString subject, QString detail);
 
 signals:
     void notificationClicked(QString path);
@@ -24,9 +25,9 @@ public slots:
     void handleAction(uint id, const QString &action_key);
 
 private:
-    org::freedesktop::Notifications m_notifications;
     QMap<QString, uint> m_entries;
     QMap<uint, QString> m_reverseEntries;
+    org::freedesktop::Notifications m_notifications;
 
     void clearNotifications();
 

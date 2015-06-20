@@ -8,6 +8,11 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Sat Jun 20 2015 Christof Bürgi <christof@buergi.lugs.ch> 0.4-1
+- One may create calendar entries if supported by pass (requires OS >= 1.1.6)
+- SD-Cards are now searched for passes, too
+- Signature checks removed, as they proved to be tricky and useless
+
 * Fri May 22 2015 Christof Bürgi <christof@buergi.lugs.ch> 0.3-1
 - Highlighted passes are shown in event view while app is running
 - More informative texts in the pass list

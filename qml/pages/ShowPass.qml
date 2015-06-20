@@ -6,8 +6,10 @@ import "../utils.js" as Utils
 Page {
     id: page
 
+    property string name: ""
     property string jsondata: ""
     property string path: ""
+    property string relevantDate: ""
     property string labelColor: "black"
     property string foreColor: "black"
     property string barcodeType: "qr"
@@ -32,6 +34,15 @@ Page {
                 onClicked: {
                     var properties = { path: path, jsondata: jsondata };
                     pageStack.push(Qt.resolvedUrl("ShowSimple.qml"), properties);
+                }
+            }
+
+            MenuItem {
+                text: qsTr("Create Calendar Entry")
+                visible: relevantDate != ""
+                onClicked: {
+                    var now = new Date();
+                    py.create_calendar_entry(name, relevantDate);
                 }
             }
         }
@@ -299,6 +310,15 @@ Page {
         function format_date_time(isoDt, dateFormat, timeFormat, ignoreTimeZone) {
             return call_sync("dtformat.format_date_time", [isoDt, dateFormat, timeFormat, ignoreTimeZone]);
         }
+
+        function create_calendar_entry(subject, isoDt) {
+            call("ical.create_calendar_entry", [subject, isoDt], function(status) {
+                if (status === "format")
+                    notificator.errorNotification(qsTr("Format Error"), qsTr("Couldn't recognize date/time format"));
+                if (status === "xdg-open")
+                    notificator.errorNotification(qsTr("Unsupported"), qsTr("Please update your system or install calendar"));
+            });
+        }
     }
 
     Component.onCompleted: {
@@ -322,6 +342,10 @@ Page {
         }
 
         var pass = JSON.parse(jsondata);
+        if ('relevantDate' in pass)
+            relevantDate = pass.relevantDate;
+        else
+            relevantDate = '';
         if ('backgroundColor' in pass)
             background.color = Utils.interpretColor(pass.backgroundColor);
         if ('labelColor' in pass)

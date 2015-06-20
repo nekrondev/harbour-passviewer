@@ -113,18 +113,6 @@ Page {
                 onCheckedChanged: settingsStore.barcodeTap = checked
             }
 
-            Label {
-                anchors.right: parent.right
-                text: qsTr("Security")
-                font.family: Theme.fontFamilyHeading
-                color: Theme.highlightColor
-            }
-
-            TextSwitch {
-                text: qsTr("Accept faulty signatures")
-                checked: settingsStore.acceptFaultySig
-                onCheckedChanged: settingsStore.acceptFaultySig = checked
-            }
         }
 
         VerticalScrollDecorator {}

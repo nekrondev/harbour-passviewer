@@ -78,14 +78,6 @@
         <source>Saves battery. &lt;b&gt;Requires&lt;/b&gt; &amp;quot;Faster position fix&amp;quot; switched on in the system settings.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Security</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Accept faulty signatures</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ShowBack</name>
@@ -102,6 +94,26 @@
     </message>
     <message>
         <source>Simple View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Calendar Entry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Format Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t recognize date/time format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unsupported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please update your system or install calendar</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

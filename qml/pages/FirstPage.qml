@@ -78,7 +78,7 @@ Page {
             }
 
             onClicked: {
-                var properties = { path: path, jsondata: jsondata };
+                var properties = { name: name, path: path, jsondata: jsondata };
                 pageStack.push(Qt.resolvedUrl("ShowPass.qml"), properties);
                 pageStack.pushAttached(Qt.resolvedUrl("ShowBack.qml"), properties);
             }
@@ -167,9 +167,6 @@ Page {
                 for (var pass = 0; pass < passes.length; pass++) {
                     try {
                         var current = passes[pass];
-                        // check signature
-                        if ((!settingsStore.acceptFaultySig) && (current.manifest === null || current.signature === null || !signatureChecker.signatureValid(current.manifest, current.signature)))
-                            continue;
                         // get proper names
                         var data = undefined;
                         try {
@@ -206,6 +203,7 @@ Page {
                 scanHome();
             });
             importModule('dtformat', null);
+            importModule('ical', null);
         }
     }
 

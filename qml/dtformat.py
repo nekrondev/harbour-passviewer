@@ -103,6 +103,16 @@ def interpret_iso_8601(isodt):
             mincols = 2
         if isodt.count(':') > mincols:
             parse.append(':%S')
+            if isodt.count('.') > 0:
+                # eliminate milliseconds
+                ms_start = isodt.find('.')
+                ms_end = isodt.find('Z', ms_start)
+                if ms_end == -1:
+                    ms_end = isodt.find('+', ms_start)
+                if ms_end == -1:
+                    ms_end = isodt.find('-', ms_start)
+                if ms_start > -1 and ms_end > -1:
+                    isodt = isodt[:ms_start] + isodt[ms_end:]
         if is_utc:
             isodt = isodt[:-1] + '+0000'
             parse.append('%z')

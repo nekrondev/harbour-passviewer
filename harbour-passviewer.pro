@@ -28,8 +28,7 @@ SOURCES += src/harbour-passviewer.cpp \
     src/settingsstore.cpp \
     src/notificationsproxy.cpp \
     src/notificator.cpp \
-    src/notificationlist.cpp \
-    src/signaturechecker.cpp
+    src/notificationlist.cpp
 
 OTHER_FILES += qml/harbour-passviewer.qml \
     qml/cover/CoverPage.qml \
@@ -48,7 +47,7 @@ OTHER_FILES += qml/harbour-passviewer.qml \
     qml/dtformat.py \
     qml/pages/Settings.qml \
     rpm/harbour-passviewer.changes \
-    qml/root.cer
+    qml/ical.py
 
 # to disable building translations every time, comment out the
 # following CONFIG line
@@ -76,10 +75,7 @@ HEADERS += \
     src/settingsstore.h \
     src/notificationsproxy.h \
     src/notificator.h \
-    src/notificationlist.h \
-    src/signaturechecker.h
+    src/notificationlist.h
 
 QT += positioning
 QT += dbus
-
-LIBS += -lcrypto

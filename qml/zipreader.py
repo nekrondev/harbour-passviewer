@@ -13,6 +13,8 @@ import pyotherside
 def scan_home():
     '''Return all direct and indirect subdirectories of the home directory, and the passes within.'''
     inspect_paths = [os.path.expanduser('~')]
+    if os.path.isdir('/media/sdcard'):
+        inspect_paths.append('/media/sdcard')
     visible_paths = []
     passes = []
     while len(inspect_paths) > 0:
@@ -34,36 +36,10 @@ def scan_home():
                 with ZipFile(fullname) as zip:
                     with zip.open('pass.json') as json:
                         data = decode_binary(json.read())
-                        manifest, signature = check_manifest(fullname)
-                        passes.append({'name': name, 'path': fullname, 'data': data, 'manifest': manifest, 'signature': signature})
+                        passes.append({'name': name, 'path': fullname, 'data': data})
             except Exception:
                 continue
     return visible_paths, passes
-
-def check_manifest(path):
-    '''Return manifest and signature, if they are available and if the manifest is vaild.'''
-    manifest = None
-    signature = None
-    try:
-        with ZipFile(path) as zip:
-            with zip.open('manifest.json') as manifest_file:
-                manifest = json.loads(decode_binary(manifest_file.read()))
-            for filename in manifest:
-                with zip.open(filename) as check_file:
-                    sha1 = hashlib.sha1(check_file.read())
-                    if sha1.hexdigest().lower() != manifest[filename].lower():
-                        raise ValueError('faulty hash')
-            for filename in zip.namelist():
-                if filename not in ('signature', 'manifest.json') and filename not in manifest:
-                    raise ValueError('unsigned files')
-            with zip.open('manifest.json') as manifest_file:
-                manifest = b64encode(manifest_file.read())
-            with zip.open('signature') as signature_file:
-                signature = b64encode(signature_file.read())
-    except Exception:
-        manifest = None
-        signature = None
-    return (manifest, signature)
 
 def decode_binary(bintext):
     '''Decode a text that may be UTF-16, UTF-8 or Latin-1.'''

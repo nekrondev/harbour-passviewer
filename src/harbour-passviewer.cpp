@@ -11,7 +11,6 @@
 #include "barcodeimageprovider.h"
 #include "homewatcher.h"
 #include "notificator.h"
-#include "signaturechecker.h"
 
 
 int main(int argc, char *argv[])
@@ -39,9 +38,6 @@ int main(int argc, char *argv[])
 
     Notificator notificator;
     view->rootContext()->setContextProperty("notificator", &notificator);
-
-    SignatureChecker signatureChecker;
-    view->rootContext()->setContextProperty("signatureChecker", &signatureChecker);
 
     view->setSource(SailfishApp::pathTo("qml/harbour-passviewer.qml"));
 

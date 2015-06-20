@@ -52,3 +52,10 @@ void Notificator::clearNotifications() {
             m_notifications.CloseNotification(listReply.value().at(entry).uid);
     }
 }
+
+void Notificator::errorNotification(QString subject, QString detail) {
+    QVariantHash hints;
+    hints.insert("x-nemo-preview-summary", subject);
+    hints.insert("x-nemo-preview-body", detail);
+    m_notifications.Notify("", 0, "", "", "", QStringList(), hints, -1);
+}

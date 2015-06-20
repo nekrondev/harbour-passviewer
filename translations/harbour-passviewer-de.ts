@@ -78,14 +78,6 @@
         <source>Saves battery. &lt;b&gt;Requires&lt;/b&gt; &amp;quot;Faster position fix&amp;quot; switched on in the system settings.</source>
         <translation>Spart Strom. &lt;b&gt;Erfordert&lt;/b&gt; &amp;quot;Schnellere Positionserkennung&amp;quot; in den Systemeinstellungen eingeschaltet.</translation>
     </message>
-    <message>
-        <source>Security</source>
-        <translation>Sicherheit</translation>
-    </message>
-    <message>
-        <source>Accept faulty signatures</source>
-        <translation>Akzeptiere ungültige Signaturen</translation>
-    </message>
 </context>
 <context>
     <name>ShowBack</name>
@@ -103,6 +95,26 @@
     <message>
         <source>Simple View</source>
         <translation>einfache Ansicht</translation>
+    </message>
+    <message>
+        <source>Create Calendar Entry</source>
+        <translation>Erstelle Kalendereintrag</translation>
+    </message>
+    <message>
+        <source>Format Error</source>
+        <translation>Formatfehler</translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t recognize date/time format</source>
+        <translation>Datum/Zeit-Format nicht erkennbar</translation>
+    </message>
+    <message>
+        <source>Unsupported</source>
+        <translation>Nicht unterstützt</translation>
+    </message>
+    <message>
+        <source>Please update your system or install calendar</source>
+        <translation>Bitte System updaten bzw. Kalender installieren</translation>
     </message>
 </context>
 <context>
