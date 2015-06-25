@@ -20,25 +20,28 @@ def scan_home():
     while len(inspect_paths) > 0:
         current_path = inspect_paths.pop(0)
         visible_paths.append(current_path)
-        for name in os.listdir(current_path):
-            fullname = os.path.realpath(os.path.join(current_path, name))
-            if os.path.isdir(fullname):
-                # ignore hidden and temp directories, and what we already know about
-                if name.startswith('.') or name.lower() == 'tmp' or name.lower() == 'temp' or fullname in inspect_paths or fullname in visible_paths:
+        try:
+            for name in os.listdir(current_path):
+                fullname = os.path.realpath(os.path.join(current_path, name))
+                if os.path.isdir(fullname):
+                    # ignore hidden and temp directories, and what we already know about
+                    if name.startswith('.') or name.lower() == 'tmp' or name.lower() == 'temp' or fullname in inspect_paths or fullname in visible_paths:
+                        continue
+                    inspect_paths.append(fullname)
                     continue
-                inspect_paths.append(fullname)
-                continue
-            # only look at pkpass files
-            if not name.endswith('.pkpass'):
-                continue
-            try:
-                # pass must be a zip archive with a "pass.json" file in it
-                with ZipFile(fullname) as zip:
-                    with zip.open('pass.json') as json:
-                        data = decode_binary(json.read())
-                        passes.append({'name': name, 'path': fullname, 'data': data})
-            except Exception:
-                continue
+                # only look at pkpass files
+                if not name.endswith('.pkpass'):
+                    continue
+                try:
+                    # pass must be a zip archive with a "pass.json" file in it
+                    with ZipFile(fullname) as zip:
+                        with zip.open('pass.json') as json:
+                            data = decode_binary(json.read())
+                            passes.append({'name': name, 'path': fullname, 'data': data})
+                except Exception:
+                    continue
+        except Exception:
+            visible_paths.pop()
     return visible_paths, passes
 
 def decode_binary(bintext):

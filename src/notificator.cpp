@@ -51,6 +51,13 @@ void Notificator::clearNotifications() {
         for (int entry = 0; entry < listReply.value().size(); entry++)
             m_notifications.CloseNotification(listReply.value().at(entry).uid);
     }
+    listReply = m_notifications.GetNotifications("");
+    listReply.waitForFinished();
+    if (listReply.isValid()) {
+        for (int entry = 0; entry < listReply.value().size(); entry++)
+            if (listReply.value().at(entry).app_name == "harbour-passviewer")
+                m_notifications.CloseNotification(listReply.value().at(entry).uid);
+    }
 }
 
 void Notificator::errorNotification(QString subject, QString detail) {
