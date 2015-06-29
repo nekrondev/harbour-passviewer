@@ -132,7 +132,7 @@ Page {
     Python {
         id: py
 
-        function scanHome() {
+        function scanHome(sdcard) {
             function nameFromData(data, defName) {
                 try {
                     var styles = ["boardingPass", "coupon", "eventTicket", "storeCard", "generic"];
@@ -156,8 +156,9 @@ Page {
             }
 
             checkTimer.stop();
-            call("zipreader.scan_home", [], function(answers) {
-                busy.running = false;
+            if (sdcard === undefined)
+                sdcard = !busy.running;
+            call("zipreader.scan_home", [sdcard], function(answers) {
                 var directories = answers[0];
                 var passes = answers[1];
                 // set directories on watchlist
@@ -185,10 +186,15 @@ Page {
                     catch(e) {}
                 }
                 loadlist.sort(page.comparePasses);
-                page.updatePassList(loadlist);
-                page.checkPassList();
-                if (settingsStore.checkTime)
-                    checkTimer.start();
+                if (loadlist.length > 0 || sdcard) {
+                    busy.running = false;
+                    page.updatePassList(loadlist);
+                    page.checkPassList();
+                    if (settingsStore.checkTime)
+                        checkTimer.start();
+                }
+                if (sdcard === false)
+                    scanHome(true);
             });
         }
 

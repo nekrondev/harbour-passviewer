@@ -8,6 +8,9 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Mon Jun 29 2015 Christof Bürgi <christof@buergi.lugs.ch> 0.5-1
+- Faster start if SD-card is present
+
 * Thu Jun 25 2015 Christof Bürgi <christof@buergi.lugs.ch> 0.4-2
 - Fixed notifications remaining visible in OS >= 1.1.6
 - Fixed crash of directory scan caused by locked directories

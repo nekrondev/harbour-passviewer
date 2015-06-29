@@ -10,10 +10,10 @@ import hashlib
 from base64 import b64encode
 import pyotherside
 
-def scan_home():
+def scan_home(sdcard = True):
     '''Return all direct and indirect subdirectories of the home directory, and the passes within.'''
     inspect_paths = [os.path.expanduser('~')]
-    if os.path.isdir('/media/sdcard'):
+    if sdcard and os.path.isdir('/media/sdcard'):
         inspect_paths.append('/media/sdcard')
     visible_paths = []
     passes = []
