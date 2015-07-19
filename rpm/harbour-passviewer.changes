@@ -8,6 +8,10 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Sun Jul 19 2015 Christof Bürgi <christof@buergi.lugs.ch> 0.6-1
+- Pass updates implemented
+- Fixed crashes caused by faulty passes
+
 * Mon Jun 29 2015 Christof Bürgi <christof@buergi.lugs.ch> 0.5-1
 - Faster start if SD-card is present
 

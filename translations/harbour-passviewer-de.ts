@@ -27,6 +27,26 @@
         <source>Deleting</source>
         <translation>Lösche</translation>
     </message>
+    <message>
+        <source>Update</source>
+        <translation>Update</translation>
+    </message>
+    <message>
+        <source>pass update successful</source>
+        <translation>Pass Update erfolgreich</translation>
+    </message>
+    <message>
+        <source>pass not updateable</source>
+        <translation>Pass nicht updatebar</translation>
+    </message>
+    <message>
+        <source>no new version for pass</source>
+        <translation>Keine neue Version für diesen Pass</translation>
+    </message>
+    <message>
+        <source>pass update failed</source>
+        <translation>Pass Update fehlgeschlagen</translation>
+    </message>
 </context>
 <context>
     <name>Settings</name>
@@ -115,6 +135,10 @@
     <message>
         <source>Please update your system or install calendar</source>
         <translation>Bitte System updaten bzw. Kalender installieren</translation>
+    </message>
+    <message>
+        <source>Update</source>
+        <translation>Update</translation>
     </message>
 </context>
 <context>

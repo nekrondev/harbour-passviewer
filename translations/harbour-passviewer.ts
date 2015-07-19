@@ -27,6 +27,26 @@
         <source>Deleting</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>pass update successful</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>pass not updateable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>no new version for pass</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>pass update failed</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Settings</name>
@@ -114,6 +134,10 @@
     </message>
     <message>
         <source>Please update your system or install calendar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

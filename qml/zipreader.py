@@ -3,12 +3,14 @@
 
 '''Provides easy access to the passes in the file system.'''
 
+import pyotherside
+
 import os
 from zipfile import ZipFile
 import json
-import hashlib
 from base64 import b64encode
-import pyotherside
+
+from passdb import PassDB
 
 def scan_home(sdcard = True):
     '''Return all direct and indirect subdirectories of the home directory, and the passes within.'''
@@ -42,6 +44,7 @@ def scan_home(sdcard = True):
                     continue
         except Exception:
             visible_paths.pop()
+    clean_passdb(passes)
     return visible_paths, passes
 
 def decode_binary(bintext):
@@ -88,3 +91,25 @@ def image_provider(id, requested_size):
     return bytearray(imgdata), (-1, -1), pyotherside.format_data
 
 pyotherside.set_image_provider(image_provider)
+
+def clean_passdb(passes):
+    '''Clean removed passes from the Pass DB.'''
+    try:
+        db = PassDB()
+    except Exception:
+        return
+    oldpasses = db.get_passes()
+    # find still existing passes
+    for newpass in passes:
+        try:
+            data = json.loads(newpass['data'])
+            id = '/'.join((data['passTypeIdentifier'], data['serialNumber']))
+            for index, oldpass in enumerate(oldpasses):
+                if oldpass == id:
+                    del oldpasses[index]
+                    break
+        except Exception:
+            pass
+    # remove vanished passes
+    for oldpass in oldpasses:
+        db.set_pass(pass_id=oldpass)

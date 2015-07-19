@@ -31,7 +31,7 @@ Page {
 
         model: ListModel {
             id: passList
-            ListElement { name: ""; filename: ""; path: ""; points: -1; jsondata: ""; typeId: "" }
+            ListElement { name: ""; filename: ""; path: ""; points: -1; jsondata: ""; typeId: ""; updateable: false }
         }
 
         delegate: ListItem {
@@ -62,9 +62,17 @@ Page {
                 MenuItem {
                     text: qsTr("Show")
                     onClicked: {
-                        var properties = { path: path, jsondata: jsondata };
+                        var properties = { name: name, path: path, jsondata: jsondata, updateable: updateable };
                         pageStack.push(Qt.resolvedUrl("ShowPass.qml"), properties);
                         pageStack.pushAttached(Qt.resolvedUrl("ShowBack.qml"), properties);
+                    }
+                }
+
+                MenuItem {
+                    text: qsTr("Update")
+                    visible: updateable
+                    onClicked: {
+                        py.updatePass(path);
                     }
                 }
 
@@ -78,7 +86,7 @@ Page {
             }
 
             onClicked: {
-                var properties = { name: name, path: path, jsondata: jsondata };
+                var properties = { name: name, path: path, jsondata: jsondata, updateable: updateable };
                 pageStack.push(Qt.resolvedUrl("ShowPass.qml"), properties);
                 pageStack.pushAttached(Qt.resolvedUrl("ShowBack.qml"), properties);
             }
@@ -132,7 +140,7 @@ Page {
     Python {
         id: py
 
-        function scanHome(sdcard) {
+        function scanHome(sdcard, passupdate) {
             function nameFromData(data, defName) {
                 try {
                     var styles = ["boardingPass", "coupon", "eventTicket", "storeCard", "generic"];
@@ -170,18 +178,24 @@ Page {
                         var current = passes[pass];
                         // get proper names
                         var data = undefined;
+                        var updateable = false;
                         try {
                             data = JSON.parse(current.data);
+                            updateable = "webServiceURL" in data && "passTypeIdentifier" in data && "serialNumber" in data && "authenticationToken" in data;
                         }
-                        catch(e) {}
+                        catch(e) {
+                            continue;
+                        }
                         var name = nameFromData(data, current.name);
                         // and the pass type id
                         var typeId = "";
                         try {
                             typeId = data.passTypeIdentifier;
                         }
-                        catch(e) {}
-                        loadlist[loadlist.length] = {name: name, path: current.path, points: -1, jsondata: current.data, typeId: typeId};
+                        catch(e) {
+                            continue;
+                        }
+                        loadlist[loadlist.length] = {name: name, path: current.path, points: -1, jsondata: current.data, typeId: typeId, updateable: updateable};
                     }
                     catch(e) {}
                 }
@@ -189,9 +203,25 @@ Page {
                 if (loadlist.length > 0 || sdcard) {
                     busy.running = false;
                     page.updatePassList(loadlist);
-                    page.checkPassList();
+                    page.checkPassList(true);
                     if (settingsStore.checkTime)
                         checkTimer.start();
+                }
+                if (passupdate === true) {
+                    notificator.errorNotification(qsTr("pass update successful"), "");
+                    if (pageStack.depth > 1) {
+                        var next = pageStack.nextPage();
+                        for (var thispass = 0; thispass < loadlist.length; thispass++) {
+                            var entry = loadlist[thispass];
+                            if (entry.path === next.path) {
+                                var properties = { name: entry.name, path: entry.path, jsondata: entry.jsondata, updateable: entry.updateable };
+                                pageStack.pop(page, PageStackAction.Immediate);
+                                pageStack.push(Qt.resolvedUrl("ShowPass.qml"), properties, PageStackAction.Immediate);
+                                pageStack.pushAttached(Qt.resolvedUrl("ShowBack.qml"), properties);
+                                break;
+                            }
+                        }
+                    }
                 }
                 if (sdcard === false)
                     scanHome(true);
@@ -202,6 +232,10 @@ Page {
             call("zipreader.remove_pass", [path], null);
         }
 
+        function updatePass(path) {
+            call("updater.update", [path], null);
+        }
+
         Component.onCompleted: {
             passList.clear();
             addImportPath(Qt.resolvedUrl('..'));
@@ -210,6 +244,23 @@ Page {
             });
             importModule('dtformat', null);
             importModule('ical', null);
+            importModule('updater', null);
+
+            setHandler('update', function(msg) {
+                switch (msg) {
+                case "not updateable":
+                    notificator.errorNotification(qsTr("pass not updateable"), "");
+                    break;
+                case "no new version":
+                    notificator.errorNotification(qsTr("no new version for pass"), "");
+                    break;
+                case "update failed":
+                    notificator.errorNotification(qsTr("pass update failed"), "");
+                    break;
+                case "ok":
+                    scanHome(true, true);
+                }
+            });
         }
     }
 
@@ -235,7 +286,7 @@ Page {
         onNotificationClicked: {
             for (var pass = 0; pass < passList.count; pass++) {
                 if (passList.get(pass).path === path) {
-                    var properties = { path: passList.get(pass).path, jsondata: passList.get(pass).jsondata };
+                    var properties = { name: passList.get(pass).name, path: passList.get(pass).path, jsondata: passList.get(pass).jsondata, updateable: passList.get(pass).updateable };
                     pageStack.pop(page, PageStackAction.Immediate);
                     pageStack.push(Qt.resolvedUrl("ShowPass.qml"), properties, PageStackAction.Immediate);
                     pageStack.pushAttached(Qt.resolvedUrl("ShowBack.qml"), properties);
@@ -302,7 +353,7 @@ Page {
     }
 
     function updatePassList(newpasses) {
-        // remove vanished passes
+        // remove vanished passes and update existing ones
         var pass = 0;
         var newpass = 0;
         while (pass < passList.count) {
@@ -310,6 +361,7 @@ Page {
             var found = false;
             for (newpass = 0; newpass < newpasses.length; newpass++) {
                 if (newpasses[newpass].path === path) {
+                    passList.get(pass).jsondata = newpasses[newpass].jsondata;
                     found = true;
                     break;
                 }
@@ -358,7 +410,7 @@ Page {
         }
     }
 
-    function checkPassList() {
+    function checkPassList(force) {
         // check if passes have been activated or deactivated
         var changed = false;
         var close = false;
@@ -375,7 +427,7 @@ Page {
             if (active[1])
                 close = true;
         }
-        if (changed) {
+        if (changed || force) {
             // reorder passes
             var passes = [];
             for (pass = 0; pass < passList.count; pass++) {

@@ -9,6 +9,7 @@ Page {
     property string name: ""
     property string jsondata: ""
     property string path: ""
+    property bool updateable: false
     property string relevantDate: ""
     property string labelColor: "black"
     property string foreColor: "black"
@@ -43,6 +44,14 @@ Page {
                 onClicked: {
                     var now = new Date();
                     py.create_calendar_entry(name, relevantDate);
+                }
+            }
+
+            MenuItem {
+                text: qsTr("Update")
+                visible: updateable
+                onClicked: {
+                    py.update_pass();
                 }
             }
         }
@@ -96,7 +105,7 @@ Page {
                         Repeater {
                             model: ListModel {
                                 id: headerFields
-                                ListElement { title: ""; value: "" }
+                                ListElement { field: ""; title: ""; value: "" }
                             }
 
                             Column {
@@ -212,7 +221,7 @@ Page {
                     Repeater {
                         model: ListModel {
                             id: secondaryFields
-                            ListElement { title: ""; value: "" }
+                            ListElement { field: ""; title: ""; value: "" }
                         }
 
                         Column  {
@@ -239,7 +248,7 @@ Page {
                     Repeater {
                         model: ListModel {
                             id: tertiaryFields
-                            ListElement { title: ""; value: "" }
+                            ListElement { field: ""; title: ""; value: "" }
                         }
 
                         Column  {
@@ -319,6 +328,40 @@ Page {
                     notificator.errorNotification(qsTr("Unsupported"), qsTr("Please update your system or install calendar"));
             });
         }
+
+        function get_pass_changes(pass) {
+            call("updater.get_pass_changes", [pass], function(changes) {
+                function escape(text) {
+                    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+                }
+
+                function update_marks(model, changes) {
+                    for (var field = 0; field < model.count; field++) {
+                        var key = model.get(field).field;
+                        var found = false;
+                        for (var change = 0; change < changes.length; change++) {
+                            if (changes[change] === key) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found) {
+                            if (model.get(field).value.substring(0,3) !== '<u>') {
+                                model.get(field).value = '<u>' + escape(model.get(field).value) + '</u>';
+                            }
+                        }
+                    }
+                }
+
+                update_marks(headerFields, changes);
+                update_marks(secondaryFields, changes);
+                update_marks(tertiaryFields, changes);
+            });
+        }
+
+        function update_pass() {
+            call("updater.update", [page.path], null);
+        }
     }
 
     Component.onCompleted: {
@@ -336,7 +379,7 @@ Page {
                         data.value = py.format_date_time(data.value, dateFormat, timeFormat, ignoreTimeZone);
                     }
 
-                    target.append({ title: String(data.label), value: String(data.value) });
+                    target.append({ field: String(data.key), title: String(data.label), value: String(data.value) });
                 }
             }
         }
@@ -382,6 +425,7 @@ Page {
             getFields(pass, style, 'secondaryFields', secondaryFields);
             getFields(pass, style, 'auxiliaryFields', tertiaryFields);
         }
+        py.get_pass_changes(pass);
         if ('barcode' in pass) {
             if ('message' in pass.barcode)
                 page.barcodeContent = pass.barcode.message;
