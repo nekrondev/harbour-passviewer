@@ -21,9 +21,12 @@ import zipreader
 
 def update_proc(path, signal):
     '''Handle the update. (worker process)'''
+    oldraw = None
     oldpass = None
     try:
         with open(path, 'rb') as passfile:
+            oldraw = passfile.read()
+            passfile.seek(0)
             oldpass = get_pass_data(passfile)
         base_URL = oldpass['webServiceURL']
         passid = oldpass['passTypeIdentifier']
@@ -60,7 +63,10 @@ def update_proc(path, signal):
     except Exception:
         signal.put('update failed')
         return
-    signal.put('ok')
+    if oldraw == newraw:
+        signal.put('no new version')
+    else:
+        signal.put('ok')
     if passinfo is not None:
         try:
             passinfo['updated'] = time.time()
@@ -78,6 +84,7 @@ def watcher_thread(path):
         pyotherside.send('update', signal.get(timeout = 300))
     except Exception:
         pass
+    proc.join()
 
 def update(path):
     '''Update the pass indicated by the path.'''

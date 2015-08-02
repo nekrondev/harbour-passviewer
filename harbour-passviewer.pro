@@ -49,7 +49,8 @@ OTHER_FILES += qml/harbour-passviewer.qml \
     rpm/harbour-passviewer.changes \
     qml/ical.py \
     qml/updater.py \
-    qml/passdb.py
+    qml/passdb.py \
+    qml/curformat.py
 
 # to disable building translations every time, comment out the
 # following CONFIG line

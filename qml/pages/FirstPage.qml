@@ -80,7 +80,15 @@ Page {
                     text: qsTr("Delete")
                     onClicked: {
                         var delPath = path;
-                        deleteRemorse.execute(entry, qsTr("Deleting"), function(){ py.removePass(delPath) });
+                        deleteRemorse.execute(entry, qsTr("Deleting"), function(){
+                            py.removePass(delPath);
+                            for (var entry = 0; entry < passList.count; entry++) {
+                                if (passList.get(entry).path === delPath) {
+                                    passList.remove(entry);
+                                    break;
+                                }
+                            }
+                        });
                     }
                 }
             }
@@ -243,6 +251,7 @@ Page {
                 scanHome();
             });
             importModule('dtformat', null);
+            importModule('curformat', null);
             importModule('ical', null);
             importModule('updater', null);
 

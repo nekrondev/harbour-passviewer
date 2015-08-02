@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtGraphicalEffects 1.0
 import Sailfish.Silica 1.0
 import io.thp.pyotherside 1.3
 import "../utils.js" as Utils
@@ -40,7 +41,7 @@ Page {
 
             MenuItem {
                 text: qsTr("Create Calendar Entry")
-                visible: relevantDate != ""
+                enabled: relevantDate != ""
                 onClicked: {
                     var now = new Date();
                     py.create_calendar_entry(name, relevantDate);
@@ -49,7 +50,7 @@ Page {
 
             MenuItem {
                 text: qsTr("Update")
-                visible: updateable
+                enabled: updateable
                 onClicked: {
                     py.update_pass();
                 }
@@ -67,11 +68,15 @@ Page {
 
             Image {
                 id: background_image
-                anchors.top: parent.top
-                anchors.left: parent.left
-                width: background.width
-                height: sourceSize.width != 0 ? sourceSize.height * background.width / sourceSize.width : 0
+                anchors.fill: parent
+                fillMode: Image.PreserveAspectCrop
                 source: "image://python" + path + "/background.png"
+            }
+
+            FastBlur {
+                anchors.fill: background_image
+                source: background_image
+                radius: 32
             }
 
             Column {
@@ -129,6 +134,8 @@ Page {
                 Column {
                     id: boardingPrimary
                     visible: boardingFromTitle !== '' || boardingFromValue !== '' || boardingToTitle !== '' || boardingToValue !== ''
+                    property string fromField: ''
+                    property string toField: ''
 
                     Row {
                         property real itemWidth: body.width / 2 - spacing
@@ -176,6 +183,7 @@ Page {
                 Column {
                     id: standardPrimary
                     visible: primaryTitle !== "" || primaryValue !== ""
+                    property string field: ''
 
                     Image {
                         source: "image://python" + path + "/strip.png"
@@ -320,6 +328,10 @@ Page {
             return call_sync("dtformat.format_date_time", [isoDt, dateFormat, timeFormat, ignoreTimeZone]);
         }
 
+        function format_currency(value, currency) {
+            return call_sync("curformat.format_currency", [value, currency]);
+        }
+
         function create_calendar_entry(subject, isoDt) {
             call("ical.create_calendar_entry", [subject, isoDt], function(status) {
                 if (status === "format")
@@ -353,9 +365,28 @@ Page {
                     }
                 }
 
+                function update_primary_marks(changes) {
+                    for (var priChange = 0; priChange < changes.length; priChange++) {
+                        switch (changes[priChange]) {
+                        case boardingPrimary.fromField:
+                            if (boardingFromValue.text.substring(0,3) !== '<u>')
+                                boardingFromValue.text = '<u>' + escape(boardingFromValue.text) + '</u>';
+                            break;
+                        case boardingPrimary.toField:
+                            if (boardingToValue.text.substring(0,3) !== '<u>')
+                                boardingToValue.text = '<u>' + escape(boardingToValue.text) + '</u>';
+                            break;
+                        case standardPrimary.field:
+                            if (primaryValue.text.substring(0,3) !== '<u>')
+                                primaryValue.text = '<u>' + escape(primaryValue.text) + '</u>';
+                        }
+                    }
+                }
+
                 update_marks(headerFields, changes);
                 update_marks(secondaryFields, changes);
                 update_marks(tertiaryFields, changes);
+                update_primary_marks(changes);
             });
         }
 
@@ -377,6 +408,10 @@ Page {
                         if ('ignoresTimeZone' in data)
                             ignoreTimeZone = data.ignoresTimeZone;
                         data.value = py.format_date_time(data.value, dateFormat, timeFormat, ignoreTimeZone);
+                    }
+                    else if ("currencyCode" in data) {
+                        var currencyCode = data.currencyCode.substring(0,3).toUpperCase();
+                        data.value = py.format_currency(data.value, currencyCode);
                     }
 
                     target.append({ field: String(data.key), title: String(data.label), value: String(data.value) });
@@ -408,8 +443,10 @@ Page {
         headerFields.clear();
         getFields(pass, style, 'headerFields', headerFields)
         if (style === "boardingPass") {
+            boardingPrimary.fromField = pass.boardingPass.primaryFields[0].key;
             boardingFromTitle.text = pass.boardingPass.primaryFields[0].label;
             boardingFromValue.text = pass.boardingPass.primaryFields[0].value;
+            boardingPrimary.toField = pass.boardingPass.primaryFields[1].key;
             boardingToTitle.text = pass.boardingPass.primaryFields[1].label;
             boardingToValue.text = pass.boardingPass.primaryFields[1].value;
             secondaryFields.clear();
@@ -418,6 +455,7 @@ Page {
             getFields(pass, style, 'secondaryFields', tertiaryFields);
         }
         else {
+            standardPrimary.field = pass[style].primaryFields[0].key;
             primaryTitle.text = pass[style].primaryFields[0].label;
             primaryValue.text = pass[style].primaryFields[0].value;
             secondaryFields.clear();

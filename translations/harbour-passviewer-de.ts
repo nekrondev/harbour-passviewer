@@ -29,15 +29,15 @@
     </message>
     <message>
         <source>Update</source>
-        <translation>Update</translation>
+        <translation>Aktualisierung</translation>
     </message>
     <message>
         <source>pass update successful</source>
-        <translation>Pass Update erfolgreich</translation>
+        <translation>Passaktualisierung erfolgreich</translation>
     </message>
     <message>
         <source>pass not updateable</source>
-        <translation>Pass nicht updatebar</translation>
+        <translation>Pass nicht aktualisierbar</translation>
     </message>
     <message>
         <source>no new version for pass</source>
@@ -45,7 +45,7 @@
     </message>
     <message>
         <source>pass update failed</source>
-        <translation>Pass Update fehlgeschlagen</translation>
+        <translation>Passaktualisierung fehlgeschlagen</translation>
     </message>
 </context>
 <context>
@@ -134,11 +134,11 @@
     </message>
     <message>
         <source>Please update your system or install calendar</source>
-        <translation>Bitte System updaten bzw. Kalender installieren</translation>
+        <translation>Bitte System aktualisieren bzw. Kalender installieren</translation>
     </message>
     <message>
         <source>Update</source>
-        <translation>Update</translation>
+        <translation>Aktualisierung</translation>
     </message>
 </context>
 <context>

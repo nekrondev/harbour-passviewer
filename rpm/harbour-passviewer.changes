@@ -8,6 +8,11 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Sun Aug 2 2015 Christof Bürgi <christof@buergi.lugs.ch> 0.7-1
+- Background images resized, cropped and blurred to avoid confusing scanners
+- Currency fields properly formatted
+- Minor improvements in pass updates and deletions
+
 * Sun Jul 19 2015 Christof Bürgi <christof@buergi.lugs.ch> 0.6-1
 - Pass updates implemented
 - Fixed crashes caused by faulty passes
