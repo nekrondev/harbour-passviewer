@@ -28,7 +28,9 @@ SOURCES += src/harbour-passviewer.cpp \
     src/settingsstore.cpp \
     src/notificationsproxy.cpp \
     src/notificator.cpp \
-    src/notificationlist.cpp
+    src/notificationlist.cpp \
+    src/zint/gs1.c \
+    src/zint/code128.c
 
 OTHER_FILES += qml/harbour-passviewer.qml \
     qml/cover/CoverPage.qml \
@@ -37,20 +39,22 @@ OTHER_FILES += qml/harbour-passviewer.qml \
     rpm/harbour-passviewer.yaml \
     translations/*.ts \
     harbour-passviewer.desktop \
-    qml/zipreader.py \
-    qml/pages/ShowPass.qml \
     qml/pages/ShowBack.qml \
     qml/pages/ShowSimple.qml \
-    qml/utils.js \
     qml/pages/ShowCodeFullscreen.qml \
     qml/pages/Copyright.qml \
-    qml/dtformat.py \
     qml/pages/Settings.qml \
     rpm/harbour-passviewer.changes \
-    qml/ical.py \
-    qml/updater.py \
-    qml/passdb.py \
-    qml/curformat.py
+    qml/pages/ShowPass.qml \
+    qml/lib/Pass.qml \
+    qml/lib/utils.js \
+    qml/python/curformat.py \
+    qml/python/dtformat.py \
+    qml/python/ical.py \
+    qml/python/passdb.py \
+    qml/python/updater.py \
+    qml/python/zipreader.py \
+    qml/lib/Back.qml
 
 # to disable building translations every time, comment out the
 # following CONFIG line
@@ -78,7 +82,8 @@ HEADERS += \
     src/settingsstore.h \
     src/notificationsproxy.h \
     src/notificator.h \
-    src/notificationlist.h
+    src/notificationlist.h \
+    src/zint/gs1.h
 
 QT += positioning
 QT += dbus

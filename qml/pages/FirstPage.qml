@@ -6,6 +6,7 @@ import io.thp.pyotherside 1.3
 
 Page {
     id: page
+    allowedOrientations: Orientation.All
 
     property string uid: "firstPage"
 
@@ -246,7 +247,7 @@ Page {
 
         Component.onCompleted: {
             passList.clear();
-            addImportPath(Qt.resolvedUrl('..'));
+            addImportPath(Qt.resolvedUrl('../python'));
             importModule('zipreader', function() {
                 scanHome();
             });

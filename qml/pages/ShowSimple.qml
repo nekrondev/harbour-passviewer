@@ -1,9 +1,10 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import "../utils.js" as Utils
+import "../lib/utils.js" as Utils
 
 Page {
     id: page
+    allowedOrientations: Orientation.All
 
     property string jsondata: ''
     property string path: ''
@@ -14,7 +15,7 @@ Page {
 
     SilicaFlickable {
         anchors.fill: parent
-        contentHeight: body.height + Theme.paddingMedium * 2
+        contentHeight: body.height + Theme.paddingLarge * 2
 
         PullDownMenu {
 
@@ -154,15 +155,28 @@ Page {
         getFields(pass, style, 'primaryFields', frontFields);
         getFields(pass, style, 'secondaryFields', frontFields);
         getFields(pass, style, 'auxiliaryFields', frontFields);
-        if ('barcode' in pass) {
-            if ('message' in pass.barcode)
-                page.barcodeContent = pass.barcode.message;
-            if ('messageEncoding' in pass.barcode)
-                page.barcodeEncoding = pass.barcode.messageEncoding;
-            if ('format' in pass.barcode)
-                page.barcodeType = pass.barcode.format.substring(15).toLowerCase();
-            if ('altText' in pass.barcode)
-                page.barcodeAltText = pass.barcode.altText;
+        if (!('barcodes' in pass)) {
+            pass.barcodes = [];
+            if ('barcode' in pass) {
+                pass.barcodes.push(pass.barcode);
+            }
+        }
+        var validCode = false;
+        for (var barcode = 0; barcode <= pass.barcodes.length; barcode++) {
+            switch(pass.barcodes[barcode].format.substring(15).toLowerCase()) {
+            case 'code128':
+            case 'qr':
+            case 'aztec':
+            case 'pdf417':
+                barcodeContent = 'message' in pass.barcodes[barcode] ? pass.barcodes[barcode].message : '';
+                barcodeEncoding = 'messageEncoding' in pass.barcodes[barcode] ?  pass.barcodes[barcode].messageEncoding: 'iso-8859-1';
+                barcodeType = pass.barcodes[barcode].format.substring(15).toLowerCase();
+                barcodeAltText = 'altText' in pass.barcodes[barcode] ? pass.barcodes[barcode].altText : '';
+                validCode = true;
+                break;
+            }
+            if (validCode)
+                break;
         }
         backFields.clear();
         getFields(pass, style, 'backFields', backFields);

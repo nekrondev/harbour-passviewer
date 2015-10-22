@@ -24,7 +24,10 @@ QPixmap BarcodeImageProvider::requestPixmap(const QString &id, QSize *size, cons
     zint_symbol* symbol = ZBarcode_Create();
     if (!symbol)
         return empty;
-    if (type == "qr") {
+    if (type == "code128") {
+        symbol->symbology = BARCODE_CODE128;
+    }
+    else if (type == "qr") {
         symbol->symbology = BARCODE_QRCODE;
     }
     else if (type == "aztec") {

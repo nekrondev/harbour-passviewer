@@ -1,18 +1,16 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import "../utils.js" as Utils
 
 Page {
     id: page
+    allowedOrientations: Orientation.All
 
     property string jsondata: ''
     property string path: ''
-    property string labelColor: 'black'
-    property string foreColor: 'black'
 
     SilicaFlickable {
         anchors.fill: parent
-        contentHeight: background.height + Theme.paddingLarge * 2
+        contentHeight: pass.item.height + Theme.paddingLarge * 2
 
         PullDownMenu {
 
@@ -25,79 +23,18 @@ Page {
             }
         }
 
-        Rectangle {
-            id: background
+        Loader {
+            id: pass
+            width: 540 - Theme.paddingLarge * 2
+            anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.margins: Theme.paddingLarge
-            height: body.height + Theme.paddingMedium * 2
-            color: 'white'
-
-            Column {
-                id: body
-                anchors.top: parent.top
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.margins: Theme.paddingMedium
-                spacing: Theme.paddingMedium
-
-                Repeater {
-                    model: ListModel {
-                        id: backFields
-                        ListElement { title: ''; value: '' }
-                    }
-
-                    Column {
-
-                        Label {
-                            text: title
-                            color: page.labelColor
-                            font.pixelSize: Theme.fontSizeExtraSmall
-                        }
-
-                        Label {
-                            text: value
-                            color: page.foreColor
-                            font.pixelSize: Theme.fontSizeExtraSmall
-                            width: body.width
-                            wrapMode: Text.Wrap
-                        }
-                    }
-                }
+            anchors.topMargin: Theme.paddingLarge
+            source: Qt.resolvedUrl("../lib/Back.qml")
+            onLoaded: {
+                item.jsondata = jsondata
             }
         }
 
         VerticalScrollDecorator {}
-    }
-
-    Component.onCompleted: {
-        function getFields(pass, style, fieldType, target) {
-            var fields = [];
-            if (fieldType in pass[style]) {
-                for (var field = 0; field < pass[style][fieldType].length; field++) {
-                    var data = pass[style][fieldType][field];
-                    target.append({ title: String(data.label), value: String(data.value) });
-                }
-            }
-        }
-
-        var pass = JSON.parse(jsondata);
-        if ('backgroundColor' in pass)
-            background.color = Utils.interpretColor(pass.backgroundColor);
-        if ('labelColor' in pass)
-            page.labelColor = Utils.interpretColor(pass.labelColor);
-        if ('foregroundColor' in pass)
-            page.foreColor = Utils.interpretColor(pass.foregroundColor);
-        var styles = ["boardingPass", "coupon", "eventTicket", "storeCard", "generic"];
-        var style = '';
-        for (var key = 0; key < styles.length; key++) {
-            if (styles[key] in pass) {
-                style = styles[key];
-                break;
-            }
-        }
-        backFields.clear();
-        getFields(pass, style, 'backFields', backFields);
     }
 }

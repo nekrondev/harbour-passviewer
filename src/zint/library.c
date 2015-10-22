@@ -130,6 +130,7 @@ void ZBarcode_Delete(struct zint_symbol *symbol)
     free(symbol);
 }
 
+extern int code_128(struct zint_symbol *symbol, unsigned char source[], int length); /* Code 128 and NVE-18 */
 extern int pdf417enc(struct zint_symbol *symbol, unsigned char source[], int length); /* PDF417 */
 extern int qr_code(struct zint_symbol *symbol, unsigned char source[], int length); /* QR Code */
 extern int aztec(struct zint_symbol *symbol, unsigned char source[], int length); /* Aztec Code */
@@ -281,6 +282,7 @@ int reduced_charset(struct zint_symbol *symbol, unsigned char *source, int lengt
     }
 
     switch(symbol->symbology) {
+        case BARCODE_CODE128: error_number = code_128(symbol, preprocessed, length); break;
         case BARCODE_PDF417: error_number = pdf417enc(symbol, preprocessed, length); break;
         case BARCODE_AZTEC: error_number = aztec(symbol, preprocessed, length); break;
     }
@@ -333,6 +335,16 @@ int ZBarcode_Encode(struct zint_symbol *symbol, unsigned char *source, int lengt
         default:
             error_number = reduced_charset(symbol, local_source, length);
             break;
+    }
+
+    if((symbol->symbology == BARCODE_CODE128) || (symbol->symbology == BARCODE_CODE128B)) {
+        for(i = 0; i < length; i++) {
+            if(local_source[i] == '\0') {
+                symbol->text[i] = ' ';
+            } else {
+                symbol->text[i] = local_source[i];
+            }
+        }
     }
 
     if(error_number == 0) {

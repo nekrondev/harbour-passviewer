@@ -8,6 +8,13 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Wed Oct 14 2015 Christof Bürgi <christof@buergi.lugs.ch> 0.8-1
+- Preliminary tablet support
+- Portrait mode supported
+- Code128 barcodes supported
+- App registers for PassBook MIME type
+- Internal changes to the UI code
+
 * Sun Aug 2 2015 Christof Bürgi <christof@buergi.lugs.ch> 0.7-1
 - Background images resized, cropped and blurred to avoid confusing scanners
 - Currency fields properly formatted

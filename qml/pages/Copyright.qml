@@ -2,6 +2,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 Page {
+    allowedOrientations: Orientation.All
 
     SilicaFlickable {
         anchors.fill: parent
@@ -40,7 +41,7 @@ Page {
                     "Copyright (C) 2006 Kentaro Fukuchi <fukuchi@megaui.net>\n" +
                     "Copyright (C) 2004 Cliff Hones\n" +
                     "Copyright (C) 2004 Grandzebu\n" +
-                    "Bug Fixes thanks to KL Chin <klchin@users.sourceforge.net>\n\n" +
+                    "Bug Fixes thanks to KL Chin <klchin@users.sourceforge.net>, Christian Sakowski and BogDan Vatra\n\n" +
                     "Redistribution and use in source and binary forms, with or without " +
                     "modification, are permitted provided that the following conditions " +
                     "are met:\n\n" +
