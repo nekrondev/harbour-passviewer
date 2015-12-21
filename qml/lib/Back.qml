@@ -72,6 +72,7 @@ Rectangle {
                 break;
             }
         }
+        Utils.checkFields(pass, style);
         backFields.clear();
         getFields(pass, style, 'backFields', backFields);
     }

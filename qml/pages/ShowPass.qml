@@ -4,7 +4,7 @@ import io.thp.pyotherside 1.3
 
 Page {
     id: page
-    allowedOrientations: Orientation.All
+    //allowedOrientations: Orientation.All
 
     property string name: ''
     property string jsondata: ''

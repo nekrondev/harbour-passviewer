@@ -1,5 +1,33 @@
 .pragma library
 
+function checkSpecificFields(pass, style, fieldType) {
+    // adds undefined entries if necessary
+    for (var field = 0; field < pass[style][fieldType].length; field++) {
+        if (!('key' in pass[style][fieldType][field]))
+            pass[style][fieldType][field].key = '';
+        if (!('label' in pass[style][fieldType][field]))
+            pass[style][fieldType][field].label = '';
+        if (!('value' in pass[style][fieldType][field]))
+            pass[style][fieldType][field].value = '';
+    }
+}
+
+function checkFields(pass, style) {
+    // adds undefined entries if necessary
+    if (!('primaryFields' in pass[style]))
+        pass[style].primaryFields = [];
+    if (!('secondaryFields' in pass[style]))
+        pass[style].secondaryFields = [];
+    if (!('auxiliaryFields' in pass[style]))
+        pass[style].auxiliaryFields = [];
+    if (!('backFields' in pass[style]))
+        pass[style].backFields = [];
+    checkSpecificFields(pass, style, 'primaryFields');
+    checkSpecificFields(pass, style, 'secondaryFields');
+    checkSpecificFields(pass, style, 'auxiliaryFields');
+    checkSpecificFields(pass, style, 'backFields');
+}
+
 function interpretColor(color) {
     if (color.substring(0,3) !== 'rgb')
         return color;

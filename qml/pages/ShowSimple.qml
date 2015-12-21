@@ -4,7 +4,7 @@ import "../lib/utils.js" as Utils
 
 Page {
     id: page
-    allowedOrientations: Orientation.All
+    //allowedOrientations: Orientation.All
 
     property string jsondata: ''
     property string path: ''
@@ -150,6 +150,7 @@ Page {
                 break;
             }
         }
+        Utils.checkFields(pass, style);
         frontFields.clear();
         getFields(pass, style, 'headerFields', frontFields);
         getFields(pass, style, 'primaryFields', frontFields);
@@ -168,7 +169,7 @@ Page {
             case 'qr':
             case 'aztec':
             case 'pdf417':
-                barcodeContent = 'message' in pass.barcodes[barcode] ? pass.barcodes[barcode].message : '';
+                barcodeContent = 'message' in pass.barcodes[barcode] ? Qt.btoa(pass.barcodes[barcode].message) : '';
                 barcodeEncoding = 'messageEncoding' in pass.barcodes[barcode] ?  pass.barcodes[barcode].messageEncoding: 'iso-8859-1';
                 barcodeType = pass.barcodes[barcode].format.substring(15).toLowerCase();
                 barcodeAltText = 'altText' in pass.barcodes[barcode] ? pass.barcodes[barcode].altText : '';

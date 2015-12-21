@@ -8,6 +8,14 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Mon Dec 21 2015 Christof Bürgi <christof@buergi.lugs.ch> 0.9-1
+- Fixed Barcodes with special characters
+- App is now more forgiving towards faulty passes
+- Swedish translation added (thanks to Åke Engelbrektson)
+- Small UI fixes
+- High-res Icons added
+- Portrait mode deactivated again to avoid problems with some barcode readers
+
 * Wed Oct 14 2015 Christof Bürgi <christof@buergi.lugs.ch> 0.8-1
 - Preliminary tablet support
 - Portrait mode supported

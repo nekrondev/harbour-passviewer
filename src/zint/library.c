@@ -275,6 +275,9 @@ int reduced_charset(struct zint_symbol *symbol, unsigned char *source, int lengt
 
     switch(symbol->input_mode) {
         case DATA_MODE:
+            memcpy(preprocessed, source, length);
+            preprocessed[length] = '\0';
+            break;
         case UNICODE_MODE:
             error_number = latin1_process(symbol, source, preprocessed, &length);
             if(error_number != 0) { return error_number; }

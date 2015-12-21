@@ -122,7 +122,7 @@ Rectangle {
                 Label {
                     text: boardingFromValue
                     color: textColor
-                    font.pixelSize: text.length <= 3 ? Theme.fontSizeHuge : Theme.fontSizeExtraLarge
+                    font.pixelSize: text.length <= 3 ? Theme.fontSizeHuge : Theme.fontSizeLarge
                 }
             }
 
@@ -140,7 +140,7 @@ Rectangle {
                     anchors.right: parent.right
                     text: boardingToValue
                     color: textColor
-                    font.pixelSize: text.length <= 3 ? Theme.fontSizeHuge : Theme.fontSizeExtraLarge
+                    font.pixelSize: text.length <= 3 ? Theme.fontSizeHuge : Theme.fontSizeLarge
                 }
             }
         }
@@ -381,6 +381,7 @@ Rectangle {
                 break;
             }
         }
+        Utils.checkFields(pass, style);
         headerFields.clear();
         getFields(pass, style, 'headerFields', headerFields)
         if (style === "boardingPass") {
@@ -418,7 +419,7 @@ Rectangle {
             case 'qr':
             case 'aztec':
             case 'pdf417':
-                barcodeContent = 'message' in pass.barcodes[barcode] ? pass.barcodes[barcode].message : '';
+                barcodeContent = 'message' in pass.barcodes[barcode] ? Qt.btoa(pass.barcodes[barcode].message) : '';
                 barcodeEncoding = 'messageEncoding' in pass.barcodes[barcode] ?  pass.barcodes[barcode].messageEncoding: 'iso-8859-1';
                 barcodeType = pass.barcodes[barcode].format.substring(15).toLowerCase();
                 barcodeAltText = 'altText' in pass.barcodes[barcode] ? pass.barcodes[barcode].altText : '';

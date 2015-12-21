@@ -37,7 +37,7 @@ Page {
 
         delegate: ListItem {
             id: entry
-            contentHeight: passIcon.height
+            contentHeight: passIcon.height + Theme.paddingSmall * 2
 
             Image {
                 id: passIcon

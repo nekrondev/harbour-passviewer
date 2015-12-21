@@ -20,12 +20,16 @@ QPixmap BarcodeImageProvider::requestPixmap(const QString &id, QSize *size, cons
     codec = QTextCodec::codecForName(id.mid(firstslash + 1, secondslash - firstslash - 1).toUtf8());
     if (!codec)
         return empty;
-    content = codec->fromUnicode(id.mid(secondslash + 1));
+    if (type != "code128")
+        content = codec->fromUnicode(QString(QByteArray::fromBase64(id.mid(secondslash + 1).toLatin1())));
+    else
+        content = QByteArray::fromBase64(id.mid(secondslash + 1).toLatin1());
     zint_symbol* symbol = ZBarcode_Create();
     if (!symbol)
         return empty;
     if (type == "code128") {
         symbol->symbology = BARCODE_CODE128;
+        symbol->input_mode = UNICODE_MODE;
     }
     else if (type == "qr") {
         symbol->symbology = BARCODE_QRCODE;

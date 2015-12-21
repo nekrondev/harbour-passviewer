@@ -1,6 +1,7 @@
 #ifndef BARCODEIMAGEPROVIDER_H
 #define BARCODEIMAGEPROVIDER_H
 
+#include <QByteArray>
 #include <QQuickImageProvider>
 #include <QTextCodec>
 #include <QImage>
