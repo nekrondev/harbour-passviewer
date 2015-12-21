@@ -67,7 +67,8 @@ CONFIG += sailfishapp_i18n
 # following TRANSLATIONS line. And also do not forget to
 # modify the localized app name in the the .desktop file.
 TRANSLATIONS += translations/harbour-passviewer-de.ts
-TRANSLATIONS += translations/harbour-passviewer-sv.ts
+TRANSLATIONS += translations/harbour-passviewer-sv.ts \
+                translations/harbour-passviewer-ru.ts
 
 HEADERS += \
     src/zint/qr.h \
