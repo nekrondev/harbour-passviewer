@@ -1,7 +1,6 @@
 import QtQuick 2.0
 import QtGraphicalEffects 1.0
 import Sailfish.Silica 1.0
-import io.thp.pyotherside 1.3
 import 'utils.js' as Utils
 
 Rectangle {
@@ -42,7 +41,7 @@ Rectangle {
         id: background_image
         anchors.fill: parent
         fillMode: Image.PreserveAspectCrop
-        source: "image://python" + path + "/background.png"
+        source: "image://zipimage" + path + "/background.png"
     }
 
     FastBlur {
@@ -68,7 +67,7 @@ Rectangle {
                 width: sourceSize.width * 36 / sourceSize.height
                 height: 36
                 fillMode: Image.PreserveAspectFit
-                source: "image://python" + path + "/logo.png"
+                source: "image://zipimage" + path + "/logo.png"
             }
 
             Label {
@@ -148,7 +147,7 @@ Rectangle {
         Image {
             id: standardPrimary
             visible: primaryTitle != '' || primaryValue != ''
-            source: "image://python" + path + "/strip.png"
+            source: "image://zipimage" + path + "/strip.png"
             width: body.width
             height: sourceSize.width != 0 ? sourceSize.height * body.width / sourceSize.width : standardPrimaryRow.height
 
@@ -176,7 +175,7 @@ Rectangle {
 
                 Image {
                     id: thumbnailImage
-                    source: "image://python" + path + "/thumbnail.png"
+                    source: "image://zipimage" + path + "/thumbnail.png"
                 }
             }
         }
@@ -236,7 +235,7 @@ Rectangle {
         }
 
         Image {
-            source: "image://python" + path + "/footer.png"
+            source: "image://zipimage" + path + "/footer.png"
         }
 
         Column {
@@ -275,67 +274,6 @@ Rectangle {
         }
     }
 
-    Python {
-        id: py
-
-        function format_date_time(isoDt, dateFormat, timeFormat, ignoreTimeZone) {
-            return call_sync("dtformat.format_date_time", [isoDt, dateFormat, timeFormat, ignoreTimeZone]);
-        }
-
-        function format_currency(value, currency) {
-            return call_sync("curformat.format_currency", [value, currency]);
-        }
-
-        function get_pass_changes(pass) {
-            call("updater.get_pass_changes", [pass], function(changes) {
-                function escape(text) {
-                    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-                }
-
-                function update_marks(model, changes) {
-                    for (var field = 0; field < model.count; field++) {
-                        var key = model.get(field).field;
-                        var found = false;
-                        for (var change = 0; change < changes.length; change++) {
-                            if (changes[change] === key) {
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (found) {
-                            if (model.get(field).value.substring(0,3) !== '<u>') {
-                                model.get(field).value = '<u>' + escape(model.get(field).value) + '</u>';
-                            }
-                        }
-                    }
-                }
-
-                function update_primary_marks(changes) {
-                    for (var priChange = 0; priChange < changes.length; priChange++) {
-                        switch (changes[priChange]) {
-                        case boardingFromKey:
-                            if (boardingFromValue.substring(0,3) !== '<u>')
-                                boardingFromValue = '<u>' + escape(boardingFromValue) + '</u>';
-                            break;
-                        case boardingToKey:
-                            if (boardingToValue.substring(0,3) !== '<u>')
-                                boardingToValue = '<u>' + escape(boardingToValue) + '</u>';
-                            break;
-                        case primaryKey:
-                            if (primaryValue.substring(0,3) !== '<u>')
-                                primaryValue = '<u>' + escape(primaryValue) + '</u>';
-                        }
-                    }
-                }
-
-                update_marks(headerFields, changes);
-                update_marks(secondaryFields, changes);
-                update_marks(tertiaryFields, changes);
-                update_primary_marks(changes);
-            });
-        }
-    }
-
     onJsondataChanged: {
         function getFields(pass, style, fieldType, target) {
             var fields = [];
@@ -348,14 +286,54 @@ Rectangle {
                         var ignoreTimeZone = false;
                         if ('ignoresTimeZone' in data)
                             ignoreTimeZone = data.ignoresTimeZone;
-                        data.value = py.format_date_time(data.value, dateFormat, timeFormat, ignoreTimeZone);
+                        data.value = dateTimeFormat.format(data.value, dateFormat, timeFormat, ignoreTimeZone);
                     }
                     else if ("currencyCode" in data) {
                         var currencyCode = data.currencyCode.substring(0,3).toUpperCase();
-                        data.value = py.format_currency(data.value, currencyCode);
+                        data.value = currencyFormat.format(data.value, currencyCode);
                     }
 
                     target.append({ field: String(data.key), title: String(data.label), value: String(data.value) });
+                }
+            }
+        }
+
+        function escape(text) {
+            return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function update_marks(model, changes) {
+            for (var field = 0; field < model.count; field++) {
+                var key = model.get(field).field;
+                var found = false;
+                for (var change = 0; change < changes.length; change++) {
+                    if (changes[change] === key) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) {
+                    if (model.get(field).value.substring(0,3) !== '<u>') {
+                        model.get(field).value = '<u>' + escape(model.get(field).value) + '</u>';
+                    }
+                }
+            }
+        }
+
+        function update_primary_marks(changes) {
+            for (var priChange = 0; priChange < changes.length; priChange++) {
+                switch (changes[priChange]) {
+                case boardingFromKey:
+                    if (boardingFromValue.substring(0,3) !== '<u>')
+                        boardingFromValue = '<u>' + escape(boardingFromValue) + '</u>';
+                    break;
+                case boardingToKey:
+                    if (boardingToValue.substring(0,3) !== '<u>')
+                        boardingToValue = '<u>' + escape(boardingToValue) + '</u>';
+                    break;
+                case primaryKey:
+                    if (primaryValue.substring(0,3) !== '<u>')
+                        primaryValue = '<u>' + escape(primaryValue) + '</u>';
                 }
             }
         }
@@ -405,7 +383,11 @@ Rectangle {
             getFields(pass, style, 'secondaryFields', secondaryFields);
             getFields(pass, style, 'auxiliaryFields', tertiaryFields);
         }
-        py.get_pass_changes(pass);
+        var changes = passDB.getPassChanges(pass.passTypeIdentifier + '/' + pass.serialNumber);
+        update_marks(headerFields, changes);
+        update_marks(secondaryFields, changes);
+        update_marks(tertiaryFields, changes);
+        update_primary_marks(changes);
         if (!('barcodes' in pass)) {
             pass.barcodes = [];
             if ('barcode' in pass) {

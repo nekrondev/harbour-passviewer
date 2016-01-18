@@ -8,6 +8,11 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Mon Jan 18 2016 Christof Bürgi <christof@buergi.lugs.ch> 0.10-1
+- Python code replaced by C++ code
+- Inefficient notification handling rewritten
+- Russian translation added (thanks to mentaljam)
+
 * Mon Dec 21 2015 Christof Bürgi <christof@buergi.lugs.ch> 0.9-1
 - Fixed Barcodes with special characters
 - App is now more forgiving towards faulty passes

@@ -1,6 +1,5 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import io.thp.pyotherside 1.3
 
 Page {
     id: page
@@ -36,7 +35,7 @@ Page {
                 text: qsTr("Create Calendar Entry")
                 enabled: pass.item.relevantDate !== ""
                 onClicked: {
-                    py.create_calendar_entry(name, pass.item.relevantDate);
+                    passHandler.createCalendarEntry(name, pass.item.relevantDate);
                 }
             }
 
@@ -44,7 +43,7 @@ Page {
                 text: qsTr("Update")
                 enabled: updateable
                 onClicked: {
-                    py.update_pass();
+                    passHandler.updatePass(page.path);
                 }
             }
         }
@@ -65,20 +64,13 @@ Page {
         VerticalScrollDecorator {}
     }
 
-    Python {
-        id: py
-
-        function create_calendar_entry(subject, isoDt) {
-            call("ical.create_calendar_entry", [subject, isoDt], function(status) {
-                if (status === "format")
-                    notificator.errorNotification(qsTr("Format Error"), qsTr("Couldn't recognize date/time format"));
-                if (status === "xdg-open")
-                    notificator.errorNotification(qsTr("Unsupported"), qsTr("Please update your system or install calendar"));
-            });
-        }
-
-        function update_pass() {
-            call("updater.update", [page.path], null);
+    Connections {
+        target: passHandler
+        onCalendarEntryFinished: {
+            if (state === "format")
+                notificator.errorNotification(qsTr("Format Error"), qsTr("Couldn't recognize date/time format"));
+            if (state === "xdg-open")
+                notificator.errorNotification(qsTr("Unsupported"), qsTr("Please update your system or install calendar"));
         }
     }
 }

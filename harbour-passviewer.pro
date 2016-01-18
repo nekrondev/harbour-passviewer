@@ -13,6 +13,7 @@
 TARGET = harbour-passviewer
 
 CONFIG += sailfishapp
+CONFIG += c++11
 
 SOURCES += src/harbour-passviewer.cpp \
     src/zint/qr.c \
@@ -30,7 +31,16 @@ SOURCES += src/harbour-passviewer.cpp \
     src/notificator.cpp \
     src/notificationlist.cpp \
     src/zint/gs1.c \
-    src/zint/code128.c
+    src/zint/code128.c \
+    src/zipfile.cpp \
+    src/pass.cpp \
+    src/zipfileimageprovider.cpp \
+    src/datetimeformat.cpp \
+    src/currencyformat.cpp \
+    src/passhandler.cpp \
+    src/homescanner.cpp \
+    src/passdb.cpp \
+    src/passinfo.cpp
 
 OTHER_FILES += qml/harbour-passviewer.qml \
     qml/cover/CoverPage.qml \
@@ -48,12 +58,6 @@ OTHER_FILES += qml/harbour-passviewer.qml \
     qml/pages/ShowPass.qml \
     qml/lib/Pass.qml \
     qml/lib/utils.js \
-    qml/python/curformat.py \
-    qml/python/dtformat.py \
-    qml/python/ical.py \
-    qml/python/passdb.py \
-    qml/python/updater.py \
-    qml/python/zipreader.py \
     qml/lib/Back.qml
 
 SAILFISHAPP_ICONS = 86x86 108x108 128x128 256x256
@@ -67,8 +71,8 @@ CONFIG += sailfishapp_i18n
 # following TRANSLATIONS line. And also do not forget to
 # modify the localized app name in the the .desktop file.
 TRANSLATIONS += translations/harbour-passviewer-de.ts
-TRANSLATIONS += translations/harbour-passviewer-sv.ts \
-                translations/harbour-passviewer-ru.ts
+TRANSLATIONS += translations/harbour-passviewer-sv.ts
+TRANSLATIONS += translations/harbour-passviewer-ru.ts
 
 HEADERS += \
     src/zint/qr.h \
@@ -87,7 +91,25 @@ HEADERS += \
     src/notificationsproxy.h \
     src/notificator.h \
     src/notificationlist.h \
-    src/zint/gs1.h
+    src/zint/gs1.h \
+    src/zipfile.h \
+    src/pass.h \
+    src/zipfileimageprovider.h \
+    src/datetimeformat.h \
+    src/currencyformat.h \
+    src/passhandler.h \
+    src/homescanner.h \
+    src/passdb.h \
+    src/passinfo.h
 
+QT += network
+QT += sql
 QT += positioning
 QT += dbus
+
+LIBS += -lz
+LIBS += -lbz2
+LIBS += -llzma
+
+DISTFILES += \
+    qml/lib/currencies.json

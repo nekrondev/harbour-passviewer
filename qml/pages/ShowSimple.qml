@@ -36,7 +36,7 @@ Page {
             spacing: Theme.paddingMedium
 
             Image {
-                source: "image://python" + path + "/logo.png"
+                source: "image://zipimage" + path + "/logo.png"
             }
 
             Label {
@@ -68,7 +68,7 @@ Page {
             }
 
             Image {
-                source: "image://python" + path + "/footer.png"
+                source: "image://zipimage" + path + "/footer.png"
             }
 
             Rectangle {

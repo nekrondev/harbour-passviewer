@@ -1,7 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import QtPositioning 5.2
-import io.thp.pyotherside 1.3
 
 
 Page {
@@ -45,7 +44,7 @@ Page {
                 width: 87  // 1.5 times the recommended icon size
                 height: 87
                 anchors.verticalCenter: parent.verticalCenter
-                source: "image://python" + path + "/icon.png"
+                source: "image://zipimage" + path + "/icon.png"
             }
 
             Label {
@@ -73,7 +72,7 @@ Page {
                     text: qsTr("Update")
                     visible: updateable
                     onClicked: {
-                        py.updatePass(path);
+                        passHandler.updatePass(path);
                     }
                 }
 
@@ -82,7 +81,7 @@ Page {
                     onClicked: {
                         var delPath = path;
                         deleteRemorse.execute(entry, qsTr("Deleting"), function(){
-                            py.removePass(delPath);
+                            passHandler.removePass(delPath);
                             for (var entry = 0; entry < passList.count; entry++) {
                                 if (passList.get(entry).path === delPath) {
                                     passList.remove(entry);
@@ -146,82 +145,34 @@ Page {
         onPositionChanged: checkPassList()
     }
 
-    Python {
-        id: py
+    Component.onCompleted: {
+        passList.clear();
+        homeWatcher.scanHome();
+    }
 
-        function scanHome(sdcard, passupdate) {
-            function nameFromData(data, defName) {
-                try {
-                    var styles = ["boardingPass", "coupon", "eventTicket", "storeCard", "generic"];
-                    var style = '';
-                    for (var key = 0; key < styles.length; key++) {
-                        if (styles[key] in data) {
-                            style = styles[key];
-                            break;
-                        }
-                    }
-                    if (style === "boardingPass")
-                        return data.boardingPass.primaryFields[0].value + " → " + data.boardingPass.primaryFields[1].value;
-                    else
-                        return data[style].primaryFields[0].label + " " + data[style].primaryFields[0].value;
-                }
-                catch(e) {
-                    if (defName.substring(defName.length - 7) === ".pkpass")
-                        defName = defName.substring(0, defName.length - 7);
-                    return defName;
-                }
-            }
+    Connections {
+        target: homeWatcher
+        onDirectoryChanged: {
+            homeWatcher.scanHome();
+        }
+        onPassesFound: {
+            var loadList = [];
+            for (var loadpass = 0; loadpass < list.length; loadpass++)
+                loadList.push({name: list[loadpass].name, path: list[loadpass].path, points: list[loadpass].points, jsondata: list[loadpass].jsondata, typeId: list[loadpass].typeId, updateable: list[loadpass].updateable});
+            loadList.sort(comparePasses);
+            busy.running = false;
+            if (loadList.length > 0) {
+                page.updatePassList(loadList);
+                page.checkPassList(true);
+                if (settingsStore.checkTime)
+                    checkTimer.start();
 
-            checkTimer.stop();
-            if (sdcard === undefined)
-                sdcard = !busy.running;
-            call("zipreader.scan_home", [sdcard], function(answers) {
-                var directories = answers[0];
-                var passes = answers[1];
-                // set directories on watchlist
-                homeWatcher.updatePaths(directories);
-                // handle the passes
-                var loadlist = [];
-                for (var pass = 0; pass < passes.length; pass++) {
-                    try {
-                        var current = passes[pass];
-                        // get proper names
-                        var data = undefined;
-                        var updateable = false;
-                        try {
-                            data = JSON.parse(current.data);
-                            updateable = "webServiceURL" in data && "passTypeIdentifier" in data && "serialNumber" in data && "authenticationToken" in data;
-                        }
-                        catch(e) {
-                            continue;
-                        }
-                        var name = nameFromData(data, current.name);
-                        // and the pass type id
-                        var typeId = "";
-                        try {
-                            typeId = data.passTypeIdentifier;
-                        }
-                        catch(e) {
-                            continue;
-                        }
-                        loadlist[loadlist.length] = {name: name, path: current.path, points: -1, jsondata: current.data, typeId: typeId, updateable: updateable};
-                    }
-                    catch(e) {}
-                }
-                loadlist.sort(page.comparePasses);
-                if (loadlist.length > 0 || sdcard) {
-                    busy.running = false;
-                    page.updatePassList(loadlist);
-                    page.checkPassList(true);
-                    if (settingsStore.checkTime)
-                        checkTimer.start();
-                }
-                if (passupdate === true) {
+                if (update) {
                     notificator.errorNotification(qsTr("pass update successful"), "");
                     if (pageStack.depth > 1) {
                         var next = pageStack.nextPage();
-                        for (var thispass = 0; thispass < loadlist.length; thispass++) {
-                            var entry = loadlist[thispass];
+                        for (var thispass = 0; thispass < loadList.length; thispass++) {
+                            var entry = loadList[thispass];
                             if (entry.path === next.path) {
                                 var properties = { name: entry.name, path: entry.path, jsondata: entry.jsondata, updateable: entry.updateable };
                                 pageStack.pop(page, PageStackAction.Immediate);
@@ -232,52 +183,7 @@ Page {
                         }
                     }
                 }
-                if (sdcard === false)
-                    scanHome(true);
-            });
-        }
-
-        function removePass(path) {
-            call("zipreader.remove_pass", [path], null);
-        }
-
-        function updatePass(path) {
-            call("updater.update", [path], null);
-        }
-
-        Component.onCompleted: {
-            passList.clear();
-            addImportPath(Qt.resolvedUrl('../python'));
-            importModule('zipreader', function() {
-                scanHome();
-            });
-            importModule('dtformat', null);
-            importModule('curformat', null);
-            importModule('ical', null);
-            importModule('updater', null);
-
-            setHandler('update', function(msg) {
-                switch (msg) {
-                case "not updateable":
-                    notificator.errorNotification(qsTr("pass not updateable"), "");
-                    break;
-                case "no new version":
-                    notificator.errorNotification(qsTr("no new version for pass"), "");
-                    break;
-                case "update failed":
-                    notificator.errorNotification(qsTr("pass update failed"), "");
-                    break;
-                case "ok":
-                    scanHome(true, true);
-                }
-            });
-        }
-    }
-
-    Connections {
-        target: homeWatcher
-        onDirectoryChanged: {
-            py.scanHome();
+            }
         }
     }
 
@@ -302,6 +208,25 @@ Page {
                     pageStack.pushAttached(Qt.resolvedUrl("ShowBack.qml"), properties);
                     appWindow.activate();
                 }
+            }
+        }
+    }
+
+    Connections {
+        target: passHandler
+        onUpdateFinished: {
+            switch (state) {
+            case "not updateable":
+                notificator.errorNotification(qsTr("pass not updateable"), "");
+                break;
+            case "no new version":
+                notificator.errorNotification(qsTr("no new version for pass"), "");
+                break;
+            case "update failed":
+                notificator.errorNotification(qsTr("pass update failed"), "");
+                break;
+            case "ok":
+                homeWatcher.scanHome(true);
             }
         }
     }
@@ -409,7 +334,7 @@ Page {
             }
         }
         if (passList.count > 0 && passList.get(0).points >= 0) {
-            topIcon = "image://python" + passList.get(0).path + "/icon.png";
+            topIcon = "image://zipimage" + passList.get(0).path + "/icon.png";
             topPath = passList.get(0).path;
             topData = passList.get(0).jsondata;
         }

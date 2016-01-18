@@ -8,7 +8,6 @@ Notificator::Notificator(QObject *parent) :
 {
     qDBusRegisterMetaType<NotificationInfo>();
     qDBusRegisterMetaType<NotificationList>();
-    clearNotifications();
     connect(&m_notifications, &org::freedesktop::Notifications::ActionInvoked, this, &Notificator::handleAction);
 }
 
@@ -21,7 +20,6 @@ void Notificator::addNotification(QString path, QString text) {
     actions.append("default");
     actions.append("");
     QVariantHash hints;
-    hints.insert("x-nemo-user-removable", false);
     hints.insert("x-nemo-icon", "harbour-passviewer");
     uint replaceUid = 0;
     if (m_entries.contains(path))
@@ -45,19 +43,10 @@ void Notificator::handleAction(uint id, const QString &action_key) {
 }
 
 void Notificator::clearNotifications() {
-    QDBusPendingReply<NotificationList> listReply = m_notifications.GetNotifications("harbour-passviewer");
-    listReply.waitForFinished();
-    if (listReply.isValid()) {
-        for (int entry = 0; entry < listReply.value().size(); entry++)
-            m_notifications.CloseNotification(listReply.value().at(entry).uid);
-    }
-    listReply = m_notifications.GetNotifications("");
-    listReply.waitForFinished();
-    if (listReply.isValid()) {
-        for (int entry = 0; entry < listReply.value().size(); entry++)
-            if (listReply.value().at(entry).app_name == "harbour-passviewer")
-                m_notifications.CloseNotification(listReply.value().at(entry).uid);
-    }
+    for (auto entry = m_entries.cbegin(); entry != m_entries.cend(); ++entry)
+        m_notifications.CloseNotification(entry.value());
+    m_entries.clear();
+    m_reverseEntries.clear();
 }
 
 void Notificator::errorNotification(QString subject, QString detail) {

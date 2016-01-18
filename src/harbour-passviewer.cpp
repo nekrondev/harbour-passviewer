@@ -9,8 +9,13 @@
 
 #include "settingsstore.h"
 #include "barcodeimageprovider.h"
+#include "zipfileimageprovider.h"
 #include "homewatcher.h"
 #include "notificator.h"
+#include "datetimeformat.h"
+#include "currencyformat.h"
+#include "passhandler.h"
+#include "passdb.h"
 
 
 int main(int argc, char *argv[])
@@ -33,11 +38,25 @@ int main(int argc, char *argv[])
 
     view->engine()->addImageProvider("barcode", new BarcodeImageProvider());
 
+    view->engine()->addImageProvider("zipimage", new ZipFileImageProvider());
+
     HomeWatcher homeWatcher;
     view->rootContext()->setContextProperty("homeWatcher", &homeWatcher);
 
     Notificator notificator;
     view->rootContext()->setContextProperty("notificator", &notificator);
+
+    DateTimeFormat dateTimeFormat;
+    view->rootContext()->setContextProperty("dateTimeFormat", &dateTimeFormat);
+
+    CurrencyFormat currencyFormat;
+    view->rootContext()->setContextProperty("currencyFormat", &currencyFormat);
+
+    PassHandler passHandler;
+    view->rootContext()->setContextProperty("passHandler", &passHandler);
+
+    PassDB passDB;
+    view->rootContext()->setContextProperty("passDB", &passDB);
 
     view->setSource(SailfishApp::pathTo("qml/harbour-passviewer.qml"));
 
