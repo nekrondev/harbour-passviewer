@@ -41,6 +41,7 @@ Requires:
   - libbz2.so.1
   - liblzma.so.5
   - qt5-qtdeclarative-import-positioning >= 5.2
+  - nemo-qml-plugin-notifications-qt5
 
 # All installed files
 Files:

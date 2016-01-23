@@ -2,10 +2,10 @@
 #define NOTIFICATOR_H
 
 #include <QObject>
-#include <QtDBus/QDBusConnection>
-#include <QStringList>
-#include "notificationlist.h"
-#include "notificationsproxy.h"
+#include <QList>
+#include <QVariantList>
+#include <QDBusConnection>
+#include <nemonotifications-qt5/notification.h>
 
 class Notificator : public QObject
 {
@@ -14,23 +14,19 @@ public:
     explicit Notificator(QObject *parent = 0);
     ~Notificator();
 
-    Q_INVOKABLE void addNotification(QString path, QString text);
-    Q_INVOKABLE void removeNotification(QString path);
-    Q_INVOKABLE void errorNotification(QString subject, QString detail);
+    Q_INVOKABLE void addNotification(QString origin, QString summary, QString body);
+    Q_INVOKABLE void removeNotification(QString origin);
+    Q_INVOKABLE void bannerNotification(QString summary, QString body);
 
 signals:
-    void notificationClicked(QString path);
+    void notificationClicked(QString origin);
 
 public slots:
-    void handleAction(uint id, const QString &action_key);
+    void clicked();
 
 private:
-    QMap<QString, uint> m_entries;
-    QMap<uint, QString> m_reverseEntries;
-    org::freedesktop::Notifications m_notifications;
-
-    void clearNotifications();
-
+    //NotificationAdaptor* m_adaptor;
+    QList<Notification*> m_notifications;
 };
 
 #endif // NOTIFICATOR_H

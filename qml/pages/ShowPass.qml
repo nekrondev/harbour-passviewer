@@ -68,9 +68,9 @@ Page {
         target: passHandler
         onCalendarEntryFinished: {
             if (state === "format")
-                notificator.errorNotification(qsTr("Format Error"), qsTr("Couldn't recognize date/time format"));
+                notificator.bannerNotification(qsTr("Format Error"), qsTr("Couldn't recognize date/time format"));
             if (state === "xdg-open")
-                notificator.errorNotification(qsTr("Unsupported"), qsTr("Please update your system or install calendar"));
+                notificator.bannerNotification(qsTr("Unsupported"), qsTr("Please update your system or install calendar"));
         }
     }
 }

@@ -2,56 +2,67 @@
 
 Notificator::Notificator(QObject *parent) :
     QObject(parent),
-    m_entries(),
-    m_reverseEntries(),
-    m_notifications("org.freedesktop.Notifications", "/org/freedesktop/Notifications", QDBusConnection::sessionBus())
+    m_notifications()
 {
-    qDBusRegisterMetaType<NotificationInfo>();
-    qDBusRegisterMetaType<NotificationList>();
-    connect(&m_notifications, &org::freedesktop::Notifications::ActionInvoked, this, &Notificator::handleAction);
+
 }
 
 Notificator::~Notificator() {
-    clearNotifications();
+    for (auto notification = m_notifications.cbegin(); notification != m_notifications.cend(); ++notification)
+        (*notification)->close();
+    qDeleteAll(m_notifications);
 }
 
-void Notificator::addNotification(QString path, QString text) {
-    QStringList actions;
-    actions.append("default");
-    actions.append("");
-    QVariantHash hints;
-    hints.insert("x-nemo-icon", "harbour-passviewer");
-    uint replaceUid = 0;
-    if (m_entries.contains(path))
-        replaceUid = m_entries.value(path);
-    QDBusPendingReply<uint> uidReply = m_notifications.Notify("harbour-passviewer", replaceUid, "", text, "", actions, hints, 0);
-    uidReply.waitForFinished();
-    if (uidReply.isValid()) {
-        m_entries[path] = uidReply.value();
-        m_reverseEntries[uidReply.value()] = path;
+void Notificator::addNotification(QString origin, QString summary, QString body) {
+    Notification* notification = new Notification();
+    notification->setAppName("Pass Viewer");
+    notification->setAppIcon("harbour-passviewer");
+    notification->setOrigin(origin);
+    notification->setSummary(summary);
+    notification->setBody(body);
+    // in this app, we want the notifications permanently until they become irrelevant or the app closes
+    notification->setExpireTimeout(0);
+    notification->setHintValue("resident", true);
+    // this is necessary for click signals to be created
+    notification->setRemoteActions(QVariantList({Notification::remoteAction("default", "", "dummy", "/dummy", "dummy", "dummy")}));
+    // check if we're replaceing an already existing notification
+    for (auto oldNotification = m_notifications.begin(); oldNotification != m_notifications.end(); ++oldNotification) {
+        if ((*oldNotification)->origin() == origin) {
+            notification->setReplacesId((*oldNotification)->replacesId());
+            delete *oldNotification;
+            m_notifications.erase(oldNotification);
+            break;
+        }
+    }
+    notification->publish();
+    m_notifications.append(notification);
+    connect(notification, &Notification::clicked, this, &Notificator::clicked);
+}
+
+void Notificator::removeNotification(QString origin) {
+    for (auto notification = m_notifications.begin(); notification != m_notifications.end();) {
+        if ((*notification)->origin() == origin) {
+            (*notification)->close();
+            delete *notification;
+            notification = m_notifications.erase(notification);
+        }
+        else {
+            ++notification;
+        }
     }
 }
 
-void Notificator::removeNotification(QString path) {
-    m_notifications.CloseNotification(m_entries.value(path));
-    m_reverseEntries.remove(m_entries.value(path));
-    m_entries.remove(path);
+void Notificator::bannerNotification(QString summary, QString body) {
+    Notification notification;
+    notification.setAppName("Pass Viewer");
+    notification.setPreviewSummary(summary);
+    notification.setPreviewBody(body);
+    notification.setHintValue("transient", true);
+    notification.publish();
 }
 
-void Notificator::handleAction(uint id, const QString &action_key) {
-    notificationClicked(m_reverseEntries.value(id));
-}
-
-void Notificator::clearNotifications() {
-    for (auto entry = m_entries.cbegin(); entry != m_entries.cend(); ++entry)
-        m_notifications.CloseNotification(entry.value());
-    m_entries.clear();
-    m_reverseEntries.clear();
-}
-
-void Notificator::errorNotification(QString subject, QString detail) {
-    QVariantHash hints;
-    hints.insert("x-nemo-preview-summary", subject);
-    hints.insert("x-nemo-preview-body", detail);
-    m_notifications.Notify("", 0, "", "", "", QStringList(), hints, -1);
+void Notificator::clicked() {
+    Notification* notification = dynamic_cast<Notification*>(sender());
+    if (notification != NULL)
+        emit notificationClicked(notification->origin());
 }

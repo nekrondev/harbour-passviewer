@@ -168,7 +168,7 @@ Page {
                     checkTimer.start();
 
                 if (update) {
-                    notificator.errorNotification(qsTr("pass update successful"), "");
+                    notificator.bannerNotification(qsTr("pass update successful"), "");
                     if (pageStack.depth > 1) {
                         var next = pageStack.nextPage();
                         for (var thispass = 0; thispass < loadList.length; thispass++) {
@@ -201,7 +201,7 @@ Page {
         target: notificator
         onNotificationClicked: {
             for (var pass = 0; pass < passList.count; pass++) {
-                if (passList.get(pass).path === path) {
+                if (passList.get(pass).path === origin) {
                     var properties = { name: passList.get(pass).name, path: passList.get(pass).path, jsondata: passList.get(pass).jsondata, updateable: passList.get(pass).updateable };
                     pageStack.pop(page, PageStackAction.Immediate);
                     pageStack.push(Qt.resolvedUrl("ShowPass.qml"), properties, PageStackAction.Immediate);
@@ -217,13 +217,13 @@ Page {
         onUpdateFinished: {
             switch (state) {
             case "not updateable":
-                notificator.errorNotification(qsTr("pass not updateable"), "");
+                notificator.bannerNotification(qsTr("pass not updateable"), "");
                 break;
             case "no new version":
-                notificator.errorNotification(qsTr("no new version for pass"), "");
+                notificator.bannerNotification(qsTr("no new version for pass"), "");
                 break;
             case "update failed":
-                notificator.errorNotification(qsTr("pass update failed"), "");
+                notificator.bannerNotification(qsTr("pass update failed"), "");
                 break;
             case "ok":
                 homeWatcher.scanHome(true);
@@ -305,6 +305,7 @@ Page {
                 pass++;
             }
             else {
+                notificator.removeNotification(passList.get(pass).path);
                 passList.remove(pass);
             }
         }
@@ -352,7 +353,7 @@ Page {
         for (var pass = 0; pass < passList.count; pass++) {
             var active = isActive(passList.get(pass).jsondata);
             if (active[0] > -1 && passList.get(pass).points === -1)
-                notificator.addNotification(passList.get(pass).path, passList.get(pass).name);
+                notificator.addNotification(passList.get(pass).path, passList.get(pass).name, '');
             if (active[0] === -1 && passList.get(pass).points > -1)
                 notificator.removeNotification(passList.get(pass).path);
             if (active[0] !== passList.get(pass).points) {

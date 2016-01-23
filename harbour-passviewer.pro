@@ -27,9 +27,6 @@ SOURCES += src/harbour-passviewer.cpp \
     src/barcodeimageprovider.cpp \
     src/homewatcher.cpp \
     src/settingsstore.cpp \
-    src/notificationsproxy.cpp \
-    src/notificator.cpp \
-    src/notificationlist.cpp \
     src/zint/gs1.c \
     src/zint/code128.c \
     src/zipfile.cpp \
@@ -40,7 +37,8 @@ SOURCES += src/harbour-passviewer.cpp \
     src/passhandler.cpp \
     src/homescanner.cpp \
     src/passdb.cpp \
-    src/passinfo.cpp
+    src/passinfo.cpp \
+    src/notificator.cpp
 
 OTHER_FILES += qml/harbour-passviewer.qml \
     qml/cover/CoverPage.qml \
@@ -88,9 +86,6 @@ HEADERS += \
     src/barcodeimageprovider.h \
     src/homewatcher.h \
     src/settingsstore.h \
-    src/notificationsproxy.h \
-    src/notificator.h \
-    src/notificationlist.h \
     src/zint/gs1.h \
     src/zipfile.h \
     src/pass.h \
@@ -100,7 +95,8 @@ HEADERS += \
     src/passhandler.h \
     src/homescanner.h \
     src/passdb.h \
-    src/passinfo.h
+    src/passinfo.h \
+    src/notificator.h
 
 QT += network
 QT += sql
@@ -110,6 +106,7 @@ QT += dbus
 LIBS += -lz
 LIBS += -lbz2
 LIBS += -llzma
+LIBS += -lnemonotifications-qt5
 
 DISTFILES += \
     qml/lib/currencies.json

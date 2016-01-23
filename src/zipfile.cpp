@@ -108,8 +108,6 @@ ZipFile::ZipFile(QString filename) :
         m_valid = true;
 }
 
-#include <QDebug>
-
 QByteArray ZipFile::getFile(QString filename) {
     if (!m_entries.contains(filename))
         return QByteArray();
