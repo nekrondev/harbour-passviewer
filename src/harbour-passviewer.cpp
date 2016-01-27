@@ -6,6 +6,10 @@
 #include <QGuiApplication>
 #include <QQuickView>
 #include <QQmlContext>
+#include <QFile>
+#include <QDir>
+#include <QStandardPaths>
+#include <unistd.h>
 
 #include "settingsstore.h"
 #include "barcodeimageprovider.h"
@@ -20,18 +24,36 @@
 
 int main(int argc, char *argv[])
 {
-    // SailfishApp::main() will display "qml/template.qml", if you need more
-    // control over initialization, you can use:
-    //
-    //   - SailfishApp::application(int, char *[]) to get the QGuiApplication *
-    //   - SailfishApp::createView() to get a new QQuickView * instance
-    //   - SailfishApp::pathTo(QString) to get a QUrl to a resource file
-    //
-    // To display the view, call "show()" (will show fullscreen on device).
-
-    //return SailfishApp::main(argc, argv);
     QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
     QScopedPointer<QQuickView> view(SailfishApp::createView());
+
+    // check if another instance is running
+    QString piddir(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
+    if (!QDir(piddir).exists())
+        QDir().mkpath(piddir);
+    QFile pidfile(piddir + "/pid");
+    if (pidfile.open(QFile::ReadOnly)) {
+        QString pid(pidfile.readLine());
+        pidfile.close();
+        if (!QDir(QString("/proc/") + pid).exists())
+            pidfile.remove();
+    }
+    // yes: signal it
+    if (pidfile.exists()) {
+        if (argc == 2) {
+            QString command("dbus-send --dest=org.harbour.passviewer --type=method_call /org/harbour/passviewer org.harbour.passviewer.openPass string:'");
+            QString passFile(argv[1]);
+            passFile.replace("'", "'\\''");
+            command.append(passFile + "'");
+            system(command.toUtf8());
+        }
+        return 0;
+    }
+    // no: start normally
+    if (pidfile.open(QFile::WriteOnly)) {
+        pidfile.write(QString::number(getpid()).toUtf8());
+        pidfile.close();
+    }
 
     SettingsStore settingsStore;
     view->rootContext()->setContextProperty("settingsStore", &settingsStore);
@@ -61,6 +83,8 @@ int main(int argc, char *argv[])
     view->setSource(SailfishApp::pathTo("qml/harbour-passviewer.qml"));
 
     view->show();
-    return app->exec();
+    int retcode = app->exec();
+    pidfile.remove();
+    return retcode;
 }
 

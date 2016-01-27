@@ -23,8 +23,8 @@ void Notificator::addNotification(QString origin, QString summary, QString body)
     // in this app, we want the notifications permanently until they become irrelevant or the app closes
     notification->setExpireTimeout(0);
     notification->setHintValue("resident", true);
-    // this is necessary for click signals to be created
-    notification->setRemoteActions(QVariantList({Notification::remoteAction("default", "", "dummy", "/dummy", "dummy", "dummy")}));
+    // signal us, when a notification was clicked
+    notification->setRemoteActions(QVariantList({Notification::remoteAction("default", "", "org.harbour.passviewer", "/org/harbour/passviewer", "org.harbour.passviewer", "openPass", QVariantList({origin}))}));
     // check if we're replaceing an already existing notification
     for (auto oldNotification = m_notifications.begin(); oldNotification != m_notifications.end(); ++oldNotification) {
         if ((*oldNotification)->origin() == origin) {
@@ -36,7 +36,6 @@ void Notificator::addNotification(QString origin, QString summary, QString body)
     }
     notification->publish();
     m_notifications.append(notification);
-    connect(notification, &Notification::clicked, this, &Notificator::clicked);
 }
 
 void Notificator::removeNotification(QString origin) {
@@ -59,10 +58,4 @@ void Notificator::bannerNotification(QString summary, QString body) {
     notification.setPreviewBody(body);
     notification.setHintValue("transient", true);
     notification.publish();
-}
-
-void Notificator::clicked() {
-    Notification* notification = dynamic_cast<Notification*>(sender());
-    if (notification != NULL)
-        emit notificationClicked(notification->origin());
 }

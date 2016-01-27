@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import QtPositioning 5.2
+import org.nemomobile.dbus 2.0
 
 
 Page {
@@ -156,6 +157,7 @@ Page {
             homeWatcher.scanHome();
         }
         onPassesFound: {
+            var firstRun = busy.running;
             var loadList = [];
             for (var loadpass = 0; loadpass < list.length; loadpass++)
                 loadList.push({name: list[loadpass].name, path: list[loadpass].path, points: list[loadpass].points, jsondata: list[loadpass].jsondata, typeId: list[loadpass].typeId, updateable: list[loadpass].updateable});
@@ -166,6 +168,9 @@ Page {
                 page.checkPassList(true);
                 if (settingsStore.checkTime)
                     checkTimer.start();
+
+                if (firstRun && Qt.application.arguments.length === 2)
+                    dbus.openPass(Qt.application.arguments[1]);
 
                 if (update) {
                     notificator.bannerNotification(qsTr("pass update successful"), "");
@@ -198,21 +203,6 @@ Page {
     }
 
     Connections {
-        target: notificator
-        onNotificationClicked: {
-            for (var pass = 0; pass < passList.count; pass++) {
-                if (passList.get(pass).path === origin) {
-                    var properties = { name: passList.get(pass).name, path: passList.get(pass).path, jsondata: passList.get(pass).jsondata, updateable: passList.get(pass).updateable };
-                    pageStack.pop(page, PageStackAction.Immediate);
-                    pageStack.push(Qt.resolvedUrl("ShowPass.qml"), properties, PageStackAction.Immediate);
-                    pageStack.pushAttached(Qt.resolvedUrl("ShowBack.qml"), properties);
-                    appWindow.activate();
-                }
-            }
-        }
-    }
-
-    Connections {
         target: passHandler
         onUpdateFinished: {
             switch (state) {
@@ -227,6 +217,29 @@ Page {
                 break;
             case "ok":
                 homeWatcher.scanHome(true);
+            }
+        }
+    }
+
+    DBusAdaptor {
+        id: dbus
+        service: "org.harbour.passviewer"
+        iface: "org.harbour.passviewer"
+        path: "/org/harbour/passviewer"
+        xml: '<interface name="org.harbour.passviewer">' +
+             '  <method name="openPass">' +
+             '    <arg name="origin" type="s" direction="in"/>' +
+             '  </method>' +
+             '</interface>'
+        function openPass(origin) {
+            for (var pass = 0; pass < passList.count; pass++) {
+                if (passList.get(pass).path === origin) {
+                    var properties = { name: passList.get(pass).name, path: passList.get(pass).path, jsondata: passList.get(pass).jsondata, updateable: passList.get(pass).updateable };
+                    pageStack.pop(page, PageStackAction.Immediate);
+                    pageStack.push(Qt.resolvedUrl("ShowPass.qml"), properties, PageStackAction.Immediate);
+                    pageStack.pushAttached(Qt.resolvedUrl("ShowBack.qml"), properties);
+                    appWindow.activate();
+                }
             }
         }
     }

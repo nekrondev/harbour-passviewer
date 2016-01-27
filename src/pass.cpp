@@ -4,6 +4,7 @@ Pass::Pass(QObject *parent) :
     QObject(parent),
     m_isValid(false),
     m_name(),
+    m_filename(),
     m_path(),
     m_points(-1),
     m_jsondata(),

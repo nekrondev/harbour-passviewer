@@ -19,13 +19,10 @@ public:
     Q_INVOKABLE void bannerNotification(QString summary, QString body);
 
 signals:
-    void notificationClicked(QString origin);
 
 public slots:
-    void clicked();
 
 private:
-    //NotificationAdaptor* m_adaptor;
     QList<Notification*> m_notifications;
 };
 
