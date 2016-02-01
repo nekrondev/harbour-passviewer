@@ -32,7 +32,7 @@ Page {
 
         model: ListModel {
             id: passList
-            ListElement { name: ""; filename: ""; path: ""; points: -1; jsondata: ""; typeId: ""; updateable: false }
+            ListElement { name: ""; path: ""; points: -1; jsondata: ""; typeId: ""; updateable: false }
         }
 
         delegate: ListItem {
@@ -41,7 +41,7 @@ Page {
 
             Image {
                 id: passIcon
-                x: Theme.paddingLarge
+                x: Theme.horizontalPageMargin
                 width: 87  // 1.5 times the recommended icon size
                 height: 87
                 anchors.verticalCenter: parent.verticalCenter
@@ -50,9 +50,10 @@ Page {
 
             Label {
                 text: name
-                width: parent.width - passIcon.width - Theme.paddingLarge * 2 - Theme.paddingMedium
+                textFormat: Text.PlainText
+                width: parent.width - passIcon.width - Theme.horizontalPageMargin * 2 - Theme.paddingMedium
                 truncationMode: TruncationMode.Fade
-                color: entry.highlighted ? Theme.highlightColor : points >= 0 ? Theme.primaryColor : Theme.secondaryColor
+                color: entry.highlighted ? Theme.highlightColor : points != -1 ? Theme.primaryColor : Theme.secondaryColor
                 anchors.left: passIcon.right
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.leftMargin: Theme.paddingMedium
@@ -147,47 +148,52 @@ Page {
     }
 
     Component.onCompleted: {
+        // initial pass scan
         passList.clear();
         homeWatcher.scanHome();
     }
 
     Connections {
         target: homeWatcher
-        onDirectoryChanged: {
-            homeWatcher.scanHome();
-        }
         onPassesFound: {
-            var firstRun = busy.running;
-            var loadList = [];
-            for (var loadpass = 0; loadpass < list.length; loadpass++)
-                loadList.push({name: list[loadpass].name, path: list[loadpass].path, points: list[loadpass].points, jsondata: list[loadpass].jsondata, typeId: list[loadpass].typeId, updateable: list[loadpass].updateable});
-            loadList.sort(comparePasses);
-            busy.running = false;
-            if (loadList.length > 0) {
-                page.updatePassList(loadList);
-                page.checkPassList(true);
-                if (settingsStore.checkTime)
-                    checkTimer.start();
-
-                if (firstRun && Qt.application.arguments.length === 2)
-                    dbus.openPass(Qt.application.arguments[1]);
-
-                if (update) {
-                    notificator.bannerNotification(qsTr("pass update successful"), "");
-                    if (pageStack.depth > 1) {
-                        var next = pageStack.nextPage();
-                        for (var thispass = 0; thispass < loadList.length; thispass++) {
-                            var entry = loadList[thispass];
-                            if (entry.path === next.path) {
-                                var properties = { name: entry.name, path: entry.path, jsondata: entry.jsondata, updateable: entry.updateable };
-                                pageStack.pop(page, PageStackAction.Immediate);
-                                pageStack.push(Qt.resolvedUrl("ShowPass.qml"), properties, PageStackAction.Immediate);
-                                pageStack.pushAttached(Qt.resolvedUrl("ShowBack.qml"), properties);
-                                break;
-                            }
-                        }
+            // check for vanished passes...
+            var removePasses = [];
+            for (var oldpass = 0; oldpass < passList.count; oldpass++) {
+                var found = false;
+                for (var newpass = 0; newpass < list.length; newpass++) {
+                    if (passList.get(oldpass).path === list[newpass].path) {
+                        found = true;
+                        break;
                     }
                 }
+                if (!found)
+                    removePasses.push(passList.get(oldpass).path);
+            }
+            // ...and remove them
+            for (var toRemove = 0; toRemove < removePasses.length; toRemove++)
+                removePass(removePasses[toRemove]);
+            // calculate the points sort the list, and update GPS precision
+            var close = false;
+            for (var pass = 0; pass < list.length; pass++) {
+                if (calcPoints(list[pass]))
+                    close = true;
+            }
+            list.sort(comparePasses);
+            if (locator.precise !== close)
+                locator.precise = close;
+            // update the pass list
+            updatePasses(list);
+            // on the first run: stop the busy animation and show the pass called in the CLI (if given)
+            if (busy.running) {
+                busy.running = false;
+                if (Qt.application.arguments.length === 2)
+                    dbus.openPass(Qt.application.arguments[1]);
+            }
+            // report a successful update and redraw the pass, if it's shown
+            if (update) {
+                notificator.bannerNotification(qsTr("pass update successful"), "");
+                if (pageStack.depth > 1)
+                    dbus.openPass(pageStack.nextPage().path);
             }
         }
     }
@@ -223,75 +229,160 @@ Page {
 
     DBusAdaptor {
         id: dbus
-        service: "org.harbour.passviewer"
-        iface: "org.harbour.passviewer"
-        path: "/org/harbour/passviewer"
-        xml: '<interface name="org.harbour.passviewer">' +
+        service: "ch.p2501.harbour_passviewer"
+        iface: "ch.p2501.harbour_passviewer"
+        path: "/ch/p2501/harbour_passviewer"
+        xml: '<interface name="ch.p2501.harbour_passviewer">' +
              '  <method name="openPass">' +
              '    <arg name="origin" type="s" direction="in"/>' +
              '  </method>' +
              '</interface>'
         function openPass(origin) {
+            // bring the app to the foreground
+            appWindow.activate();
+            // get the canonical path
+            origin = passHandler.getCanonicalPath(origin);
+            // look for a matching pass
             for (var pass = 0; pass < passList.count; pass++) {
                 if (passList.get(pass).path === origin) {
+                    // found one: let's show it
                     var properties = { name: passList.get(pass).name, path: passList.get(pass).path, jsondata: passList.get(pass).jsondata, updateable: passList.get(pass).updateable };
                     pageStack.pop(page, PageStackAction.Immediate);
                     pageStack.push(Qt.resolvedUrl("ShowPass.qml"), properties, PageStackAction.Immediate);
                     pageStack.pushAttached(Qt.resolvedUrl("ShowBack.qml"), properties);
-                    appWindow.activate();
                 }
             }
         }
     }
 
-    function isActive(jsondata) {
-        var points = -1;
-        var data = JSON.parse(jsondata);
+    function updatePasses(newpasses) {
+        // inserts, updates or moves the passes in the model
+        var oldpoints = -1;
+        for (var pass = 0; pass < newpasses.length; pass++) {
+            if (pass < passList.count && passList.get(pass).path === newpasses[pass].path) {
+                // update
+                oldpoints = passList.get(pass).points;
+                passList.set(pass, newpasses[pass]);
+            }
+            else {
+                // check if it's further down
+                var moved = false;
+                for(var oldpass = pass + 1; oldpass < passList.count; oldpass++) {
+                    if (passList.get(oldpass).path === newpasses[pass].path) {
+                        // move and update
+                        oldpoints = passList.get(oldpass).points;
+                        passList.move(oldpass, pass, 1);
+                        passList.set(pass, newpasses[pass]);
+                        moved = true;
+                        break;
+                    }
+                }
+                if (!moved)
+                    passList.insert(pass, newpasses[pass]);  // new pass
+            }
+            // update pass notifications
+            if (newpasses[pass].points !== oldpoints) {
+                if (newpasses[pass].points !== -1)
+                    notificator.addNotification(newpasses[pass].path, newpasses[pass].name, '');
+                else
+                    notificator.removeNotification(newpasses[pass].path);
+            }
+        }
+        // if the topmost pass is active, show it on the cover
+        if (passList.count > 1 && passList.get(0).points !== -1) {
+            topIcon = "image://zipimage" + passList.get(0).path + "/icon.png";
+            topName = passList.get(0).name;
+            topPath = passList.get(0).path;
+            topData = passList.get(0).jsondata;
+            topUpdateable = passList.get(0).updateable;
+        }
+        else {
+            topIcon = "";
+            topName = "";
+            topPath = "";
+            topData = "";
+            topUpdateable = "";
+        }
+    }
+
+    function getPass(path) {
+        // gets the pass with the given path
+        for (var pass = 0; pass < passList.count; pass++) {
+            if (passList.get(pass).path === path)
+                return pass;
+        }
+        return null;
+    }
+
+    function removePass(path) {
+        // removes the pass with the given path
+        var pass = getPass(path);
+        if (pass !== null) {
+            notificator.removeNotification(passList.get(pass).path);
+            passList.remove(pass);
+        }
+    }
+
+    function calcPoints(pass) {
+        // calculates the relevancy points of a pass and says whether we're close to target coordinates
+        /* Lower numbers are more relevant, but -1 means "not active".
+           This is because "null" is not allowed in models. */
+        pass.points = -1;
+        var data = JSON.parse(pass.jsondata);
+        var close = false;
         if (settingsStore.checkTime && "relevantDate" in data) {
+            // close to target time?
             try {
                 var targetTime = new Date(data.relevantDate);
             }
             catch(e) {
-                return -1; // faulty pass
+                notificator.removeNotification(pass.path);
+                return false;  // faulty pass
             }
             var now = new Date();
-            var timeDiff = targetTime - now;
+            var timeDiff = targetTime - now;  // time difference in milliseconds
             if (timeDiff >= 0 && timeDiff <= settingsStore.hoursBefore * 3600000) {
-                points = timeDiff / 1000;
+                pass.points = timeDiff / 1000;
             }
             else if (timeDiff < 0 && Math.abs(timeDiff) <= settingsStore.hoursAfter * 3600000) {
-                points = Math.abs(timeDiff) / 1000;
+                pass.points = Math.abs(timeDiff) / 1000;
             }
         }
-        var close = false;
-        if (points < 0 && settingsStore.checkDistance && locator.valid && "locations" in data && locator.position.latitudeValid && locator.position.longitudeValid) {
+        if (pass.points === -1 && settingsStore.checkDistance && "locations" in data && locator.valid && locator.position.latitudeValid && locator.position.longitudeValid) {
+            // close to one of the target destinations?
             var here = locator.position.coordinate;
-            for (var location = 0; location < data.locations.length; location++) {
-                try {
+            try {
+                for (var location = 0; location < data.locations.length; location++) {
                     var there = QtPositioning.coordinate(data.locations[location].latitude, data.locations[location].longitude);
-                    var posDiff = here.distanceTo(there);
+                    var posDiff = here.distanceTo(there);  // distance in meter
                     var maxDistance = settingsStore.maxDistance;
                     if (settingsStore.overrideDistance && "maxDistance" in data)
                         maxDistance = data.maxDistance;
-                    if (posDiff <= maxDistance && (points == -1 || points > posDiff))
-                        points = posDiff + 36000;
+                    if (posDiff <= maxDistance && (pass.points === -1 || pass.points > posDiff))
+                        pass.points = posDiff;
                     if (posDiff <= maxDistance + 1000)
-                        close = true;
+                        close = true;  // not relevant yet, but somewhat close
                 }
-                catch(e) {}
             }
+            catch (e) {
+                notificator.removeNotification(pass.path);
+                return false;  // faulty pass
+            }
+            if (pass.points !== -1)
+                pass.points += 36000; // close to target time is more relevant than close to destination
         }
-        return([points, close]);
+        return close;
     }
 
     function comparePasses(a, b) {
         // sort active passes to the top
-        if (a.points >= 0 && b.points < 0)
+        // "smaller" passes get sorted upwards
+        if (a.points !== -1 && b.points === -1)
             return -1;
-        if (b.points >= 0 && a.points < 0)
+        if (a.points === -1 && b.points !== -1)
             return 1;
-        // if both are active, check who's more active
-        if (a.points > 0 && b.points > 0 && a.points !== b.points)
+        // if both are active, check who's more relevant
+        if (a.points !== b.points)
             return a.points - b.points;
         // group by pass type ID
         if (a.typeId !== b.typeId)
@@ -300,92 +391,19 @@ Page {
         return a.name.localeCompare(b.name);
     }
 
-    function updatePassList(newpasses) {
-        // remove vanished passes and update existing ones
-        var pass = 0;
-        var newpass = 0;
-        while (pass < passList.count) {
-            var path = passList.get(pass).path;
-            var found = false;
-            for (newpass = 0; newpass < newpasses.length; newpass++) {
-                if (newpasses[newpass].path === path) {
-                    passList.get(pass).jsondata = newpasses[newpass].jsondata;
-                    found = true;
-                    break;
-                }
-            }
-            if (found) {
-                pass++;
-            }
-            else {
-                notificator.removeNotification(passList.get(pass).path);
-                passList.remove(pass);
-            }
-        }
-        // add new passes (and change ordering if necessary)
-        for (newpass = 0; newpass < newpasses.length; newpass++) {
-            var newpath = newpasses[newpass].path;
-            try {
-                if (passList.get(newpass).path === newpath)
-                    continue;
-            }
-            catch(e) {}
-            // look if it's somewhere else
-            var isat = -1;
-            for (pass = 0; pass < passList.count; pass++) {
-                if (passList.get(pass).path === newpath) {
-                    isat = pass;
-                    break;
-                }
-            }
-            if (isat !== -1) {
-                // yes: move it here
-                passList.move(isat, newpass, 1);
-            }
-            else {
-                // no: insert it here
-                passList.insert(newpass, newpasses[newpass]);
-            }
-        }
-        if (passList.count > 0 && passList.get(0).points >= 0) {
-            topIcon = "image://zipimage" + passList.get(0).path + "/icon.png";
-            topPath = passList.get(0).path;
-            topData = passList.get(0).jsondata;
-        }
-        else {
-            topIcon = "";
-            topPath = "";
-            topData = "";
-        }
-    }
-
-    function checkPassList(force) {
-        // check if passes have been activated or deactivated
-        var changed = false;
+    function checkPassList() {
+        // recalculates all relevancy points, reorders the list and updates GPS precision
+        var passes = [];
         var close = false;
         for (var pass = 0; pass < passList.count; pass++) {
-            var active = isActive(passList.get(pass).jsondata);
-            if (active[0] > -1 && passList.get(pass).points === -1)
-                notificator.addNotification(passList.get(pass).path, passList.get(pass).name, '');
-            if (active[0] === -1 && passList.get(pass).points > -1)
-                notificator.removeNotification(passList.get(pass).path);
-            if (active[0] !== passList.get(pass).points) {
-                passList.setProperty(pass, "points", active[0]);
-                changed = true;
-            }
-            if (active[1])
+            var thisPass = passList.get(pass);
+            if (calcPoints(thisPass))
                 close = true;
+            passes.push(thisPass);
         }
-        if (changed || force) {
-            // reorder passes
-            var passes = [];
-            for (pass = 0; pass < passList.count; pass++) {
-                passes[passes.length] = passList.get(pass);
-            }
-            passes.sort(comparePasses);
-            updatePassList(passes);
-        }
+        passes.sort(comparePasses);
         if (locator.precise !== close)
             locator.precise = close;
+        updatePasses(passes);
     }
 }

@@ -6,8 +6,10 @@ ApplicationWindow
 {
     id: appWindow
     property string topIcon: ""
+    property string topName: ""
     property string topPath: ""
     property string topData: ""
+    property bool topUpdateable: false
     initialPage: Component { FirstPage { } }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
 }

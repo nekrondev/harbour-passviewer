@@ -8,11 +8,19 @@ PassHandler::PassHandler(QObject *parent) :
     QObject::connect(&m_network, &QNetworkAccessManager::finished, this, &PassHandler::replyFinished);
 }
 
+QString PassHandler::getCanonicalPath(QString path) {
+    QFileInfo pass(path);
+    if (pass.isFile())
+        return pass.canonicalFilePath();
+    return path;
+}
+
 void PassHandler::removePass(QString path) {
     QFile(path).remove();
 }
 
 void PassHandler::updatePass(QString path) {
+    // get the infos needed for the update
     ZipFile passFile(path);
     if (!passFile.isValid()) {
         emit updateFinished("not updateable");
@@ -27,6 +35,7 @@ void PassHandler::updatePass(QString path) {
         emit updateFinished("not updateable");
         return;
     }
+    // build the HTTP request
     QNetworkRequest request(QUrl(baseURL + "/v1/passes/" + passID + "/" + serial));
     request.setRawHeader("Authorization", QByteArray("ApplePass ") + auth.toUtf8());
     PassDB db;
@@ -34,24 +43,29 @@ void PassHandler::updatePass(QString path) {
     if (!info->updated().isNull())
         request.setRawHeader("If-Modified-Since", m_rfc2616(info->updated()));
     delete info;
+    // send the request
     QNetworkReply* reply = m_network.get(request);
     m_replies.insert(reply, path);
 }
 
 void PassHandler::replyFinished(QNetworkReply *reply) {
+    // check what this is an answer to
     QString path(m_replies.value(reply));
     if (path == "")
         return;
     m_replies.remove(reply);
     reply->deleteLater();
+    // Code 304 -> not modified since last update
     if (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 304) {
         emit updateFinished("no new version");
         return;
     }
+    // anything else is a network error
     if (reply->error() != QNetworkReply::NoError) {
         emit updateFinished("update failed");
         return;
     }
+    // load the reply into a temporary file
     QTemporaryFile tmp;
     QString id;
     if (tmp.open()) {
@@ -59,19 +73,23 @@ void PassHandler::replyFinished(QNetworkReply *reply) {
         tmp.seek(0);
         ZipFile zip(tmp.fileName());
         if (!zip.isValid())
-            tmp.close();
+            tmp.close();  // invalid reply
+        // get the ID for the pass DB
         QJsonDocument json(QJsonDocument::fromJson(zip.getTextFile("pass.json").toUtf8()));
         id = json.object().value("passTypeIdentifier").toString() + "/" + json.object().value("serialNumber").toString();
     }
     if (tmp.isOpen()) {
+        // get changes to former version
         QFile passFile(path);
         QStringList changes;
         if (passFile.exists())
             changes = getChanges(path, tmp.fileName());
         tmp.seek(0);
+        // overwrite former version
         if (passFile.open(QFile::WriteOnly)) {
             m_copyFile(passFile, tmp);
             passFile.close();
+            // update pass DB
             PassDB db;
             PassInfo* info = new PassInfo(id, QDateTime::currentDateTime(), changes);
             db.setPassInfo(info);
@@ -89,6 +107,7 @@ void PassHandler::replyFinished(QNetworkReply *reply) {
 }
 
 QMap<QString, QVariant> PassHandler::getFields(QString filename) {
+    // get all header, primary, secondary and auxiliary fields from a pass
     QMap<QString, QVariant> fields;
     ZipFile zip(filename);
     if (!zip.isValid())
@@ -110,6 +129,7 @@ QMap<QString, QVariant> PassHandler::getFields(QString filename) {
 }
 
 QStringList PassHandler::getChanges(QString oldfile, QString newfile) {
+    // compare the fields from two passes
     QStringList changed;
     QMap<QString, QVariant> oldfields(getFields(oldfile));
     QMap<QString, QVariant> newfields(getFields(newfile));
@@ -121,11 +141,13 @@ QStringList PassHandler::getChanges(QString oldfile, QString newfile) {
 }
 
 void PassHandler::createCalendarEntry(QString subject, QString isoDateTime) {
+    // get the datetime
     QDateTime dateTime(QDateTime::fromString(isoDateTime, Qt::ISODate));
     if (!dateTime.isValid()) {
         emit calendarEntryFinished("format");
         return;
     }
+    // create a temporary iCal file
     QString icaldir(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
     if (!QDir(icaldir).exists())
         QDir().mkpath(icaldir);
@@ -144,6 +166,7 @@ void PassHandler::createCalendarEntry(QString subject, QString isoDateTime) {
         ical.write("END:VEVENT\r\n");
         ical.write("END:VCALENDAR\r\n");
         ical.close();
+        // open the file with xdg-open
         QProcess* xdg = new QProcess();
         connect(xdg, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(processFinished(int,QProcess::ExitStatus)));
         connect(xdg, SIGNAL(finished(int,QProcess::ExitStatus)), xdg, SLOT(deleteLater()));
@@ -152,6 +175,7 @@ void PassHandler::createCalendarEntry(QString subject, QString isoDateTime) {
 }
 
 void PassHandler::processFinished(int exitCode, QProcess::ExitStatus exitStatus) {
+    // check whether xdg-open on the iCal file worked
     if (exitCode != 0 || exitStatus == QProcess::CrashExit)
         emit calendarEntryFinished("xdg-open");
     else
@@ -164,6 +188,7 @@ void PassHandler::m_copyFile(QIODevice &to, QIODevice &from) {
 }
 
 QByteArray PassHandler::m_rfc2616(QDateTime datetime) {
+    // RFC2616 is similar to RFC2822, but requires the weekday, requires UTC, and the timezone must be written as "GMT"
     QString dateString(datetime.toUTC().toString(Qt::RFC2822Date));
     QStringList weekdays({"NULL", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"});
     dateString.prepend(weekdays.at(datetime.date().dayOfWeek()) + ", ");

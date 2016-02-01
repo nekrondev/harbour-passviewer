@@ -12,6 +12,7 @@ QPixmap BarcodeImageProvider::requestPixmap(const QString &id, QSize *size, cons
     QPixmap empty;
     size->setWidth(0);
     size->setHeight(0);
+    // get the barcode type, encoding and content from the ID
     int firstslash = id.indexOf('/');
     int secondslash = id.indexOf('/', firstslash + 1);
     if (firstslash == -1 || secondslash == -1)
@@ -20,10 +21,12 @@ QPixmap BarcodeImageProvider::requestPixmap(const QString &id, QSize *size, cons
     codec = QTextCodec::codecForName(id.mid(firstslash + 1, secondslash - firstslash - 1).toUtf8());
     if (!codec)
         return empty;
+    // decode the (Base64 encoded UTF-8) barcode content
+    content = QByteArray::fromBase64(id.mid(secondslash + 1).toLatin1());
+    // Code128 requres UTF-8. For everything else: convert content to the desired encoding.
     if (type != "code128")
-        content = codec->fromUnicode(QString(QByteArray::fromBase64(id.mid(secondslash + 1).toLatin1())));
-    else
-        content = QByteArray::fromBase64(id.mid(secondslash + 1).toLatin1());
+        content = codec->fromUnicode(QString(content));
+    // build the request
     zint_symbol* symbol = ZBarcode_Create();
     if (!symbol)
         return empty;
@@ -44,10 +47,12 @@ QPixmap BarcodeImageProvider::requestPixmap(const QString &id, QSize *size, cons
         ZBarcode_Delete(symbol);
         return empty;
     }
+    // create the barcode
     if (ZBarcode_Encode_and_Buffer(symbol, (unsigned char*)content.data(), content.size(), 0) != 0) {
         ZBarcode_Delete(symbol);
         return empty;
     }
+    // convert barcode to QImage for QPixmap
     QImage barcode(symbol->bitmap_width, symbol->bitmap_height, QImage::Format_RGB32);
     size->setWidth(symbol->bitmap_width);
     size->setHeight(symbol->bitmap_height);

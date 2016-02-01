@@ -72,6 +72,7 @@ Rectangle {
 
             Label {
                 text: logoText
+                textFormat: Text.PlainText
                 color: textColor
                 font.pixelSize: Theme.fontSizeSmall
                 width: body.width - logo.width - headerFieldsRow.width - parent.spacing * 2
@@ -91,12 +92,14 @@ Rectangle {
 
                         Label {
                             text: title
+                            textFormat: Text.PlainText
                             color: labelColor
                             font.pixelSize: Theme.fontSizeTiny
                         }
 
                         Label {
                             text: value
+                            textFormat: Text.StyledText
                             color: textColor
                             font.pixelSize: Theme.fontSizeTiny
                         }
@@ -114,12 +117,14 @@ Rectangle {
 
                 Label {
                     text: boardingFromTitle
+                    textFormat: Text.PlainText
                     color: labelColor
                     font.pixelSize: Theme.fontSizeExtraSmall
                 }
 
                 Label {
                     text: boardingFromValue
+                    textFormat: Text.StyledText
                     color: textColor
                     font.pixelSize: text.length <= 3 ? Theme.fontSizeHuge : Theme.fontSizeLarge
                 }
@@ -131,6 +136,7 @@ Rectangle {
                 Label {
                     anchors.right: parent.right
                     text: boardingToTitle
+                    textFormat: Text.PlainText
                     color: labelColor
                     font.pixelSize: Theme.fontSizeExtraSmall
                 }
@@ -138,6 +144,7 @@ Rectangle {
                 Label {
                     anchors.right: parent.right
                     text: boardingToValue
+                    textFormat: Text.StyledText
                     color: textColor
                     font.pixelSize: text.length <= 3 ? Theme.fontSizeHuge : Theme.fontSizeLarge
                 }
@@ -160,6 +167,7 @@ Rectangle {
 
                     Label {
                         text: primaryTitle
+                        textFormat: Text.PlainText
                         color: labelColor
                         font.pixelSize: Theme.fontSizeExtraSmall
                     }
@@ -167,6 +175,7 @@ Rectangle {
                     Label {
                         width: parent.width
                         text: primaryValue
+                        textFormat: Text.StyledText
                         color: textColor
                         font.pixelSize: Theme.fontSizeLarge
                         wrapMode: Text.Wrap
@@ -194,12 +203,14 @@ Rectangle {
 
                     Label {
                         text: title
+                        textFormat: Text.PlainText
                         color: labelColor
                         font.pixelSize: Theme.fontSizeExtraSmall
                     }
 
                     Label {
                         text: value
+                        textFormat: Text.StyledText
                         color: textColor
                         font.pixelSize: Theme.fontSizeSmall
                     }
@@ -221,12 +232,14 @@ Rectangle {
 
                     Label {
                         text: title
+                        textFormat: Text.PlainText
                         color: labelColor
                         font.pixelSize: Theme.fontSizeExtraSmall
                     }
 
                     Label {
                         text: value
+                        textFormat: Text.StyledText
                         color: textColor
                         font.pixelSize: Theme.fontSizeSmall
                     }
@@ -267,6 +280,7 @@ Rectangle {
 
             Label {
                 text: barcodeAltText
+                textFormat: Text.PlainText
                 color: textColor
                 font.pixelSize: Theme.fontSizeTiny
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -275,34 +289,8 @@ Rectangle {
     }
 
     onJsondataChanged: {
-        function getFields(pass, style, fieldType, target) {
-            var fields = [];
-            if (fieldType in pass[style]) {
-                for (var field = 0; field < pass[style][fieldType].length; field++) {
-                    var data = pass[style][fieldType][field];
-                    if ("dateStyle" in data && "timeStyle" in data) {
-                        var dateFormat = data.dateStyle.substring(11).toLowerCase();
-                        var timeFormat = data.timeStyle.substring(11).toLowerCase();
-                        var ignoreTimeZone = false;
-                        if ('ignoresTimeZone' in data)
-                            ignoreTimeZone = data.ignoresTimeZone;
-                        data.value = dateTimeFormat.format(data.value, dateFormat, timeFormat, ignoreTimeZone);
-                    }
-                    else if ("currencyCode" in data) {
-                        var currencyCode = data.currencyCode.substring(0,3).toUpperCase();
-                        data.value = currencyFormat.format(data.value, currencyCode);
-                    }
-
-                    target.append({ field: String(data.key), title: String(data.label), value: String(data.value) });
-                }
-            }
-        }
-
-        function escape(text) {
-            return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-        }
-
         function update_marks(model, changes) {
+            // underline updated fields
             for (var field = 0; field < model.count; field++) {
                 var key = model.get(field).field;
                 var found = false;
@@ -313,31 +301,33 @@ Rectangle {
                     }
                 }
                 if (found) {
-                    if (model.get(field).value.substring(0,3) !== '<u>') {
-                        model.get(field).value = '<u>' + escape(model.get(field).value) + '</u>';
+                    if (model.get(field).value.substring(0,3) !== '<u>') {  // avoid double marks
+                        model.get(field).value = '<u>' + model.get(field).value + '</u>';
                     }
                 }
             }
         }
 
         function update_primary_marks(changes) {
+            // underline updated primary fields
             for (var priChange = 0; priChange < changes.length; priChange++) {
                 switch (changes[priChange]) {
                 case boardingFromKey:
                     if (boardingFromValue.substring(0,3) !== '<u>')
-                        boardingFromValue = '<u>' + escape(boardingFromValue) + '</u>';
+                        boardingFromValue = '<u>' + boardingFromValue + '</u>';
                     break;
                 case boardingToKey:
                     if (boardingToValue.substring(0,3) !== '<u>')
-                        boardingToValue = '<u>' + escape(boardingToValue) + '</u>';
+                        boardingToValue = '<u>' + boardingToValue + '</u>';
                     break;
                 case primaryKey:
                     if (primaryValue.substring(0,3) !== '<u>')
-                        primaryValue = '<u>' + escape(primaryValue) + '</u>';
+                        primaryValue = '<u>' + primaryValue + '</u>';
                 }
             }
         }
 
+        // get general pass data
         var pass = JSON.parse(jsondata);
         if ('relevantDate' in pass)
             relevantDate = pass.relevantDate;
@@ -359,41 +349,42 @@ Rectangle {
                 break;
             }
         }
+        // complete undefined fields
         Utils.checkFields(pass, style);
-        headerFields.clear();
-        getFields(pass, style, 'headerFields', headerFields)
+        // set field contents
+        Utils.setFields(pass, style, 'headerFields', headerFields, dateTimeFormat, currencyFormat);
         if (style === "boardingPass") {
             boardingFromKey = pass.boardingPass.primaryFields[0].key;
             boardingFromTitle = pass.boardingPass.primaryFields[0].label;
-            boardingFromValue = pass.boardingPass.primaryFields[0].value;
+            boardingFromValue = Utils.htmlescape(pass.boardingPass.primaryFields[0].value);
             boardingToKey = pass.boardingPass.primaryFields[1].key;
             boardingToTitle = pass.boardingPass.primaryFields[1].label;
-            boardingToValue = pass.boardingPass.primaryFields[1].value;
-            secondaryFields.clear();
-            tertiaryFields.clear();
-            getFields(pass, style, 'auxiliaryFields', secondaryFields);
-            getFields(pass, style, 'secondaryFields', tertiaryFields);
+            boardingToValue = Utils.htmlescape(pass.boardingPass.primaryFields[1].value);
+            Utils.setFields(pass, style, 'auxiliaryFields', secondaryFields, dateTimeFormat, currencyFormat);
+            Utils.setFields(pass, style, 'secondaryFields', tertiaryFields, dateTimeFormat, currencyFormat);
         }
         else {
             primaryKey = pass[style].primaryFields[0].key;
             primaryTitle = pass[style].primaryFields[0].label;
-            primaryValue = pass[style].primaryFields[0].value;
-            secondaryFields.clear();
-            tertiaryFields.clear();
-            getFields(pass, style, 'secondaryFields', secondaryFields);
-            getFields(pass, style, 'auxiliaryFields', tertiaryFields);
+            primaryValue = Utils.htmlescape(pass[style].primaryFields[0].value);
+            Utils.setFields(pass, style, 'secondaryFields', secondaryFields, dateTimeFormat, currencyFormat);
+            Utils.setFields(pass, style, 'auxiliaryFields', tertiaryFields, dateTimeFormat, currencyFormat);
         }
+        // check for changes
         var changes = passDB.getPassChanges(pass.passTypeIdentifier + '/' + pass.serialNumber);
+        // underline changed fields
         update_marks(headerFields, changes);
         update_marks(secondaryFields, changes);
         update_marks(tertiaryFields, changes);
         update_primary_marks(changes);
+        // look for barcodes
         if (!('barcodes' in pass)) {
             pass.barcodes = [];
             if ('barcode' in pass) {
                 pass.barcodes.push(pass.barcode);
             }
         }
+        // paint the first useable barcode
         var validCode = false;
         for (var barcode = 0; barcode <= pass.barcodes.length; barcode++) {
             switch(pass.barcodes[barcode].format.substring(15).toLowerCase()) {

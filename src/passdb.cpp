@@ -6,6 +6,7 @@ PassDB::PassDB(QObject *parent) :
 {
     if (m_db.databaseName().endsWith("/passes.db"))
         return;
+    // if we don't have a connection yet, create it
     m_db = QSqlDatabase::addDatabase("QSQLITE");
     QString dbdir(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
     if (!QDir(dbdir).exists())
@@ -13,6 +14,7 @@ PassDB::PassDB(QObject *parent) :
     m_db.setDatabaseName(dbdir + "/passes.db");
     m_db.open();
     QSqlQuery("PRAGMA foreign_keys = ON", m_db);
+    // create the tables, if they don't exist yet
     QSqlQuery checkTable(m_db);
     checkTable.prepare("select count(*) from sqlite_master where type='table' and name = :table");
     QStringList tables({"passes", "changes"});
@@ -62,7 +64,7 @@ PassInfo* PassDB::getPassInfo(QString id) {
 }
 
 QStringList PassDB::getPassChanges(QString id) {
-    // conveniance method for JavaScript
+    // get just the changes, and remove them from the DB
     PassInfo* info = getPassInfo(id);
     QStringList changes = info->changes();
     info->setChanges(QStringList());

@@ -65,21 +65,25 @@ ZipFile::ZipFile(QString filename) :
 {
     if (!m_file.open(QFile::ReadOnly))
         return;
+    // search the "end of directory" entry
     m_file.seek(m_file.size() - 1024);
     QByteArray trailer(m_file.read(1024));
     qint64 pos_eod = trailer.lastIndexOf("PK\x05\x06");
     if (pos_eod == -1)
         return;
     pos_eod += m_file.size() - 1024;
+    // read the "end of directory" entry (with the directory position)
     m_file.seek(pos_eod);
     QByteArray eodString(m_file.read(sizeof(Eod)));
     if (eodString.size() != sizeof(Eod))
         return;
     Eod* eod = (Eod*)eodString.data();
+    // read the directory
     quint32 dirPos = qFromLittleEndian<quint32>(eod->directoryPos);
     DirEntry* entry = NULL;
     QTextCodec* cp437 = QTextCodec::codecForName("cp437");
     while(dirPos + sizeof(DirEntry) <= m_file.size()) {
+        // read the directory entry
         m_file.seek(dirPos);
         QByteArray entryString(m_file.read(sizeof(DirEntry)));
         if (entryString.size() != sizeof(DirEntry))
@@ -88,8 +92,10 @@ ZipFile::ZipFile(QString filename) :
         if (QByteArray(entry->signature, 4) != "PK\x01\x02")
             break;
         dirPos += sizeof(DirEntry) + qFromLittleEndian<quint16>(entry->nameLength) + qFromLittleEndian<quint16>(entry->extraLength) + qFromLittleEndian<quint16>(entry->commentLength);
+        // ignore entries with unsupported compression methods
         quint16 compression = qFromLittleEndian<quint16>(entry->compression);
         if (compression == 0 || compression == 8 || compression == 12 || compression == 14) {
+            // get the info
             QByteArray rawname(m_file.read(qFromLittleEndian<quint16>(entry->nameLength)));
             QString name;
             if (cp437 != NULL && (qFromLittleEndian<quint16>(entry->gpbf) & 0x0800) == 0)
@@ -113,15 +119,18 @@ QByteArray ZipFile::getFile(QString filename) {
         return QByteArray();
     if (m_entries.value(filename).at(2) == 0)  // empty file
         return QByteArray();
+    // get the ZIP file header
     m_file.seek(m_entries.value(filename).at(1));
     QByteArray headerString(m_file.read(sizeof(FileHeader)));
     if (headerString.size() != sizeof(FileHeader))
         return QByteArray();
     FileHeader* header = (FileHeader*)headerString.data();
+    // read the actual, compressed file
     m_file.seek(m_entries.value(filename).at(1) + sizeof(FileHeader) + qFromLittleEndian<quint16>(header->nameLength) + qFromLittleEndian<quint16>(header->extraLength));
     QByteArray compressed(m_file.read(m_entries.value(filename).at(2)));
     if (compressed.size() != m_entries.value(filename).at(2))
         return QByteArray();
+    // decompress (if it's compressed)
     switch (m_entries.value(filename).at(0)) {
     case 0:  // uncompressed
         return compressed;
@@ -172,6 +181,7 @@ QByteArray ZipFile::getFile(QString filename) {
 }
 
 QString ZipFile::getTextFile(QString filename) {
+    // convenience method for unicode-encoded text files
     QByteArray bytes(getFile(filename));
     QTextCodec* codec = QTextCodec::codecForUtfText(bytes, QTextCodec::codecForName("UTF-8"));
     if (codec != NULL)

@@ -9,7 +9,7 @@ void HomeScanner::scanHome(bool update) {
     QStringList inspectPaths;
     QStringList visiblePaths;
     QStringList passPaths;
-    QList<QObject*> passes;
+    QVariantList passes;
     inspectPaths.append(QDir::homePath());  // start with the home directory
     if (QDir("/media/sdcard").exists())
         inspectPaths.append("/media/sdcard");  // also check the SD-Card
@@ -34,23 +34,57 @@ void HomeScanner::scanHome(bool update) {
                 if (entry->suffix() != "pkpass")  // look for pass files only
                     continue;
                 QString fpath(entry->canonicalFilePath());
-                if (passPaths.contains(fpath))  // avoid double listing
-                    continue;
-                ZipFile zip(fpath);
-                if (!zip.isValid())
-                    continue;
+                QVariantMap pass = m_buildPass(fpath);
+                if (pass.isEmpty())
+                    continue;  // invalid pass
                 passPaths.append(fpath);
-                Pass* pass = new Pass(fpath, zip.getTextFile("pass.json"));
-                if (pass->isValid()) {
-                    passes.append(pass);
-                    // make sure these are handled by the QML GC in the end
-                    QQmlEngine::setObjectOwnership(pass, QQmlEngine::JavaScriptOwnership);
-                }
-                else {
-                    delete pass;
-                }
+                passes.append(pass);
             }
         }
     }
     emit passesFound(passes, visiblePaths, update);
+}
+
+void HomeScanner::scanHome(QString path) {
+    scanHome(false);
+}
+
+QVariantMap HomeScanner::m_buildPass(QString zipname) {
+    // get json data from the file
+    ZipFile zip(zipname);
+    if (!zip.isValid())
+        return QVariantMap();
+    QString jsondata = zip.getTextFile("pass.json");
+    QJsonDocument json(QJsonDocument::fromJson(jsondata.toUtf8()));
+    if (json.isNull())
+        return QVariantMap();
+    // get the type id
+    QString typeId = json.object().value("passTypeIdentifier").toString();
+    if (typeId == "")
+        return QVariantMap();
+    // get the pass style
+    QStringList styles({"boardingPass", "coupon", "eventTicket", "storeCard", "generic"});
+    QString passStyle;
+    for (auto style = styles.cbegin(); style != styles.cend(); ++style) {
+        if (json.object().contains(*style)) {
+            passStyle = *style;
+            break;
+        }
+    }
+    if (passStyle == "")
+        return QVariantMap();
+    // create the pass name
+    QString name;
+    QJsonArray primaries(json.object().value(passStyle).toObject().value("primaryFields").toArray());
+    if (passStyle == "boardingPass")  // use parting point and destination
+        name = primaries.at(0).toObject().value("value").toString() + " → " + primaries.at(1).toObject().value("value").toString();
+    else  // use the subject
+        name = primaries.at(0).toObject().value("label").toString() + " " + primaries.at(0).toObject().value("value").toString();
+    // use the file basename as backup
+    if (name == "")
+        name = QFileInfo(zipname).baseName();
+    // check if the pass is updateable
+    bool updateable = json.object().contains("webServiceURL") && json.object().contains("serialNumber") && json.object().contains("authenticationToken");
+    // construct and return the pass
+    return QVariantMap({{"name", name}, {"path", zipname}, {"jsondata", jsondata}, {"typeId", typeId}, {"updateable", updateable}});
 }

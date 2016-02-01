@@ -24,7 +24,7 @@ void Notificator::addNotification(QString origin, QString summary, QString body)
     notification->setExpireTimeout(0);
     notification->setHintValue("resident", true);
     // signal us, when a notification was clicked
-    notification->setRemoteActions(QVariantList({Notification::remoteAction("default", "", "org.harbour.passviewer", "/org/harbour/passviewer", "org.harbour.passviewer", "openPass", QVariantList({origin}))}));
+    notification->setRemoteActions(QVariantList({Notification::remoteAction("default", "", "ch.p2501.harbour_passviewer", "/ch/p2501/harbour_passviewer", "ch.p2501.harbour_passviewer", "openPass", QVariantList({origin}))}));
     // check if we're replaceing an already existing notification
     for (auto oldNotification = m_notifications.begin(); oldNotification != m_notifications.end(); ++oldNotification) {
         if ((*oldNotification)->origin() == origin) {

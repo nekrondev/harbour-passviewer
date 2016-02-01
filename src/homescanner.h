@@ -2,15 +2,19 @@
 #define HOMESCANNER_H
 
 #include <QObject>
-#include <QQmlEngine>
 #include <QList>
 #include <QStringList>
+#include <QVariantList>
+#include <QVariantMap>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonValue>
 #include <QDir>
 #include <QFileInfo>
 #include <QFileInfoList>
 
 #include "zipfile.h"
-#include "pass.h"
 
 class HomeScanner : public QObject
 {
@@ -19,10 +23,14 @@ public:
     explicit HomeScanner(QObject *parent = 0);
 
 signals:
-    void passesFound(QList<QObject*> list, QStringList paths, bool update);
+    void passesFound(QVariantList list, QStringList paths, bool update);
 
 public slots:
     void scanHome(bool update = false);
+    void scanHome(QString path);
+
+private:
+    QVariantMap m_buildPass(QString zipname);
 };
 
 #endif // HOMESCANNER_H

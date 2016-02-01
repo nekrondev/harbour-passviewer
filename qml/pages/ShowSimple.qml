@@ -42,6 +42,7 @@ Page {
             Label {
                 id: logoText
                 text: ''
+                textFormat: Text.PlainText
                 color: Theme.highlightColor
             }
 
@@ -55,6 +56,7 @@ Page {
 
                     Label {
                         text: title
+                        textFormat: Text.PlainText
                         font.pixelSize: Theme.fontSizeSmall
                         color: Theme.highlightColor
                         x: Theme.paddingLarge
@@ -62,6 +64,7 @@ Page {
 
                     Label {
                         text: value
+                        textFormat: Text.PlainText
                         color: Theme.highlightColor
                     }
                 }
@@ -96,6 +99,7 @@ Page {
 
             Label {
                 text: barcodeAltText
+                textFormat: Text.PlainText
                 color: Theme.highlightColor
             }
 
@@ -109,6 +113,7 @@ Page {
 
                     Label {
                         text: title
+                        textFormat: Text.PlainText
                         font.pixelSize: Theme.fontSizeSmall
                         color: Theme.highlightColor
                         x: Theme.paddingLarge
@@ -116,6 +121,7 @@ Page {
 
                     Label {
                         text: value
+                        textFormat: Text.PlainText
                         font.pixelSize: Theme.fontSizeExtraSmall
                         color: Theme.highlightColor
                         width: body.width
@@ -129,7 +135,8 @@ Page {
     }
 
     Component.onCompleted: {
-        function getFields(pass, style, fieldType, target) {
+        function setFields(pass, style, fieldType, target) {
+            // set a field model from json
             var fields = [];
             if (fieldType in pass[style]) {
                 for (var field = 0; field < pass[style][fieldType].length; field++) {
@@ -139,6 +146,7 @@ Page {
             }
         }
 
+        // get general pass data
         var pass = JSON.parse(jsondata);
         if ('logoText' in pass)
             logoText.text = pass.logoText
@@ -150,18 +158,22 @@ Page {
                 break;
             }
         }
+        // complete undefined fields
         Utils.checkFields(pass, style);
+        // set front field contents
         frontFields.clear();
-        getFields(pass, style, 'headerFields', frontFields);
-        getFields(pass, style, 'primaryFields', frontFields);
-        getFields(pass, style, 'secondaryFields', frontFields);
-        getFields(pass, style, 'auxiliaryFields', frontFields);
+        setFields(pass, style, 'headerFields', frontFields);
+        setFields(pass, style, 'primaryFields', frontFields);
+        setFields(pass, style, 'secondaryFields', frontFields);
+        setFields(pass, style, 'auxiliaryFields', frontFields);
+        // look for barcodes
         if (!('barcodes' in pass)) {
             pass.barcodes = [];
             if ('barcode' in pass) {
                 pass.barcodes.push(pass.barcode);
             }
         }
+        // paint the first useable barcode
         var validCode = false;
         for (var barcode = 0; barcode <= pass.barcodes.length; barcode++) {
             switch(pass.barcodes[barcode].format.substring(15).toLowerCase()) {
@@ -179,7 +191,8 @@ Page {
             if (validCode)
                 break;
         }
+        // set back field contents
         backFields.clear();
-        getFields(pass, style, 'backFields', backFields);
+        setFields(pass, style, 'backFields', backFields);
     }
 }

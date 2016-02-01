@@ -31,12 +31,14 @@ Rectangle {
 
                 Label {
                     text: title
+                    textFormat: Text.PlainText
                     color: labelColor
                     font.pixelSize: Theme.fontSizeExtraSmall
                 }
 
                 Label {
                     text: value
+                    textFormat: Text.StyledText
                     color: textColor
                     font.pixelSize: Theme.fontSizeExtraSmall
                     width: body.width
@@ -47,16 +49,7 @@ Rectangle {
     }
 
     onJsondataChanged: {
-        function getFields(pass, style, fieldType, target) {
-            var fields = [];
-            if (fieldType in pass[style]) {
-                for (var field = 0; field < pass[style][fieldType].length; field++) {
-                    var data = pass[style][fieldType][field];
-                    target.append({ title: String(data.label), value: String(data.value) });
-                }
-            }
-        }
-
+        // get general pass info
         var pass = JSON.parse(jsondata);
         if ('backgroundColor' in pass)
             backgroundColor = Utils.interpretColor(pass.backgroundColor);
@@ -72,8 +65,9 @@ Rectangle {
                 break;
             }
         }
+        // complete undefined fields
         Utils.checkFields(pass, style);
-        backFields.clear();
-        getFields(pass, style, 'backFields', backFields);
+        // set field contents
+        Utils.setFields(pass, style, 'backFields', backFields, dateTimeFormat, currencyFormat);
     }
 }

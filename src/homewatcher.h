@@ -5,13 +5,13 @@
 #include <QFileSystemWatcher>
 #include <QList>
 #include <QStringList>
+#include <QVariantList>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QThread>
 
 #include "homescanner.h"
-#include "pass.h"
 #include "passdb.h"
 
 class HomeWatcher : public QFileSystemWatcher
@@ -25,11 +25,11 @@ public:
 
 signals:
     void workerScanHome(bool update);
-    void passesFound(QList<QObject*> list, bool update);
+    void passesFound(QVariantList list, bool update);
 
 public slots:
     void scanHome(bool update = false);
-    void passesFoundByWorker(QList<QObject*> list, QStringList paths, bool update);
+    void passesFoundByWorker(QVariantList list, QStringList paths, bool update);
 
 private:
     QThread m_worker;

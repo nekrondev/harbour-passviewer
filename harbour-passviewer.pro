@@ -30,7 +30,6 @@ SOURCES += src/harbour-passviewer.cpp \
     src/zint/gs1.c \
     src/zint/code128.c \
     src/zipfile.cpp \
-    src/pass.cpp \
     src/zipfileimageprovider.cpp \
     src/datetimeformat.cpp \
     src/currencyformat.cpp \
@@ -88,7 +87,6 @@ HEADERS += \
     src/settingsstore.h \
     src/zint/gs1.h \
     src/zipfile.h \
-    src/pass.h \
     src/zipfileimageprovider.h \
     src/datetimeformat.h \
     src/currencyformat.h \

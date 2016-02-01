@@ -5,11 +5,13 @@ CurrencyFormat::CurrencyFormat(QObject *parent) :
     m_currencies(),
     m_decimalPoint()
 {
+    // get the local monetary decimal point
     setlocale(LC_ALL, "");
     lconv* lc = localeconv();
     m_decimalPoint = QString(lc->mon_decimal_point);
     if (m_decimalPoint == "")
-        m_decimalPoint = QString(lc->decimal_point);
+        m_decimalPoint = QString(lc->decimal_point);  // fallback
+    // get the currency list
     QFile currencyFile(SailfishApp::pathTo("qml/lib/currencies.json").path());
     if (currencyFile.open(QFile::ReadOnly | QFile::Text)) {
         m_currencies = QJsonDocument::fromJson(currencyFile.readAll());
@@ -17,6 +19,7 @@ CurrencyFormat::CurrencyFormat(QObject *parent) :
 }
 
 QString CurrencyFormat::format(double value, QString isoName) {
+    // search the currency in the currency list
     QJsonObject currency = m_currencies.object().value(isoName).toObject();
     QString symbol(isoName);
     int fractional = 2;
@@ -24,6 +27,7 @@ QString CurrencyFormat::format(double value, QString isoName) {
         symbol = currency.value("symbol").toString();
         fractional = currency.value("fractional").toInt();
     }
+    // format the value
     double integral;
     double decimal = modf(value, &integral);
     QString formatted(symbol + " " + QString::number(integral, 'f', 0));

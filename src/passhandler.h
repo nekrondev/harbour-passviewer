@@ -15,6 +15,7 @@
 #include <QNetworkRequest>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QFileInfo>
 #include <QFile>
 #include <QTemporaryFile>
 #include <QDir>
@@ -31,6 +32,7 @@ class PassHandler : public QObject
 public:
     explicit PassHandler(QObject *parent = 0);
 
+    Q_INVOKABLE QString getCanonicalPath(QString path);
     Q_INVOKABLE void removePass(QString path);
     Q_INVOKABLE void updatePass(QString path);
     Q_INVOKABLE QMap<QString, QVariant> getFields(QString filename);
