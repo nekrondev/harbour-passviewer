@@ -8,6 +8,12 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Sat Feb 6 2016 Christof Bürgi <christof@buergi.lugs.ch> 0.11-1
+- Changed to the Nemo Notification API
+- Passes can now be opened via CLI or D-Bus
+- Improved currency handling
+- Lots of code cleanup
+
 * Mon Jan 18 2016 Christof Bürgi <christof@buergi.lugs.ch> 0.10-1
 - Python code replaced by C++ code
 - Inefficient notification handling rewritten

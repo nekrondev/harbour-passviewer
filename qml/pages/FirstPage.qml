@@ -183,9 +183,10 @@ Page {
                 locator.precise = close;
             // update the pass list
             updatePasses(list);
-            // on the first run: stop the busy animation and show the pass called in the CLI (if given)
+            // on the first run: stop the busy animation, start the check timer and show the pass called in the CLI (if given)
             if (busy.running) {
                 busy.running = false;
+                checkTimer.start();
                 if (Qt.application.arguments.length === 2)
                     dbus.openPass(Qt.application.arguments[1]);
             }
@@ -243,22 +244,21 @@ Page {
             // get the canonical path
             origin = passHandler.getCanonicalPath(origin);
             // look for a matching pass
-            for (var pass = 0; pass < passList.count; pass++) {
-                if (passList.get(pass).path === origin) {
-                    // found one: let's show it
-                    var properties = { name: passList.get(pass).name, path: passList.get(pass).path, jsondata: passList.get(pass).jsondata, updateable: passList.get(pass).updateable };
-                    pageStack.pop(page, PageStackAction.Immediate);
-                    pageStack.push(Qt.resolvedUrl("ShowPass.qml"), properties, PageStackAction.Immediate);
-                    pageStack.pushAttached(Qt.resolvedUrl("ShowBack.qml"), properties);
-                }
+            var pass = getPass(origin);
+            if (pass !== null) {
+                // found one: let's show it
+                var properties = { name: passList.get(pass).name, path: passList.get(pass).path, jsondata: passList.get(pass).jsondata, updateable: passList.get(pass).updateable };
+                pageStack.pop(page, PageStackAction.Immediate);
+                pageStack.push(Qt.resolvedUrl("ShowPass.qml"), properties, PageStackAction.Immediate);
+                pageStack.pushAttached(Qt.resolvedUrl("ShowBack.qml"), properties);
             }
         }
     }
 
     function updatePasses(newpasses) {
         // inserts, updates or moves the passes in the model
-        var oldpoints = -1;
         for (var pass = 0; pass < newpasses.length; pass++) {
+            var oldpoints = -1;
             if (pass < passList.count && passList.get(pass).path === newpasses[pass].path) {
                 // update
                 oldpoints = passList.get(pass).points;
@@ -281,27 +281,30 @@ Page {
                     passList.insert(pass, newpasses[pass]);  // new pass
             }
             // update pass notifications
-            if (newpasses[pass].points !== oldpoints) {
-                if (newpasses[pass].points !== -1)
-                    notificator.addNotification(newpasses[pass].path, newpasses[pass].name, '');
-                else
-                    notificator.removeNotification(newpasses[pass].path);
-            }
+            if (oldpoints === -1 && newpasses[pass].points !== -1)
+                notificator.addNotification(newpasses[pass].path, newpasses[pass].name, '');
+            if (oldpoints !== -1 && newpasses[pass].points === -1)
+                notificator.removeNotification(newpasses[pass].path);
         }
         // if the topmost pass is active, show it on the cover
-        if (passList.count > 1 && passList.get(0).points !== -1) {
-            topIcon = "image://zipimage" + passList.get(0).path + "/icon.png";
-            topName = passList.get(0).name;
-            topPath = passList.get(0).path;
-            topData = passList.get(0).jsondata;
-            topUpdateable = passList.get(0).updateable;
+        if (passList.count > 0 && passList.get(0).points !== -1) {
+            var icon = "image://zipimage" + passList.get(0).path + "/icon.png";
+            if (topIcon !== icon) {
+                topIcon = icon;
+                topName = passList.get(0).name;
+                topPath = passList.get(0).path;
+                topData = passList.get(0).jsondata;
+                topUpdateable = passList.get(0).updateable;
+            }
         }
         else {
-            topIcon = "";
-            topName = "";
-            topPath = "";
-            topData = "";
-            topUpdateable = "";
+            if (topIcon !== "") {
+                topIcon = "";
+                topName = "";
+                topPath = "";
+                topData = "";
+                topUpdateable = "";
+            }
         }
     }
 
@@ -361,7 +364,7 @@ Page {
                     if (posDiff <= maxDistance && (pass.points === -1 || pass.points > posDiff))
                         pass.points = posDiff;
                     if (posDiff <= maxDistance + 1000)
-                        close = true;  // not relevant yet, but somewhat close
+                        close = true;  // close enough to always check GPS
                 }
             }
             catch (e) {
@@ -396,7 +399,9 @@ Page {
         var passes = [];
         var close = false;
         for (var pass = 0; pass < passList.count; pass++) {
-            var thisPass = passList.get(pass);
+            // we work with a copy
+            var modelPass = passList.get(pass);
+            var thisPass = { name: modelPass.name, path: modelPass.path, points: modelPass.points, jsondata: modelPass.jsondata, typeId: modelPass.typeId, updateable: modelPass.updateable };
             if (calcPoints(thisPass))
                 close = true;
             passes.push(thisPass);

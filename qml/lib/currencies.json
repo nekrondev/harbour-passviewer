@@ -1,618 +1,741 @@
 {
 "AED": {
-"symbol": "\u062f.\u0625",
-"fractional": 2
+"fractional": 2,
+"symbol": "\u062f.\u0625"
 },
 "AFN": {
-"symbol": "\u060b",
-"fractional": 2
+"fractional": 2,
+"symbol": "\u060b"
 },
 "ALL": {
-"symbol": "L",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "L"
 },
 "AMD": {
-"symbol": "d.",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "d."
 },
 "ANG": {
-"symbol": "\u0192",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "\u0192"
 },
 "AOA": {
-"symbol": "Kz",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "Kz"
 },
 "ARS": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "$"
 },
 "AUD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "$"
 },
 "AWG": {
-"symbol": "\u0192",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "\u0192"
 },
 "AZN": {
-"symbol": "A.M.",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "A.M."
 },
 "BAM": {
-"symbol": "KM",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "KM"
 },
 "BBD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "$"
 },
 "BDT": {
-"symbol": "Tk.",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "Tk."
 },
 "BGN": {
-"symbol": "\u043b\u0432",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "\u043b\u0432"
 },
 "BHD": {
-"symbol": ".\u062f.\u0628",
-"fractional": 3
+"fractional": 3,
+"symbol": ".\u062f.\u0628"
 },
 "BIF": {
-"symbol": "Fr",
-"fractional": 2
+"fractional": 2,
+"symbol": "Fr"
 },
 "BMD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "$"
 },
 "BND": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "$"
 },
 "BOB": {
-"symbol": "Bs.",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "Bs."
 },
 "BRL": {
-"symbol": "R$",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "R$"
 },
 "BSD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"symbol": "$"
 },
 "BTN": {
-"symbol": "Nu.",
-"fractional": 2
+"fractional": 2,
+"symbol": "Nu."
 },
 "BWP": {
-"symbol": "P",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "P"
 },
 "BYR": {
-"symbol": "Br",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "Br"
 },
 "BZD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "$"
 },
 "CAD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"symbol": "$"
 },
 "CDF": {
-"symbol": "Fr",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "Fr"
 },
 "CHF": {
-"symbol": "Fr",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "Fr"
 },
 "CLP": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "$"
 },
 "CNY": {
-"symbol": "\u00a5",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "\u00a5"
 },
 "COP": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "$"
 },
 "CRC": {
-"symbol": "\u20a1",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "\u20a1"
 },
 "CUC": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "$"
 },
 "CUP": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"symbol": "$"
 },
 "CVE": {
-"symbol": "Esc",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "Esc"
 },
 "CZK": {
-"symbol": "K\u010d",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "K\u010d"
 },
 "DJF": {
-"symbol": "Fr",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "Fr"
 },
 "DKK": {
-"symbol": "kr",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "kr"
 },
 "DOP": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "$"
 },
 "DZD": {
-"symbol": "\u062f.\u062c",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "\u062f.\u062c"
 },
 "EGP": {
-"symbol": "\u00a3",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "\u00a3"
 },
 "ERN": {
-"symbol": "Nfk",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "Nfk"
 },
 "ETB": {
-"symbol": "Br",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "Br"
 },
 "EUR": {
-"symbol": "\u20ac",
-"fractional": 2
+"fractional": 2,
+"symbol": "\u20ac"
 },
 "FJD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"symbol": "$"
 },
 "FKP": {
-"symbol": "\u00a3",
-"fractional": 2
+"fractional": 2,
+"symbol": "\u00a3"
 },
 "GBP": {
-"symbol": "\u00a3",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "\u00a3"
 },
 "GGP": {
-"symbol": "\u00a3",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "\u00a3"
 },
 "GHS": {
-"symbol": "\u20b5",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "\u20b5"
 },
 "GIP": {
-"symbol": "\u00a3",
-"fractional": 2
+"fractional": 2,
+"symbol": "\u00a3"
 },
 "GMD": {
-"symbol": "D",
-"fractional": 2
+"fractional": 2,
+"symbol": "D"
 },
 "GNF": {
-"symbol": "Fr",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "Fr"
 },
 "GTQ": {
-"symbol": "Q",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "Q"
 },
 "GYD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "$"
 },
 "HKD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "$"
 },
 "HNL": {
-"symbol": "L",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "L"
 },
 "HRK": {
-"symbol": "kn",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "kn"
 },
 "HTG": {
-"symbol": "G",
-"fractional": 2
+"fractional": 2,
+"symbol": "G"
 },
 "HUF": {
-"symbol": "Ft",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "Ft"
 },
 "IDR": {
-"symbol": "Rp",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "Rp"
 },
 "ILS": {
-"symbol": "NIS",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "NIS"
 },
 "IMP": {
-"symbol": "\u00a3",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "\u00a3"
 },
 "INR": {
-"symbol": "\u20b9",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "\u20b9"
 },
 "IQD": {
-"symbol": "\u0639.\u062f",
-"fractional": 3
+"fractional": 3,
+"symbol": "\u0639.\u062f"
 },
 "IRR": {
-"symbol": "\ufdfc",
-"fractional": 2
+"fractional": 2,
+"symbol": "\ufdfc"
 },
 "ISK": {
-"symbol": "kr",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "kr"
 },
 "JEP": {
-"symbol": "\u00a3",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "\u00a3"
 },
 "JMD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "$"
 },
 "JOD": {
-"symbol": "\u062f.\u0627",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "\u062f.\u0627"
 },
 "JPY": {
-"symbol": "\u00a5",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "\u00a5"
 },
 "KES": {
-"symbol": "Sh",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "Sh"
 },
 "KGS": {
-"symbol": "\u043b\u0432",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "\u043b\u0432"
 },
 "KHR": {
-"symbol": "CR",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "CR"
 },
 "KMF": {
-"symbol": "Fr",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "Fr"
 },
 "KPW": {
-"symbol": "\u20a9",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "\u20a9"
+},
+"KRW": {
+"fractional": 2,
+"mark": ".",
+"symbol": "\u20a9"
 },
 "KWD": {
-"symbol": "\u062f.\u0643",
-"fractional": 3
+"fractional": 3,
+"symbol": "\u062f.\u0643"
 },
 "KYD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"symbol": "$"
 },
 "LBP": {
-"symbol": "\u0644.\u0644",
-"fractional": 2
+"fractional": 2,
+"symbol": "\u0644.\u0644"
 },
 "LKR": {
-"symbol": "Rs",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "Rs"
 },
 "LRD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "$"
 },
 "LSL": {
-"symbol": "L",
-"fractional": 2
+"fractional": 2,
+"symbol": "L"
 },
 "LYD": {
-"symbol": "\u0644.\u062f",
-"fractional": 3
+"fractional": 3,
+"symbol": "\u0644.\u062f"
 },
 "MAD": {
-"symbol": "\u062f.\u0645.",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "\u062f.\u0645."
 },
 "MDL": {
-"symbol": "L",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "L"
 },
 "MGA": {
-"symbol": "Ar",
-"fractional": 1
+"fractional": 1,
+"symbol": "Ar"
 },
 "MKD": {
-"symbol": "\u0434\u0435\u043d",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "\u0434\u0435\u043d"
 },
 "MMK": {
-"symbol": "Ks",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "Ks"
 },
 "MOP": {
-"symbol": "P",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "P"
 },
 "MRO": {
-"symbol": "UM",
-"fractional": 1
+"fractional": 1,
+"symbol": "UM"
 },
 "MUR": {
-"symbol": "Rs",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "Rs"
 },
 "MVR": {
-"symbol": "Rf",
-"fractional": 2
+"fractional": 2,
+"symbol": "Rf"
 },
 "MWK": {
-"symbol": "MK",
-"fractional": 2
+"fractional": 2,
+"symbol": "MK"
 },
 "MXN": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "$"
 },
 "MYR": {
-"symbol": "RM",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "RM"
 },
 "MZN": {
-"symbol": "MT",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "MT"
 },
 "NAD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "$"
 },
 "NGN": {
-"symbol": "\u20a6",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "\u20a6"
 },
 "NIO": {
-"symbol": "C$",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "C$"
 },
 "NOK": {
-"symbol": "kr",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "kr"
 },
 "NPR": {
-"symbol": "NRs",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "NRs"
 },
 "NZD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "$"
 },
 "OMR": {
-"symbol": "\u0631.\u0639.",
-"fractional": 3
+"fractional": 3,
+"symbol": "\u0631.\u0639."
 },
 "PAB": {
-"symbol": "B/.",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "B/."
 },
 "PEN": {
-"symbol": "S/.",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "S/."
 },
 "PGK": {
-"symbol": "K",
-"fractional": 2
+"fractional": 2,
+"symbol": "K"
 },
 "PHP": {
-"symbol": "\u20b1",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "\u20b1"
 },
 "PKR": {
-"symbol": "Rs.",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "Rs."
 },
 "PLN": {
-"symbol": "z\u0142",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "z\u0142"
 },
 "PRB": {
-"symbol": "\u0440.",
-"fractional": 2
+"fractional": 2,
+"symbol": "\u0440."
 },
 "PYG": {
-"symbol": "\u20b2",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "\u20b2"
 },
 "QAR": {
-"symbol": "\u0631.\u0642",
-"fractional": 2
+"fractional": 2,
+"symbol": "\u0631.\u0642"
 },
 "RON": {
-"symbol": "lei",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "lei"
 },
 "RSD": {
-"symbol": "\u0434\u0438\u043d.",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "\u0434\u0438\u043d."
 },
 "RUB": {
-"symbol": "\u0440\u0443\u0431.",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "\u0440\u0443\u0431."
 },
 "RWF": {
-"symbol": "Fr",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "Fr"
 },
 "SAR": {
-"symbol": "\u0631.\u0633",
-"fractional": 2
+"fractional": 2,
+"symbol": "\u0631.\u0633"
 },
 "SBD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"symbol": "$"
 },
 "SCR": {
-"symbol": "SR",
-"fractional": 2
+"fractional": 2,
+"symbol": "SR"
 },
 "SDG": {
-"symbol": "\u00a3",
-"fractional": 2
+"fractional": 2,
+"symbol": "\u00a3"
 },
 "SEK": {
-"symbol": "kr",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "kr"
 },
 "SGD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "$"
 },
 "SHP": {
-"symbol": "\u00a3",
-"fractional": 2
+"fractional": 2,
+"symbol": "\u00a3"
 },
 "SLL": {
-"symbol": "Le",
-"fractional": 2
+"fractional": 2,
+"symbol": "Le"
 },
 "SOS": {
-"symbol": "Sh",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "Sh"
 },
 "SRD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"symbol": "$"
 },
 "SSP": {
-"symbol": "\u00a3",
-"fractional": 2
+"fractional": 2,
+"symbol": "\u00a3"
 },
 "STD": {
-"symbol": "Db",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "Db"
+},
+"SVC": {
+"fractional": 2,
+"mark": ".",
+"symbol": "$"
 },
 "SYP": {
-"symbol": "\u00a3",
-"fractional": 2
+"fractional": 2,
+"symbol": "\u00a3"
 },
 "SZL": {
-"symbol": "L",
-"fractional": 2
+"fractional": 2,
+"symbol": "L"
 },
 "THB": {
-"symbol": "\u0e3f",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "\u0e3f"
 },
 "TJS": {
-"symbol": "\u0405\u041c",
-"fractional": 2
+"fractional": 2,
+"symbol": "\u0405\u041c"
 },
 "TMT": {
-"symbol": "m",
-"fractional": 2
+"fractional": 2,
+"symbol": "m"
 },
 "TND": {
-"symbol": "\u062f.\u062a",
-"fractional": 3
+"fractional": 3,
+"mark": ",",
+"symbol": "\u062f.\u062a"
 },
 "TOP": {
-"symbol": "T$",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "T$"
 },
 "TRY": {
-"symbol": "\u20ba",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "\u20ba"
 },
 "TTD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "$"
 },
 "TWD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "$"
 },
 "TZS": {
-"symbol": "Sh",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "Sh"
 },
 "UAH": {
-"symbol": "\u0433\u0440\u043d",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "\u0433\u0440\u043d"
 },
 "UGX": {
-"symbol": "Sh",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "Sh"
 },
 "USD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "$"
 },
 "UYU": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "$"
 },
 "UZS": {
-"symbol": "\u043b\u0432",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "\u043b\u0432"
 },
 "VEF": {
-"symbol": "Bs",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "Bs"
 },
 "VND": {
-"symbol": "\u20ab",
-"fractional": 1
+"fractional": 1,
+"mark": ",",
+"symbol": "\u20ab"
 },
 "VUV": {
-"symbol": "Vt",
-"fractional": 0
+"fractional": 0,
+"symbol": "Vt"
 },
 "WST": {
-"symbol": "T",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "T"
 },
 "XAF": {
-"symbol": "Fr",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "Fr"
 },
 "XCD": {
-"symbol": "$",
-"fractional": 2
+"fractional": 2,
+"symbol": "$"
 },
 "XOF": {
-"symbol": "Fr",
-"fractional": 2
+"fractional": 2,
+"symbol": "Fr"
 },
 "XPF": {
-"symbol": "Fr",
-"fractional": 2
+"fractional": 2,
+"symbol": "Fr"
 },
 "YER": {
-"symbol": "\ufdfc",
-"fractional": 2
+"fractional": 2,
+"symbol": "\ufdfc"
 },
 "ZAR": {
-"symbol": "R",
-"fractional": 2
+"fractional": 2,
+"mark": ",",
+"symbol": "R"
 },
 "ZMW": {
-"symbol": "ZK",
-"fractional": 2
+"fractional": 2,
+"mark": ".",
+"symbol": "ZK"
+},
+"ZWD": {
+"fractional": 2,
+"mark": ".",
+"symbol": "Z$"
 }
 }

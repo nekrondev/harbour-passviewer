@@ -11,7 +11,10 @@ Page {
 
     Rectangle {
         anchors.fill: parent
-        anchors.margins: Theme.paddingLarge
+        anchors.leftMargin: Theme.horizontalPageMargin
+        anchors.rightMargin: Theme.horizontalPageMargin
+        anchors.topMargin: Theme.paddingLarge
+        anchors.bottomMargin: Theme.paddingLarge
         color: 'white'
 
         Image {

@@ -13,49 +13,53 @@ Page {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
-            anchors.margins: Theme.paddingLarge
+            anchors.leftMargin: Theme.horizontalPageMargin
+            anchors.rightMargin: Theme.horizontalPageMargin
+            anchors.topMargin: Theme.paddingLarge
+            anchors.bottomMargin: Theme.paddingLarge
             color: Theme.highlightColor
             font.pixelSize: Theme.fontSizeTiny
             wrapMode: Text.Wrap
-            text: { return "Copyright (c) 2015 Christof Bürgi\n\n" +
-                    "Permission is hereby granted, free of charge, to any person obtaining a copy " +
-                    "of this software and associated documentation files (the \"Software\"), to deal " +
+            text: { return "<style>a:link { color: " + Theme.primaryColor + "; }</style>" +
+                    "<p>Copyright (c) 2015 Christof Bürgi</p>" +
+                    "<p>Permission is hereby granted, free of charge, to any person obtaining a copy " +
+                    "of this software and associated documentation files (the &quot;Software&quot;), to deal " +
                     "in the Software without restriction, including without limitation the rights " +
                     "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell " +
                     "copies of the Software, and to permit persons to whom the Software is " +
-                    "furnished to do so, subject to the following conditions:\n\n" +
-                    "The above copyright notice and this permission notice shall be included in " +
-                    "all copies or substantial portions of the Software.\n\n" +
-                    "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR " +
+                    "furnished to do so, subject to the following conditions:</p>" +
+                    "<p>The above copyright notice and this permission notice shall be included in " +
+                    "all copies or substantial portions of the Software.</p>" +
+                    "<p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR " +
                     "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, " +
                     "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE " +
                     "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER " +
                     "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, " +
                     "OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN " +
-                    "THE SOFTWARE.\n\n\n" +
-                    "Swedish translation by Åke Engelbrektson, under the terms of CC-BY 3.0\n" +
-                    "Russian translation by mentaljam, under the terms of CC-BY 3.0\n" +
-                    "App icon courtesy of Moth, under the terms of CC-BY 3.0\n" +
-                    "see: http://creativecommons.org/licenses/by/3.0/\n\n\n" +
-                    "Contains parts of libzint, licensed as follows:\n\n" +
-                    "libzint - the open source barcode library\n" +
-                    "Copyright (C) 2009 Robin Stuart <robin@zint.org.uk>\n" +
-                    "Copyright (C) 2006 Kentaro Fukuchi <fukuchi@megaui.net>\n" +
-                    "Copyright (C) 2004 Cliff Hones\n" +
-                    "Copyright (C) 2004 Grandzebu\n" +
-                    "Bug Fixes thanks to KL Chin <klchin@users.sourceforge.net>, Christian Sakowski and BogDan Vatra\n\n" +
-                    "Redistribution and use in source and binary forms, with or without " +
+                    "THE SOFTWARE.</p><hr>" +
+                    "<p>Swedish translation by Åke Engelbrektson, under the terms of CC-BY 3.0<br>" +
+                    "Russian translation by mentaljam, under the terms of CC-BY 3.0<br>" +
+                    "App icon courtesy of Moth, under the terms of CC-BY 3.0<br>" +
+                    "see: <a href=\"http://creativecommons.org/licenses/by/3.0/\">http://creativecommons.org/licenses/by/3.0/</a></p><hr>" +
+                    "<p>Contains parts of libzint, licensed as follows:</p>" +
+                    "<p>libzint - the open source barcode library<br>" +
+                    "Copyright (C) 2009 Robin Stuart &lt;robin@zint.org.uk&gt;<br>" +
+                    "Copyright (C) 2006 Kentaro Fukuchi &lt;fukuchi@megaui.net&gt;<br>" +
+                    "Copyright (C) 2004 Cliff Hones<br>" +
+                    "Copyright (C) 2004 Grandzebu<br>" +
+                    "Bug Fixes thanks to KL Chin &lt;klchin@users.sourceforge.net&gt;, Christian Sakowski and BogDan Vatra</p>" +
+                    "<p>Redistribution and use in source and binary forms, with or without " +
                     "modification, are permitted provided that the following conditions " +
-                    "are met:\n\n" +
-                    "1. Redistributions of source code must retain the above copyright " +
-                    "notice, this list of conditions and the following disclaimer.\n" +
-                    "2. Redistributions in binary form must reproduce the above copyright " +
+                    "are met:</p>" +
+                    "<ol><li>Redistributions of source code must retain the above copyright " +
+                    "notice, this list of conditions and the following disclaimer.</li>" +
+                    "<li>Redistributions in binary form must reproduce the above copyright " +
                     "notice, this list of conditions and the following disclaimer in the " +
-                    "documentation and/or other materials provided with the distribution.\n" +
-                    "3. Neither the name of the project nor the names of its contributors " +
+                    "documentation and/or other materials provided with the distribution.</li>" +
+                    "<li>Neither the name of the project nor the names of its contributors " +
                     "may be used to endorse or promote products derived from this software " +
-                    "without specific prior written permission.\n\n" +
-                    "THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND " +
+                    "without specific prior written permission.</li></ol>" +
+                    "<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND " +
                     "ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE " +
                     "IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE " +
                     "ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE " +
@@ -65,8 +69,10 @@ Page {
                     "HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT " +
                     "LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY " +
                     "OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF " +
-                    "SUCH DAMAGE."
+                    "SUCH DAMAGE.</p>"
             }
+            textFormat: Text.RichText
+            onLinkActivated: Qt.openUrlExternally(link)
         }
 
         VerticalScrollDecorator {}

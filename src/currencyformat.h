@@ -24,6 +24,7 @@ public slots:
 private:
     QJsonDocument m_currencies;
     QString m_decimalPoint;
+    bool m_symbolPrecedes;
 };
 
 #endif // CURRENCYFORMAT_H

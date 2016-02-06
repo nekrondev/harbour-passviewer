@@ -32,7 +32,9 @@ Page {
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.margins: Theme.paddingLarge
+            anchors.leftMargin: Theme.horizontalPageMargin
+            anchors.rightMargin: Theme.horizontalPageMargin
+            anchors.topMargin: Theme.paddingLarge
             spacing: Theme.paddingMedium
 
             Image {

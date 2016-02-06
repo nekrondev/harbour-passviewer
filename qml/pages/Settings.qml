@@ -14,7 +14,9 @@ Page {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
-            anchors.margins: Theme.paddingLarge
+            anchors.leftMargin: Theme.horizontalPageMargin
+            anchors.rightMargin: Theme.horizontalPageMargin
+            anchors.topMargin: Theme.paddingLarge
             spacing: Theme.paddingMedium
 
             Label {
@@ -39,9 +41,9 @@ Page {
                 minimumValue: 0
                 maximumValue: 8
                 value: settingsStore.hoursBefore
-                onValueChanged: settingsStore.hoursBefore = value
                 valueText: value + "h"
                 label: qsTr("Time before event")
+                onDownChanged: if (!down) settingsStore.hoursBefore = value
             }
 
             Slider {
@@ -52,9 +54,9 @@ Page {
                 minimumValue: 0
                 maximumValue: 8
                 value: settingsStore.hoursAfter
-                onValueChanged: settingsStore.hoursAfter = value
                 valueText: value + "h"
                 label: qsTr("Time after event")
+                onDownChanged: if (!down) settingsStore.hoursAfter = value
             }
 
             Label {
@@ -88,9 +90,9 @@ Page {
                 minimumValue: 100
                 maximumValue: 2000
                 value: settingsStore.maxDistance
-                onValueChanged: settingsStore.maxDistance = value
                 valueText: value + "m"
                 label: qsTr("Distance to destination")
+                onDownChanged: if (!down) settingsStore.maxDistance = value
             }
 
             TextSwitch {
