@@ -39,6 +39,8 @@ Page {
 
             Image {
                 source: "image://zipimage" + path + "/logo.png"
+                width: sourceSize.width * Theme.iconSizeSmall / sourceSize.height
+                height: Theme.iconSizeSmall
             }
 
             Label {
@@ -74,19 +76,22 @@ Page {
 
             Image {
                 source: "image://zipimage" + path + "/footer.png"
+                width: sourceSize.width != 0 ? body.width : 0
+                height: sourceSize.width != 0 ? sourceSize.height * body.width / sourceSize.width : 0
+
             }
 
             Rectangle {
                 visible: barcodeImage.width != 0
-                width: barcodeImage.width + 20
-                height: barcodeImage.height + 20
+                width: barcodeImage.width + Theme.fontSizeMedium
+                height: barcodeImage.height + Theme.fontSizeMedium
                 color: 'white'
 
                 Image {
                     id: barcodeImage
                     anchors.centerIn: parent
-                    width: sourceSize.width !== 0 ? Utils.barcodeSize(sourceSize.width, sourceSize.height, body.width)[0] : 0
-                    height: sourceSize.height !== 0 ? Utils.barcodeSize(sourceSize.width, sourceSize.height, body.width)[1] : 0
+                    width: sourceSize.width !== 0 ? Utils.barcodeSize(sourceSize.width, sourceSize.height, body.width, Theme.fontSizeMedium)[0] : 0
+                    height: sourceSize.height !== 0 ? Utils.barcodeSize(sourceSize.width, sourceSize.height, body.width, Theme.fontSizeMedium)[1] : 0
                     smooth: false
                     fillMode: Image.PreserveAspectFit
                     source: "image://barcode/" + barcodeType + "/" + barcodeEncoding + "/" + barcodeContent;

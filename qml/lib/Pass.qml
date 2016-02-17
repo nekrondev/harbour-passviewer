@@ -64,9 +64,8 @@ Rectangle {
 
             Image {
                 id: logo
-                width: sourceSize.width * 36 / sourceSize.height
-                height: 36
-                fillMode: Image.PreserveAspectFit
+                width: sourceSize.width * Theme.iconSizeSmall / sourceSize.height
+                height: Theme.iconSizeSmall
                 source: "image://zipimage" + path + "/logo.png"
             }
 
@@ -184,6 +183,8 @@ Rectangle {
 
                 Image {
                     id: thumbnailImage
+                    width: sourceSize.width != 0 ? Theme.itemSizeExtraLarge : 0
+                    height: sourceSize.width != 0 ? sourceSize.height * Theme.itemSizeExtraLarge / sourceSize.width : 0
                     source: "image://zipimage" + path + "/thumbnail.png"
                 }
             }
@@ -249,6 +250,8 @@ Rectangle {
 
         Image {
             source: "image://zipimage" + path + "/footer.png"
+            width: sourceSize.width != 0 ? body.width : 0
+            height: sourceSize.width != 0 ? sourceSize.height * body.width / sourceSize.width : 0
         }
 
         Column {
@@ -256,18 +259,17 @@ Rectangle {
             visible: barcodeType != '' && barcodeEncoding != '' && barcodeContent != ''
 
             Rectangle {
-                width: barcodeImage.width + 20
-                height: barcodeImage.height + 20
+                width: barcodeImage.width + Theme.fontSizeMedium // 0.5em border
+                height: barcodeImage.height + Theme.fontSizeMedium
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: 'white'
 
                 Image {
                     id: barcodeImage
                     anchors.centerIn: parent
-                    width: sourceSize.width !== 0 ? Utils.barcodeSize(sourceSize.width, sourceSize.height, body.width)[0] : 0
-                    height: sourceSize.height !== 0 ? Utils.barcodeSize(sourceSize.width, sourceSize.height, body.width)[1] : 0
+                    width: sourceSize.width !== 0 ? Utils.barcodeSize(sourceSize.width, sourceSize.height, body.width, Theme.fontSizeMedium)[0] : 0
+                    height: sourceSize.height !== 0 ? Utils.barcodeSize(sourceSize.width, sourceSize.height, body.width, Theme.fontSizeMedium)[1] : 0
                     smooth: false
-                    fillMode: Image.PreserveAspectFit
                     source: "image://barcode/" + barcodeType + "/" + barcodeEncoding + "/" + barcodeContent;
                 }
 
@@ -327,12 +329,33 @@ Rectangle {
             }
         }
 
+        // clear old data
+        relevantDate = '';
+        backgroundColor = 'white';
+        labelColor = 'black';
+        textColor = 'black';
+        logoText = '';
+        headerFields.clear();
+        boardingFromKey = '';
+        boardingFromTitle = '';
+        boardingFromValue = '';
+        boardingToKey = '';
+        boardingToTitle = '';
+        boardingToValue = '';
+        primaryKey = '';
+        primaryTitle = '';
+        primaryValue = '';
+        secondaryFields.clear();
+        tertiaryFields.clear();
+        barcodeType = '';
+        barcodeEncoding = '';
+        barcodeContent = '';
+        barcodeAltText = '';
+
         // get general pass data
         var pass = JSON.parse(jsondata);
         if ('relevantDate' in pass)
             relevantDate = pass.relevantDate;
-        else
-            relevantDate = '';
         if ('backgroundColor' in pass)
             backgroundColor = Utils.interpretColor(pass.backgroundColor);
         if ('labelColor' in pass)

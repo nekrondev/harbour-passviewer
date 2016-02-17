@@ -50,7 +50,7 @@ Page {
 
         Loader {
             id: pass
-            width: 540 - Theme.paddingLarge * 2
+            width: Math.min(parent.width - 2 * Theme.horizontalPageMargin, Theme.fontSizeMedium * 20)
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.topMargin: Theme.paddingLarge
@@ -62,15 +62,5 @@ Page {
         }
 
         VerticalScrollDecorator {}
-    }
-
-    Connections {
-        target: passHandler
-        onCalendarEntryFinished: {
-            if (state === "format")
-                notificator.bannerNotification(qsTr("Format Error"), qsTr("Couldn't recognize date/time format"));
-            if (state === "xdg-open")
-                notificator.bannerNotification(qsTr("Unsupported"), qsTr("Please update your system or install calendar"));
-        }
     }
 }

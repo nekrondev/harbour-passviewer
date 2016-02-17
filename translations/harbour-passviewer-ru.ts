@@ -47,6 +47,26 @@
         <source>pass update failed</source>
         <translation>обновление не удалось</translation>
     </message>
+    <message>
+        <source>Format Error</source>
+        <translation>Ошибка формата</translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t recognize date/time format</source>
+        <translation>Не удалось распознать формат даты/времени</translation>
+    </message>
+    <message>
+        <source>Unsupported</source>
+        <translation>Не поддерживается</translation>
+    </message>
+    <message>
+        <source>Please update your system or install calendar</source>
+        <translation>Пожалуйста, обновите систему или установите приложение календарь</translation>
+    </message>
+    <message>
+        <source>Create Calendar Entry</source>
+        <translation>Добавить в календарь</translation>
+    </message>
 </context>
 <context>
     <name>Settings</name>
@@ -119,22 +139,6 @@
     <message>
         <source>Create Calendar Entry</source>
         <translation>Добавить в календарь</translation>
-    </message>
-    <message>
-        <source>Format Error</source>
-        <translation>Ошибка формата</translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t recognize date/time format</source>
-        <translation>Не удалось распознать формат даты/времени</translation>
-    </message>
-    <message>
-        <source>Unsupported</source>
-        <translation>Не поддерживается</translation>
-    </message>
-    <message>
-        <source>Please update your system or install calendar</source>
-        <translation>Пожалуйста, обновите систему или установите приложение календарь</translation>
     </message>
     <message>
         <source>Update</source>

@@ -47,6 +47,26 @@
         <source>pass update failed</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Format Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t recognize date/time format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unsupported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please update your system or install calendar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Calendar Entry</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Settings</name>
@@ -118,22 +138,6 @@
     </message>
     <message>
         <source>Create Calendar Entry</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Format Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t recognize date/time format</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unsupported</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please update your system or install calendar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

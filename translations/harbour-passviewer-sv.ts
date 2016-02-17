@@ -47,6 +47,26 @@
         <source>pass update failed</source>
         <translation>passuppdatering misslyckades</translation>
     </message>
+    <message>
+        <source>Format Error</source>
+        <translation>Formatfel</translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t recognize date/time format</source>
+        <translation>Känner inte igen datum-/tidsformatet</translation>
+    </message>
+    <message>
+        <source>Unsupported</source>
+        <translation>Stöds ej</translation>
+    </message>
+    <message>
+        <source>Please update your system or install calendar</source>
+        <translation>Uppdatera ditt system eller installera Kalender</translation>
+    </message>
+    <message>
+        <source>Create Calendar Entry</source>
+        <translation>Skapa kalenderpost</translation>
+    </message>
 </context>
 <context>
     <name>Settings</name>
@@ -119,22 +139,6 @@
     <message>
         <source>Create Calendar Entry</source>
         <translation>Skapa kalenderpost</translation>
-    </message>
-    <message>
-        <source>Format Error</source>
-        <translation>Formatfel</translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t recognize date/time format</source>
-        <translation>Känner inte igen datum-/tidsformatet</translation>
-    </message>
-    <message>
-        <source>Unsupported</source>
-        <translation>Stöds ej</translation>
-    </message>
-    <message>
-        <source>Please update your system or install calendar</source>
-        <translation>Uppdatera ditt system eller installera Kalender</translation>
     </message>
     <message>
         <source>Update</source>

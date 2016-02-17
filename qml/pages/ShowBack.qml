@@ -25,7 +25,7 @@ Page {
 
         Loader {
             id: pass
-            width: 540 - Theme.paddingLarge * 2
+            width: Math.min(parent.width - 2 * Theme.horizontalPageMargin, Theme.fontSizeMedium * 20)
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.topMargin: Theme.paddingLarge

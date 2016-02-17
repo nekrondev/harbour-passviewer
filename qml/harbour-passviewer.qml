@@ -5,13 +5,15 @@ import "pages"
 ApplicationWindow
 {
     id: appWindow
+    signal openPass(string origin)
     property string topIcon: ""
-    property string topName: ""
     property string topPath: ""
-    property string topData: ""
-    property bool topUpdateable: false
     initialPage: Component { FirstPage { } }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
+
+    function passClicked(origin) {
+        openPass(origin);
+    }
 }
 
 

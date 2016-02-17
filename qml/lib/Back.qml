@@ -49,6 +49,12 @@ Rectangle {
     }
 
     onJsondataChanged: {
+        //clear old data
+        backgroundColor = 'white';
+        labelColor = 'black';
+        textColor = 'black';
+        backFields.clear();
+
         // get general pass info
         var pass = JSON.parse(jsondata);
         if ('backgroundColor' in pass)

@@ -80,17 +80,18 @@ function interpretColor(color) {
     return code;
 }
 
-function barcodeSize(origWidth, origHeight, maxWidth) {
+function barcodeSize(origWidth, origHeight, maxWidth, em) {
     // find the optimal barcode size
     var width = 0;
     var height = 0;
     var scale = 0;
-    while (width + 20 <= maxWidth && height < 120) {
+    // leave 0.5em border, but the barcode should be about 4em high
+    while (width + em <= maxWidth && height < em * 4) {
         scale++;
         width = origWidth * scale;
         height = origHeight * scale;
     }
-    if (width + 20 > maxWidth && scale > 1) {
+    if (width + em > maxWidth && scale > 1) {
         scale--;
         width = origWidth * scale;
         height = origHeight * scale;

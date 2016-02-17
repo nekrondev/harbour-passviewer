@@ -9,11 +9,13 @@ Page {
     allowedOrientations: Orientation.All
 
     property string uid: "firstPage"
+    property bool wide: Math.min(width, height) > Theme.fontSizeMedium * 35
 
-    SilicaListView {
+    SilicaFlickable {
         anchors.fill: parent
 
         PullDownMenu {
+            visible: page.wide
 
             MenuItem {
                 text: qsTr("Copyright")
@@ -30,91 +32,171 @@ Page {
             }
         }
 
-        model: ListModel {
-            id: passList
-            ListElement { name: ""; path: ""; points: -1; jsondata: ""; typeId: ""; updateable: false }
-        }
+        Row {
+            anchors.fill: parent
 
-        delegate: ListItem {
-            id: entry
-            contentHeight: passIcon.height + Theme.paddingSmall * 2
+            SilicaListView {
+                width: page.wide ? parent.width - passColumn.width : parent.width
+                height: parent.height
 
-            Image {
-                id: passIcon
-                x: Theme.horizontalPageMargin
-                width: 87  // 1.5 times the recommended icon size
-                height: 87
-                anchors.verticalCenter: parent.verticalCenter
-                source: "image://zipimage" + path + "/icon.png"
-            }
+                PullDownMenu {
+                    visible: !page.wide
 
-            Label {
-                text: name
-                textFormat: Text.PlainText
-                width: parent.width - passIcon.width - Theme.horizontalPageMargin * 2 - Theme.paddingMedium
-                truncationMode: TruncationMode.Fade
-                color: entry.highlighted ? Theme.highlightColor : points != -1 ? Theme.primaryColor : Theme.secondaryColor
-                anchors.left: passIcon.right
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.leftMargin: Theme.paddingMedium
-            }
+                    MenuItem {
+                        text: qsTr("Copyright")
+                        onClicked: {
+                            pageStack.push(Qt.resolvedUrl("Copyright.qml"));
+                        }
+                    }
 
-            menu: ContextMenu {
-
-                MenuItem {
-                    text: qsTr("Show")
-                    onClicked: {
-                        var properties = { name: name, path: path, jsondata: jsondata, updateable: updateable };
-                        pageStack.push(Qt.resolvedUrl("ShowPass.qml"), properties);
-                        pageStack.pushAttached(Qt.resolvedUrl("ShowBack.qml"), properties);
+                    MenuItem {
+                        text: qsTr("Settings")
+                        onClicked: {
+                            pageStack.push(Qt.resolvedUrl("Settings.qml"));
+                        }
                     }
                 }
 
-                MenuItem {
-                    text: qsTr("Update")
-                    visible: updateable
-                    onClicked: {
-                        passHandler.updatePass(path);
-                    }
+                model: ListModel {
+                    id: passList
+                    ListElement { name: ""; path: ""; points: -1; jsondata: ""; typeId: ""; updateable: false }
                 }
 
-                MenuItem {
-                    text: qsTr("Delete")
-                    onClicked: {
-                        var delPath = path;
-                        deleteRemorse.execute(entry, qsTr("Deleting"), function(){
-                            passHandler.removePass(delPath);
-                            for (var entry = 0; entry < passList.count; entry++) {
-                                if (passList.get(entry).path === delPath) {
-                                    passList.remove(entry);
-                                    break;
-                                }
+                delegate: ListItem {
+                    id: entry
+                    contentHeight: passIcon.height + Theme.paddingSmall * 2
+
+                    Image {
+                        id: passIcon
+                        width: Theme.iconSizeLauncher
+                        height: width
+                        anchors.left: parent.left
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.leftMargin: Theme.horizontalPageMargin
+                        source: "image://zipimage" + path + "/icon.png"
+                    }
+
+                    Label {
+                        text: name
+                        textFormat: Text.PlainText
+                        font.bold: passDisplay.status === Loader.Ready && passDisplay.item.path === path
+                        width: parent.width - passIcon.width - Theme.horizontalPageMargin * 2 - Theme.paddingMedium
+                        truncationMode: TruncationMode.Fade
+                        color: entry.highlighted ? Theme.highlightColor : points != -1 ? Theme.primaryColor : Theme.secondaryColor
+                        anchors.left: passIcon.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.leftMargin: Theme.paddingMedium
+                    }
+
+                    menu: ContextMenu {
+
+                        MenuItem {
+                            text: qsTr("Show")
+                            onClicked: {
+                                var properties = { name: name, path: path, jsondata: jsondata, updateable: updateable };
+                                pageStack.push(Qt.resolvedUrl("ShowPass.qml"), properties);
+                                pageStack.pushAttached(Qt.resolvedUrl("ShowBack.qml"), properties);
                             }
-                        });
+                        }
+
+                        MenuItem {
+                            text: qsTr("Update")
+                            visible: updateable
+                            onClicked: {
+                                passHandler.updatePass(path);
+                            }
+                        }
+
+                        MenuItem {
+                            text: qsTr("Delete")
+                            onClicked: {
+                                var delPath = path;
+                                deleteRemorse.execute(entry, qsTr("Deleting"), function(){
+                                    passHandler.removePass(delPath);
+                                    for (var entry = 0; entry < passList.count; entry++) {
+                                        if (passList.get(entry).path === delPath) {
+                                            passList.remove(entry);
+                                            break;
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+
+                    onClicked: openPass(path, false)
+
+                    ListView.onAdd: AddAnimation {
+                        target: entry
+                    }
+
+                    ListView.onRemove: RemoveAnimation {
+                        target: entry
+                    }
+
+                    RemorseItem {
+                        id: deleteRemorse
                     }
                 }
+
+                VerticalScrollDecorator {}
             }
 
-            onClicked: {
-                var properties = { name: name, path: path, jsondata: jsondata, updateable: updateable };
-                pageStack.push(Qt.resolvedUrl("ShowPass.qml"), properties);
-                pageStack.pushAttached(Qt.resolvedUrl("ShowBack.qml"), properties);
-            }
+            SilicaFlickable {
+                visible: page.wide && (!busy.running) && passList.count > 0
+                width: Math.min(parent.width / 2, Theme.fontSizeMedium * 20)
+                height: parent.height
+                contentHeight: passColumn.height + 2 * Theme.paddingLarge
 
-            ListView.onAdd: AddAnimation {
-                target: entry
-            }
+                Column {
+                    id: passColumn
+                    width: parent.width
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.topMargin: Theme.paddingLarge
+                    spacing: Theme.paddingLarge
 
-            ListView.onRemove: RemoveAnimation {
-                target: entry
-            }
+                    Loader {
+                        id: passDisplay
+                        active: page.wide
+                        enabled: parent.enabled
+                        width: parent.width - 2 * Theme.horizontalPageMargin
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        source: Qt.resolvedUrl("../lib/Pass.qml")
+                    }
 
-            RemorseItem {
-                id: deleteRemorse
+                    Button {
+                        text: qsTr("Create Calendar Entry")
+                        visible: passDisplay.item.relevantDate !== ""
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        onClicked: {
+                            passHandler.createCalendarEntry(passList.get(getPass(passDisplay.item.path)).name, passDisplay.item.relevantDate);
+                        }
+                    }
+
+                    Button {
+                        text: qsTr("Update")
+                        visible: passList.get(getPass(passDisplay.item.path)).updateable
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        onClicked: {
+                            passHandler.updatePass(passDisplay.item.path);
+                        }
+                    }
+
+                    Loader {
+                        id: backDisplay
+                        active: page.wide
+                        enabled: parent.enabled
+                        width: parent.width - 2 * Theme.horizontalPageMargin
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        source: Qt.resolvedUrl("../lib/Back.qml")
+                    }
+                }
+
+                VerticalScrollDecorator {}
             }
         }
-
-        VerticalScrollDecorator {}
     }
 
     BusyIndicator {
@@ -188,13 +270,28 @@ Page {
                 busy.running = false;
                 checkTimer.start();
                 if (Qt.application.arguments.length === 2)
-                    dbus.openPass(Qt.application.arguments[1]);
+                    openPass(Qt.application.arguments[1]);
             }
             // report a successful update and redraw the pass, if it's shown
             if (update) {
                 notificator.bannerNotification(qsTr("pass update successful"), "");
                 if (pageStack.depth > 1)
-                    dbus.openPass(pageStack.nextPage().path);
+                    openPass(pageStack.nextPage().path);
+                if (page.wide && passDisplay.item.path !== '') {
+                    try {
+                        var showPass = passList.get(getPass(passDisplay.item.path));
+                        passDisplay.item.path = showPass.path;
+                        passDisplay.item.jsondata = showPass.jsondata;
+                        backDisplay.item.jsondata = showPass.jsondata;
+                    }
+                    catch(e) {}
+                }
+            }
+            // wide mode: show the first pass if there isn't one yet or if it vanished
+            if (page.wide && (passDisplay.item.path === '' || getPass(passDisplay.item.path) === null)) {
+                passDisplay.item.path = passList.get(0).path;
+                passDisplay.item.jsondata = passList.get(0).jsondata;
+                backDisplay.item.jsondata = passList.get(0).jsondata;
             }
         }
     }
@@ -226,6 +323,19 @@ Page {
                 homeWatcher.scanHome(true);
             }
         }
+        onCalendarEntryFinished: {
+            if (state === "format")
+                notificator.bannerNotification(qsTr("Format Error"), qsTr("Couldn't recognize date/time format"));
+            if (state === "xdg-open")
+                notificator.bannerNotification(qsTr("Unsupported"), qsTr("Please update your system or install calendar"));
+        }
+    }
+
+    Connections {
+        target: appWindow
+        onOpenPass: {
+            openPass(origin);
+        }
     }
 
     DBusAdaptor {
@@ -239,17 +349,35 @@ Page {
              '  </method>' +
              '</interface>'
         function openPass(origin) {
-            // bring the app to the foreground
-            appWindow.activate();
-            // get the canonical path
-            origin = passHandler.getCanonicalPath(origin);
-            // look for a matching pass
-            var pass = getPass(origin);
-            if (pass !== null) {
-                // found one: let's show it
+            page.openPass(origin);
+        }
+    }
+
+    function openPass(origin, immediate) {
+        if (typeof immediate === 'undefined')
+            immediate = true;
+        // bring the app to the foreground
+        appWindow.activate();
+        // get the canonical path
+        origin = passHandler.getCanonicalPath(origin);
+        // look for a matching pass
+        var pass = getPass(origin);
+        if (pass !== null) {
+            // found one: let's show it
+            if (passDisplay.status === Loader.Ready && backDisplay.status === Loader.Ready) {
+                // on wide screen
+                passDisplay.item.path = passList.get(pass).path;
+                passDisplay.item.jsondata = passList.get(pass).jsondata;
+                backDisplay.item.jsondata = passList.get(pass).jsondata;
+            }
+            else {
+                // on small screen
                 var properties = { name: passList.get(pass).name, path: passList.get(pass).path, jsondata: passList.get(pass).jsondata, updateable: passList.get(pass).updateable };
                 pageStack.pop(page, PageStackAction.Immediate);
-                pageStack.push(Qt.resolvedUrl("ShowPass.qml"), properties, PageStackAction.Immediate);
+                if (immediate)
+                    pageStack.push(Qt.resolvedUrl("ShowPass.qml"), properties, PageStackAction.Immediate);
+                else
+                    pageStack.push(Qt.resolvedUrl("ShowPass.qml"), properties);
                 pageStack.pushAttached(Qt.resolvedUrl("ShowBack.qml"), properties);
             }
         }
@@ -291,19 +419,13 @@ Page {
             var icon = "image://zipimage" + passList.get(0).path + "/icon.png";
             if (topIcon !== icon) {
                 topIcon = icon;
-                topName = passList.get(0).name;
                 topPath = passList.get(0).path;
-                topData = passList.get(0).jsondata;
-                topUpdateable = passList.get(0).updateable;
             }
         }
         else {
             if (topIcon !== "") {
                 topIcon = "";
-                topName = "";
                 topPath = "";
-                topData = "";
-                topUpdateable = "";
             }
         }
     }

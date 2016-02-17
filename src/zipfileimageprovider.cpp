@@ -19,10 +19,11 @@ QPixmap ZipFileImageProvider::requestPixmap(const QString &id, QSize *size, cons
     if (!zip.isValid())
         return empty;
     QByteArray data;
-    if (imgFile == "icon.png")  // prefer the HD-icon if available
-        data = zip.getFile("icon@2x.png");
+    // prefer the HD-image if available
+    QString hdFile(imgFile.left(imgFile.lastIndexOf('.')) + "@2x" + imgFile.mid(imgFile.lastIndexOf('.')));
+    data = zip.getFile(hdFile);
     if (data.size() == 0)
-        data = zip.getFile(imgFile);
+        data = zip.getFile(imgFile);  // fallback to normal image
     if (data.size() == 0)
         return empty;
     // decode the image file

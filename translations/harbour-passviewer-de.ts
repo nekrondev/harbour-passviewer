@@ -47,6 +47,26 @@
         <source>pass update failed</source>
         <translation>Passaktualisierung fehlgeschlagen</translation>
     </message>
+    <message>
+        <source>Format Error</source>
+        <translation>Formatfehler</translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t recognize date/time format</source>
+        <translation>Datum/Zeit-Format nicht erkennbar</translation>
+    </message>
+    <message>
+        <source>Unsupported</source>
+        <translation>Nicht unterstützt</translation>
+    </message>
+    <message>
+        <source>Please update your system or install calendar</source>
+        <translation>Bitte System aktualisieren bzw. Kalender installieren</translation>
+    </message>
+    <message>
+        <source>Create Calendar Entry</source>
+        <translation>Erstelle Kalendereintrag</translation>
+    </message>
 </context>
 <context>
     <name>Settings</name>
@@ -119,22 +139,6 @@
     <message>
         <source>Create Calendar Entry</source>
         <translation>Erstelle Kalendereintrag</translation>
-    </message>
-    <message>
-        <source>Format Error</source>
-        <translation>Formatfehler</translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t recognize date/time format</source>
-        <translation>Datum/Zeit-Format nicht erkennbar</translation>
-    </message>
-    <message>
-        <source>Unsupported</source>
-        <translation>Nicht unterstützt</translation>
-    </message>
-    <message>
-        <source>Please update your system or install calendar</source>
-        <translation>Bitte System aktualisieren bzw. Kalender installieren</translation>
     </message>
     <message>
         <source>Update</source>

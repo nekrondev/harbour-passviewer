@@ -8,6 +8,11 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Wed Feb 17 2016 Christof Bürgi <christof@buergi.lugs.ch> 1.0-1
+- Reworked UI to properly handle different screen resolutions
+- Proper tablet support (never give up hope!)
+- Minor bugs fixed
+
 * Sat Feb 6 2016 Christof Bürgi <christof@buergi.lugs.ch> 0.11-1
 - Changed to the Nemo Notification API
 - Passes can now be opened via CLI or D-Bus

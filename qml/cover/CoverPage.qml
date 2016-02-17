@@ -7,8 +7,8 @@ CoverBackground {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: Theme.paddingLarge
-        width: 116  // 2 times the recommended pass icon size
-        height: 116
+        width: Theme.iconSizeExtraLarge
+        height: width
         source: topIcon != "" ? topIcon : "image://theme/harbour-passviewer"
     }
 
@@ -18,12 +18,8 @@ CoverBackground {
         CoverAction {
             iconSource: "image://theme/icon-cover-play"
             onTriggered: {
-                if (topPath !== "" && topData !== "") {
-                    var properties = { name: topName, path: topPath, jsondata: topData, updateable: topUpdateable };
-                    pageStack.pop(pageStack.find(function(page){return page.uid === "firstPage"}), PageStackAction.Immediate);
-                    pageStack.push(Qt.resolvedUrl("../pages/ShowPass.qml"), properties, PageStackAction.Immediate);
-                    pageStack.pushAttached(Qt.resolvedUrl("../pages/ShowBack.qml"), properties);
-                    appWindow.activate();
+                if (topPath !== "") {
+                    passClicked(topPath);
                 }
             }
         }
