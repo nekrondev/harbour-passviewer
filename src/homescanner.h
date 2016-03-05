@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QMap>
 #include <QStringList>
 #include <QVariantList>
 #include <QVariantMap>
@@ -13,6 +14,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QFileInfoList>
+#include <QLocale>
 
 #include "zipfile.h"
 
@@ -31,6 +33,7 @@ public slots:
 
 private:
     QVariantMap m_buildPass(QString zipname);
+    bool m_localizePass(QJsonDocument &json, ZipFile &zip);
 };
 
 #endif // HOMESCANNER_H
