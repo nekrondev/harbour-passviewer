@@ -46,6 +46,11 @@ struct FileHeader {
     quint16 extraLength;
 };
 
+struct ExtraHeader {
+    quint16 type;
+    quint16 size;
+};
+
 #pragma pack()
 
 ZipFile::ZipFile(QObject *parent) :
@@ -66,12 +71,9 @@ ZipFile::ZipFile(QString filename) :
     if (!m_file.open(QFile::ReadOnly))
         return;
     // search the "end of directory" entry
-    m_file.seek(m_file.size() - 1024);
-    QByteArray trailer(m_file.read(1024));
-    qint64 pos_eod = trailer.lastIndexOf("PK\x05\x06");
+    qint64 pos_eod = m_findMark(m_file, "PK\x05\x06");
     if (pos_eod == -1)
         return;
-    pos_eod += m_file.size() - 1024;
     // read the "end of directory" entry (with the directory position)
     m_file.seek(pos_eod);
     QByteArray eodString(m_file.read(sizeof(Eod)));
@@ -102,11 +104,12 @@ ZipFile::ZipFile(QString filename) :
                 name = cp437->toUnicode(rawname);
             else
                 name = QString(rawname); // UTF-8
-            QList<int> entryData;
+            QList<qint64> entryData;
             entryData.append(compression);
             entryData.append(qFromLittleEndian<quint32>(entry->headerPos));
             entryData.append(qFromLittleEndian<quint32>(entry->compressedSize));
             entryData.append(qFromLittleEndian<quint32>(entry->size));
+            m_interpretExtras(m_file, qFromLittleEndian<quint16>(entry->extraLength), entryData[3], entryData[2]);
             m_entries.insert(name, entryData);
         }
     }
@@ -161,13 +164,9 @@ QByteArray ZipFile::getFile(QString filename) {
                 return QByteArray();
             QByteArray uncompressed(m_entries.value(filename).at(3), '\0');
             // to convert from ZIP to LZMA header, remove the first 4 bytes, then insert a little endian quint64 with the uncompressed length at position 5
-            union {
-                quint64 ll;
-                char c[8];
-            } size;
-            size.ll = qToLittleEndian<quint64>(uncompressed.size());
             compressed.remove(0, 4);
-            compressed.insert(5, size.c, 8);
+            quint64 uncompressedSize = qToLittleEndian<quint64>(uncompressed.size());
+            compressed.insert(5, (char*)&uncompressedSize, 8);
             lzma.next_in = (uint8_t*)compressed.data();
             lzma.avail_in = compressed.size();
             lzma.next_out = (uint8_t*)uncompressed.data();
@@ -188,4 +187,47 @@ QString ZipFile::getTextFile(QString filename) {
         return codec->toUnicode(bytes);
     else
         return QString(bytes);
+}
+
+qint64 ZipFile::m_findMark(QFile &file, QByteArray mark) {
+    qint64 pos = file.size();
+    while (pos > 0) {
+        pos = qMax<qint64>(0, pos - (1024 - mark.size()));
+        file.seek(pos);
+        QByteArray block(file.read(1024));
+        qint64 off = block.lastIndexOf(mark);
+        if (off >= 0)
+            return pos + off;
+    }
+    return -1;
+}
+
+void ZipFile::m_interpretExtras(QFile &file, qint64 markSize, qint64 &size, qint64 &compressedSize) {
+    qint64 read = 0;
+    while (read < markSize) {
+        QByteArray extraHeaderString(file.read(sizeof(ExtraHeader)));
+        if (extraHeaderString.size() != sizeof(ExtraHeader))
+            return;
+        ExtraHeader* extraHeader = (ExtraHeader*)extraHeaderString.data();
+        qint64 fieldSize = qFromLittleEndian<quint16>(extraHeader->size);
+        read += fieldSize + 4;
+        if (qFromLittleEndian<quint16>(extraHeader->type) == 1) {
+            // ZIP64
+            if (fieldSize >= 8) {
+                QByteArray zip64size(file.read(8));
+                if (zip64size.size() < 8)
+                    return;
+                size = qFromLittleEndian<qint64>(*(qint64*)zip64size.data());
+                fieldSize -= 8;
+            }
+            if (fieldSize >= 8) {
+                QByteArray zip64size(file.read(8));
+                if (zip64size.size() < 8)
+                    return;
+                compressedSize = qFromLittleEndian<qint64>(*(qint64*)zip64size.data());
+                fieldSize -= 8;
+            }
+        }
+        QByteArray dummy(file.read(fieldSize));
+    }
 }
