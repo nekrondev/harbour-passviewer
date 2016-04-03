@@ -14,6 +14,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QFileInfoList>
+#include <QMimeDatabase>
 #include <QLocale>
 
 #include "zipfile.h"

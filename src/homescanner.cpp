@@ -6,6 +6,7 @@ HomeScanner::HomeScanner(QObject *parent) : QObject(parent)
 }
 
 void HomeScanner::scanHome(bool update) {
+    QMimeDatabase mime;
     QStringList inspectPaths;
     QStringList visiblePaths;
     QStringList passPaths;
@@ -31,7 +32,8 @@ void HomeScanner::scanHome(bool update) {
                 inspectPaths.append(dpath);
             }
             if (entry->isFile()) {
-                if (entry->suffix() != "pkpass")  // look for pass files only
+                // look for obvious pass files and ZIP archives only
+                if (entry->suffix() != "pkpass" && mime.mimeTypeForFile(*entry).name() != "application/zip")
                     continue;
                 QString fpath(entry->canonicalFilePath());
                 QVariantMap pass = m_buildPass(fpath);

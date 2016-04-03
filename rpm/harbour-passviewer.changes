@@ -8,6 +8,12 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Sun Apr 3 2016 Christof Bürgi <christof@buergi.lugs.ch> 1.1-1
+- Pass internationalization support
+- Partial ZIP64 support (pass files are special ZIP archives)
+- Check files without the pkpass extension
+- Minor UI tweaks
+
 * Wed Feb 17 2016 Christof Bürgi <christof@buergi.lugs.ch> 1.0-1
 - Reworked UI to properly handle different screen resolutions
 - Proper tablet support (never give up hope!)
