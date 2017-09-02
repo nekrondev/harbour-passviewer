@@ -70,6 +70,7 @@ CONFIG += sailfishapp_i18n
 TRANSLATIONS += translations/harbour-passviewer-de.ts
 TRANSLATIONS += translations/harbour-passviewer-sv.ts
 TRANSLATIONS += translations/harbour-passviewer-ru.ts
+TRANSLATIONS += translations/harbour-passviewer-hu.ts
 
 HEADERS += \
     src/zint/qr.h \
@@ -107,4 +108,5 @@ LIBS += -llzma
 LIBS += -lnemonotifications-qt5
 
 DISTFILES += \
-    qml/lib/currencies.json
+    qml/lib/currencies.json \
+    translations/harbour-passviewer-hu.ts

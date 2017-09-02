@@ -3,9 +3,10 @@ Type=Application
 X-Nemo-Application-Type=silica-qt5
 Icon=harbour-passviewer
 Exec=harbour-passviewer
-Categories=Utility
+Categories=Utility;
 Name=Pass Viewer
-MimeType=application/vnd.apple.pkpass
+MimeType=application/vnd.apple.pkpass;
 X-Nemo-Single-Instance=no
 # Name[de]=Pass Viewer
+
 
