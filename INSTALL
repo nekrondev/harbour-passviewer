@@ -12,11 +12,11 @@ This is done as follows:
    2. Start QtCreator from the SDK, and open the project.
    3. Start the build engine.
    4. Click the "Sailfish OS" icon (fifth from the top).
-   5. Click on "manage" for the i486 target.
+   5. Click on the gear symbol for the arm target.
    6. Type a package name into the search field.
    7. Click the "install" check box.
    8. Repeat steps 6 and 7 for the other packages.
    9. Click the "install" button.
   10. Wait until the task has been reported as successful.
   11. Click "clear".
-  12. Click the "Targets" section, and repeat steps 5 - 11 for the arm target.
+  12. Click the "Targets" section, and repeat steps 5 - 11 for the i486 target.

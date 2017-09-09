@@ -108,5 +108,4 @@ LIBS += -llzma
 LIBS += -lnemonotifications-qt5
 
 DISTFILES += \
-    qml/lib/currencies.json \
-    translations/harbour-passviewer-hu.ts
+    qml/lib/currencies.json

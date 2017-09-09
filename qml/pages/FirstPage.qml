@@ -9,7 +9,7 @@ Page {
     allowedOrientations: Orientation.All
 
     property string uid: "firstPage"
-    property bool wide: Math.min(width, height) > Theme.fontSizeMedium * 35
+    property bool wide: (Screen.sizeCategory == Screen.Large || Screen.sizeCategory == Screen.ExtraLarge) && (appWindow.orientation == Orientation.Landscape || appWindow.orientation == Orientation.LandscapeInverted)
 
 
     Row {
@@ -313,6 +313,13 @@ Page {
         target: appWindow
         onOpenPass: {
             openPass(origin);
+        }
+        onOrientationChanged: {
+            if (page.wide && (passDisplay.item.path === '' || getPass(passDisplay.item.path) === null)) {
+                passDisplay.item.path = passList.get(0).path;
+                passDisplay.item.jsondata = passList.get(0).jsondata;
+                backDisplay.item.jsondata = passList.get(0).jsondata;
+            }
         }
     }
 

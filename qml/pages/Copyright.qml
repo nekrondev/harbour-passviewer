@@ -39,6 +39,7 @@ Page {
                     "THE SOFTWARE.</p><hr>" +
                     "<p>Swedish translation by Åke Engelbrektson, under the terms of CC-BY 3.0<br>" +
                     "Russian translation by mentaljam, under the terms of CC-BY 3.0<br>" +
+                    "Hungarian translation by martonmiklos, under the terms of CC-BY 3.0<br>" +
                     "App icon courtesy of Moth, under the terms of CC-BY 3.0<br>" +
                     "see: <a href=\"http://creativecommons.org/licenses/by/3.0/\">http://creativecommons.org/licenses/by/3.0/</a></p><hr>" +
                     "<p>Contains parts of libzint, licensed as follows:</p>" +

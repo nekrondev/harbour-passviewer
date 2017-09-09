@@ -11,14 +11,4 @@ highlighted pass is shown on the cover, with the cover action opening the pass
 directly.
 
 
-Development info:
-The building of this app requires the following development libraries installed:
-
-You can install them by logging into your MerSDK build machine:
-
-ssh -p 2222 -i  <YOUR MER SDK INSTALL PATH>/vmshare/ssh/private_keys/engine/mersdk mersdk@localhost
-
-Then run the following command:
-
-sb2 -t SailfishOS-armv7hl -m sdk-install -R zypper in nemo-qml-plugin-notifications-qt5-devel bzip2-devel xz-devel
-
+For build instructions, please see INSTALL.
