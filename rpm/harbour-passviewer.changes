@@ -8,6 +8,11 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Wed Sep 13 2017 Christof Bürgi <christof@buergi.lugs.ch> 1.2-1
+- Hungarian translation added (thanks to martonmiklos)
+- Landscape mode for tablets added
+- GPS is now off when screen is off
+
 * Sun Apr 3 2016 Christof Bürgi <christof@buergi.lugs.ch> 1.1-1
 - Pass internationalization support
 - Partial ZIP64 support (pass files are special ZIP archives)

@@ -10,7 +10,7 @@ Page {
 
     property string uid: "firstPage"
     property bool wide: (Screen.sizeCategory == Screen.Large || Screen.sizeCategory == Screen.ExtraLarge) && (appWindow.orientation == Orientation.Landscape || appWindow.orientation == Orientation.LandscapeInverted)
-
+    property bool displayOn: true
 
     Row {
         anchors.fill: parent
@@ -201,7 +201,7 @@ Page {
     PositionSource {
         id: locator
         property bool precise: false
-        active: settingsStore.checkDistance
+        active: settingsStore.checkDistance && page.displayOn
         updateInterval: 60000
         preferredPositioningMethods: (precise || !settingsStore.useHere) ? PositionSource.AllPositioningMethods : PositionSource.NonSatellitePositioningMethods
         onPositionChanged: checkPassList()
@@ -335,6 +335,21 @@ Page {
              '</interface>'
         function openPass(origin) {
             page.openPass(origin);
+        }
+    }
+
+    DBusInterface {
+        id: dbus_mce
+        bus: DBus.SystemBus
+        iface: 'com.nokia.mce.signal'
+        path: '/com/nokia/mce/signal'
+        service: 'com.nokia.mce'
+        signalsEnabled: true
+        function display_status_ind(status) {
+            if (status === "off")
+                page.displayOn = false;
+            else
+                page.displayOn = true;
         }
     }
 
