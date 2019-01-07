@@ -8,6 +8,9 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Sun Jan 6 2019 Christof Bürgi <christof@buergi.lugs.ch> 1.3-1
+- Bugfix: Passes without primary fields can now be displayed
+
 * Wed Sep 13 2017 Christof Bürgi <christof@buergi.lugs.ch> 1.2-1
 - Hungarian translation added (thanks to martonmiklos)
 - Landscape mode for tablets added

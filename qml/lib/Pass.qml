@@ -377,19 +377,25 @@ Rectangle {
         // set field contents
         Utils.setFields(pass, style, 'headerFields', headerFields, dateTimeFormat, currencyFormat);
         if (style === "boardingPass") {
-            boardingFromKey = pass.boardingPass.primaryFields[0].key;
-            boardingFromTitle = pass.boardingPass.primaryFields[0].label;
-            boardingFromValue = Utils.htmlescape(pass.boardingPass.primaryFields[0].value);
-            boardingToKey = pass.boardingPass.primaryFields[1].key;
-            boardingToTitle = pass.boardingPass.primaryFields[1].label;
-            boardingToValue = Utils.htmlescape(pass.boardingPass.primaryFields[1].value);
+            if (pass.boardingPass.primaryFields.length > 0) {
+                boardingFromKey = pass.boardingPass.primaryFields[0].key;
+                boardingFromTitle = pass.boardingPass.primaryFields[0].label;
+                boardingFromValue = Utils.htmlescape(pass.boardingPass.primaryFields[0].value);
+            }
+            if (pass.boardingPass.primaryFields.length > 1) {
+                boardingToKey = pass.boardingPass.primaryFields[1].key;
+                boardingToTitle = pass.boardingPass.primaryFields[1].label;
+                boardingToValue = Utils.htmlescape(pass.boardingPass.primaryFields[1].value);
+            }
             Utils.setFields(pass, style, 'auxiliaryFields', secondaryFields, dateTimeFormat, currencyFormat);
             Utils.setFields(pass, style, 'secondaryFields', tertiaryFields, dateTimeFormat, currencyFormat);
         }
         else {
-            primaryKey = pass[style].primaryFields[0].key;
-            primaryTitle = pass[style].primaryFields[0].label;
-            primaryValue = Utils.htmlescape(pass[style].primaryFields[0].value);
+            if (pass[style].primaryFields.length > 0) {
+                primaryKey = pass[style].primaryFields[0].key;
+                primaryTitle = pass[style].primaryFields[0].label;
+                primaryValue = Utils.htmlescape(pass[style].primaryFields[0].value);
+            }
             Utils.setFields(pass, style, 'secondaryFields', secondaryFields, dateTimeFormat, currencyFormat);
             Utils.setFields(pass, style, 'auxiliaryFields', tertiaryFields, dateTimeFormat, currencyFormat);
         }
@@ -407,6 +413,7 @@ Rectangle {
                 pass.barcodes.push(pass.barcode);
             }
         }
+        console.log('barcode');
         // paint the first useable barcode
         var validCode = false;
         for (var barcode = 0; barcode <= pass.barcodes.length; barcode++) {

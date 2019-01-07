@@ -81,12 +81,18 @@ QVariantMap HomeScanner::m_buildPass(QString zipname) {
     // create the pass name
     QString name;
     QJsonArray primaries(json.object().value(passStyle).toObject().value("primaryFields").toArray());
-    if (passStyle == "boardingPass")  // use parting point and destination
+    QJsonArray secondaries(json.object().value(passStyle).toObject().value("secondaryFields").toArray());
+    QJsonArray auxiliaries(json.object().value(passStyle).toObject().value("auxiliaryFields").toArray());
+    if (passStyle == "boardingPass" && primaries.count() > 1)  // use parting point and destination
         name = primaries.at(0).toObject().value("value").toString() + " → " + primaries.at(1).toObject().value("value").toString();
-    else  // use the subject
+    else if (primaries.count() > 0)
         name = primaries.at(0).toObject().value("label").toString() + " " + primaries.at(0).toObject().value("value").toString();
-    // use the file basename as backup
-    if (name == "")
+    else if (secondaries.count() > 0)
+        name = secondaries.at(0).toObject().value("label").toString() + " " + secondaries.at(0).toObject().value("value").toString();
+    else if (auxiliaries.count() > 0)
+        name = auxiliaries.at(0).toObject().value("label").toString() + " " + auxiliaries.at(0).toObject().value("value").toString();
+    // use the file basename if everything else fails
+    if (name == "" || name == " ")
         name = QFileInfo(zipname).baseName();
     // check if the pass is updateable
     bool updateable = json.object().contains("webServiceURL") && json.object().contains("serialNumber") && json.object().contains("authenticationToken");
