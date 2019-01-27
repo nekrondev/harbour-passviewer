@@ -39,7 +39,7 @@ private:
     QMap<QString, QList<qint64> > m_entries;
 
     qint64 m_findMark(QFile &file, QByteArray mark);
-    void m_interpretExtras(QFile &file, qint64 markSize, qint64 &size, qint64 &compressedSize);
+    void m_interpretExtras(QFile &file, qint64 markSize, qint64 &size, qint64 &compressedSize, qint64 &offset);
 };
 
 #endif // ZIPFILE_H

@@ -57,6 +57,7 @@ QVariantMap HomeScanner::m_buildPass(QString zipname) {
     if (!zip.isValid())
         return QVariantMap();
     QString jsondata = zip.getTextFile("pass.json");
+    m_cleanJson(jsondata);
     QJsonDocument json(QJsonDocument::fromJson(jsondata.toUtf8()));
     if (json.isNull())
         return QVariantMap();
@@ -98,6 +99,28 @@ QVariantMap HomeScanner::m_buildPass(QString zipname) {
     bool updateable = json.object().contains("webServiceURL") && json.object().contains("serialNumber") && json.object().contains("authenticationToken");
     // construct and return the pass
     return QVariantMap({{"name", name}, {"path", zipname}, {"jsondata", jsondata}, {"typeId", typeId}, {"updateable", updateable}});
+}
+
+void HomeScanner::m_cleanJson(QString &data) {
+    // this finds and removes commas at the end of arrays and objects (empty elements)
+    QRegularExpression findcomma("[\\]}]\\s*,\\s*[\\]}]");
+    bool done = false;
+    do {
+        auto match = findcomma.match(data);
+        if (match.hasMatch()) {
+            int commapos = data.indexOf(',', match.capturedStart());
+            if (commapos >= 0)
+                data.remove(commapos, 1);
+            else
+                done = true; // for safety
+        }
+        else
+            done = true;
+    } while(!done);
+    // this cleans any garbage at the end
+    int objend = data.lastIndexOf('}') + 1;
+    if (data.size() > objend)
+        data.resize(objend);
 }
 
 bool HomeScanner::m_localizePass(QJsonDocument &json, ZipFile &zip) {

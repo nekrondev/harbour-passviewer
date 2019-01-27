@@ -7,6 +7,7 @@
 #include <QStringList>
 #include <QVariantList>
 #include <QVariantMap>
+#include <QRegularExpression>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -34,6 +35,7 @@ public slots:
 
 private:
     QVariantMap m_buildPass(QString zipname);
+    void m_cleanJson(QString &data);
     bool m_localizePass(QJsonDocument &json, ZipFile &zip);
 };
 
