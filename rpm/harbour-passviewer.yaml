@@ -29,6 +29,10 @@ PkgConfigBR:
   - Qt5Sql
   - Qt5Positioning
   - Qt5DBus
+  - liblzma
+PkgBR:
+  - nemo-qml-plugin-notifications-qt5-devel
+  - bzip2-devel
 
 # Build dependencies without a pkgconfig setup can be listed here
 # PkgBR:
@@ -37,9 +41,6 @@ PkgConfigBR:
 # Runtime dependencies which are not automatically detected
 Requires:
   - sailfishsilica-qt5 >= 0.10.9 
-  - libz.so.1(ZLIB_1.2.2.3)
-  - libbz2.so.1
-  - liblzma.so.5
   - qt5-qtdeclarative-import-positioning >= 5.2
   - nemo-qml-plugin-notifications-qt5
   - nemo-qml-plugin-dbus-qt5
