@@ -6,11 +6,8 @@
 #include <QGuiApplication>
 #include <QQuickView>
 #include <QQmlContext>
-#include <QStringList>
-#include <QFile>
-#include <QDir>
+#include <QString>
 #include <QDBusInterface>
-#include <unistd.h>
 
 #include "settingsstore.h"
 #include "barcodeimageprovider.h"
@@ -28,28 +25,10 @@ int main(int argc, char *argv[])
     QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
     QScopedPointer<QQuickView> view(SailfishApp::createView());
 
+    QDBusInterface other("ch.p2501.harbour-passviewer", "/ch/p2501/harbour_passviewer", "ch.p2501.harbour_passviewer");
     // check if another instance is running
-    bool alreadyRunning = false;
-    QStringList procs(QDir("/proc").entryList(QDir::Dirs | QDir::NoDotAndDotDot));
-    for (auto proc = procs.cbegin(); proc != procs.cend(); ++proc) {
-        bool isProc = false;
-        int pid = proc->toInt(&isProc);  // only numerical subdirs are processes
-        if (isProc && pid == getpid())   // don't check your own PID
-            isProc = false;
-        if (isProc) {
-            QFile cmdline(QString("/proc/") + (*proc) + "/cmdline");
-            if (cmdline.open(QFile::ReadOnly)) {
-                if (QString(cmdline.readLine()).contains("harbour-passviewer"))
-                    alreadyRunning = true;
-                cmdline.close();
-            }
-        }
-        if (alreadyRunning)
-            break;
-    }
-    if (alreadyRunning) {
+    if (other.isValid()) {
         // yes, it's running, so signal it and exit
-        QDBusInterface other("ch.p2501.harbour_passviewer", "/ch/p2501/harbour_passviewer", "ch.p2501.harbour_passviewer");
         QString origin;
         if (argc == 2)
             origin = argv[1];

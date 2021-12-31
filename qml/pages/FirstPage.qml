@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import QtPositioning 5.2
-import org.nemomobile.dbus 2.0
+import Nemo.DBus 2.0
 
 
 Page {
@@ -325,7 +325,7 @@ Page {
 
     DBusAdaptor {
         id: dbus
-        service: "ch.p2501.harbour_passviewer"
+        service: "ch.p2501.harbour-passviewer"
         iface: "ch.p2501.harbour_passviewer"
         path: "/ch/p2501/harbour_passviewer"
         xml: '<interface name="ch.p2501.harbour_passviewer">' +

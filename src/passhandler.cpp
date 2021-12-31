@@ -148,7 +148,7 @@ void PassHandler::createCalendarEntry(QString subject, QString isoDateTime) {
         return;
     }
     // create a temporary iCal file
-    QString icaldir(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
+    QString icaldir(QStandardPaths::writableLocation(QStandardPaths::TempLocation));
     if (!QDir(icaldir).exists())
         QDir().mkpath(icaldir);
     QFile ical(icaldir + "/passbook.ics");
@@ -166,20 +166,8 @@ void PassHandler::createCalendarEntry(QString subject, QString isoDateTime) {
         ical.write("END:VEVENT\r\n");
         ical.write("END:VCALENDAR\r\n");
         ical.close();
-        // open the file with xdg-open
-        QProcess* xdg = new QProcess();
-        connect(xdg, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(processFinished(int,QProcess::ExitStatus)));
-        connect(xdg, SIGNAL(finished(int,QProcess::ExitStatus)), xdg, SLOT(deleteLater()));
-        xdg->start("xdg-open", QStringList({ical.fileName()}));
+        QDesktopServices::openUrl(QUrl("file:/" + ical.fileName()));
     }
-}
-
-void PassHandler::processFinished(int exitCode, QProcess::ExitStatus exitStatus) {
-    // check whether xdg-open on the iCal file worked
-    if (exitCode != 0 || exitStatus == QProcess::CrashExit)
-        emit calendarEntryFinished("xdg-open");
-    else
-        emit calendarEntryFinished("ok");
 }
 
 void PassHandler::m_copyFile(QIODevice &to, QIODevice &from) {

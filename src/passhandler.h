@@ -20,7 +20,7 @@
 #include <QTemporaryFile>
 #include <QDir>
 #include <QStandardPaths>
-#include <QProcess>
+#include <QDesktopServices>
 
 #include "zipfile.h"
 #include "passdb.h"
@@ -45,7 +45,6 @@ signals:
 
 public slots:
     void replyFinished(QNetworkReply* reply);
-    void processFinished(int exitCode, QProcess::ExitStatus exitStatus);
 
 private:
     QNetworkAccessManager m_network;
