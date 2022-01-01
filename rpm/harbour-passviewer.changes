@@ -8,6 +8,11 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Sat Jan 1 2022 Christof Bürgi <christof@buergi.lugs.ch> 1.5-1
+- French translation added (thanks to Arnaud Bérenger)
+- Date and time of pass (if available) shown in pass list
+- Sandboxing support
+
 * Sun Jan 27 2019 Christof Bürgi <christof@buergi.lugs.ch> 1.4-1
 - Complete ZIP64 support
 - Autofix slightly faulty JSON in passes so they can be parsed

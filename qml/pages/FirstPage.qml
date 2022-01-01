@@ -38,7 +38,7 @@ Page {
 
             model: ListModel {
                 id: passList
-                ListElement { name: ""; path: ""; points: -1; jsondata: ""; typeId: ""; updateable: false }
+                ListElement { name: ""; relevantDate: ""; path: ""; points: -1; jsondata: ""; typeId: ""; updateable: false }
             }
 
             delegate: ListItem {
@@ -65,6 +65,20 @@ Page {
                     anchors.left: passIcon.right
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.leftMargin: Theme.paddingMedium
+                }
+
+                Label {
+                    text: relevantDate
+                    textFormat: Text.PlainText
+                    horizontalAlignment: Text.AlignRight
+                    font.pixelSize: Theme.fontSizeTiny
+                    width: parent.width - passIcon.width - Theme.horizontalPageMargin * 2 - Theme.paddingMedium
+                    truncationMode: TruncationMode.Fade
+                    color: entry.highlighted ? Theme.highlightColor : points != -1 ? Theme.primaryColor : Theme.secondaryColor
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                    anchors.rightMargin: Theme.horizontalPageMargin
+                    anchors.bottomMargin: Theme.paddingSmall
                 }
 
                 menu: ContextMenu {
@@ -235,7 +249,7 @@ Page {
             // calculate the points sort the list, and update GPS precision
             var close = false;
             for (var pass = 0; pass < list.length; pass++) {
-                if (calcPoints(list[pass]))
+                if (calcPointsAndTime(list[pass]))
                     close = true;
             }
             list.sort(comparePasses);
@@ -448,13 +462,20 @@ Page {
         }
     }
 
-    function calcPoints(pass) {
+    function calcPointsAndTime(pass) {
         // calculates the relevancy points of a pass and says whether we're close to target coordinates
+        // gets the relevant date and time if available
         /* Lower numbers are more relevant, but -1 means "not active".
            This is because "null" is not allowed in models. */
         pass.points = -1;
         var data = JSON.parse(pass.jsondata);
         var close = false;
+        if ("relevantDate" in data) {
+            pass.relevantDate = dateTimeFormat.format(data.relevantDate, "medium", "short", false);
+        }
+        else {
+            pass.relevantDate = "";
+        }
         if (settingsStore.checkTime && "relevantDate" in data) {
             // close to target time?
             try {
@@ -523,8 +544,8 @@ Page {
         for (var pass = 0; pass < passList.count; pass++) {
             // we work with a copy
             var modelPass = passList.get(pass);
-            var thisPass = { name: modelPass.name, path: modelPass.path, points: modelPass.points, jsondata: modelPass.jsondata, typeId: modelPass.typeId, updateable: modelPass.updateable };
-            if (calcPoints(thisPass))
+            var thisPass = { name: modelPass.name, relevantDate: modelPass.relevantDate, path: modelPass.path, points: modelPass.points, jsondata: modelPass.jsondata, typeId: modelPass.typeId, updateable: modelPass.updateable };
+            if (calcPointsAndTime(thisPass))
                 close = true;
             passes.push(thisPass);
         }
