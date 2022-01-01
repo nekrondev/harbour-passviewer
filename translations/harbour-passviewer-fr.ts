@@ -110,7 +110,7 @@
         <source>Show barcode fullscreen when tapped</source>
         <translation>Afficher le code-barre en plein écran si appuyé</translation>
     </message>
-    <message> 
+    <message>
         <source>Prefer non-satellite position fixing</source>
         <translation>Favoriser le positionnement non-satellitaire</translation>
     </message>
