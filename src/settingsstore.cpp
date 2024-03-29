@@ -1,8 +1,12 @@
+#include <QCoreApplication>
+#include <QSettings>
+#include <QStandardPaths>
 #include "settingsstore.h"
 
 SettingsStore::SettingsStore(QObject *parent) :
     QObject(parent),
-    m_settings()
+    m_settings(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation) + "/" + QCoreApplication::applicationName() + ".conf",
+             QSettings::NativeFormat)
 {
 }
 
