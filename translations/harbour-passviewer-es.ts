@@ -76,7 +76,7 @@
     </message>
     <message>
         <source>Highlight passes close to event time</source>
-        <translation>Resaltar pases cuya hora del evento va a finalizar</translation>
+        <translation>Resaltar pases que van a finalizar</translation>
     </message>
     <message>
         <source>Time before event</source>
@@ -92,7 +92,7 @@
     </message>
     <message>
         <source>Highlight passes close to destination</source>
-        <translation>Resaltar pases cuyo destino está próximo</translation>
+        <translation>Resaltar pases cercanos al destino</translation>
     </message>
     <message>
         <source>Distance to destination</source>
