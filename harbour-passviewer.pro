@@ -72,6 +72,7 @@ TRANSLATIONS += translations/harbour-passviewer-sv.ts
 TRANSLATIONS += translations/harbour-passviewer-ru.ts
 TRANSLATIONS += translations/harbour-passviewer-hu.ts
 TRANSLATIONS += translations/harbour-passviewer-fr.ts
+TRANSLATIONS += translations/harbour-passviewer-es.ts
 
 HEADERS += \
     src/zint/qr.h \
