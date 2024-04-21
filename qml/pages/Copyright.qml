@@ -22,6 +22,7 @@ Page {
             wrapMode: Text.Wrap
             text: { return "<style>a:link { color: " + Theme.primaryColor + "; }</style>" +
                     "<p>Copyright (c) 2015 Christof Bürgi</p>" +
+                    "<p>Copyright (c) 2024 Carmen F. B. (correction of settings saving)</p>" +
                     "<p>Permission is hereby granted, free of charge, to any person obtaining a copy " +
                     "of this software and associated documentation files (the &quot;Software&quot;), to deal " +
                     "in the Software without restriction, including without limitation the rights " +
@@ -41,6 +42,7 @@ Page {
                     "Russian translation by mentaljam, under the terms of CC-BY 3.0<br>" +
                     "Hungarian translation by martonmiklos, under the terms of CC-BY 3.0<br>" +
                     "French translation by Arnaud Bérenger, under the terms of CC-BY 3.0<br>" +
+                    "Spanish translation by Carmen F. B., under the terms of CC-BY 3.0<br>" +
                     "App icon courtesy of Moth, under the terms of CC-BY 3.0<br>" +
                     "see: <a href=\"http://creativecommons.org/licenses/by/3.0/\">http://creativecommons.org/licenses/by/3.0/</a></p><hr>" +
                     "<p>Contains parts of libzint, licensed as follows:</p>" +

@@ -8,6 +8,11 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Sun Apr 21 2024 Christof Bürgi <christof@buergi.lugs.ch> 1.6-1
+- Barcodes can now contain NUL characters
+- Spanish translation added (thanks to Carmen F. B.)
+- Settings storage fixed (also thanks to Carmen F. B.)
+
 * Sat Jan 1 2022 Christof Bürgi <christof@buergi.lugs.ch> 1.5-1
 - French translation added (thanks to Arnaud Bérenger)
 - Date and time of pass (if available) shown in pass list

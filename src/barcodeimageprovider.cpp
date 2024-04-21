@@ -23,9 +23,9 @@ QPixmap BarcodeImageProvider::requestPixmap(const QString &id, QSize *size, cons
         return empty;
     // decode the (Base64 encoded UTF-8) barcode content
     content = QByteArray::fromBase64(id.mid(secondslash + 1).toLatin1());
-    // Code128 requres UTF-8. For everything else: convert content to the desired encoding.
+    // Code128 requires UTF-8. For everything else: convert content to the desired encoding.
     if (type != "code128")
-        content = codec->fromUnicode(QString(content));
+        content = codec->fromUnicode(QString::fromUtf8(content.constData(), content.size()));
     // build the request
     zint_symbol* symbol = ZBarcode_Create();
     if (!symbol)
