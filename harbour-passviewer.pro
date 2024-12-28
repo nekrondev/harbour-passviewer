@@ -111,3 +111,5 @@ LIBS += -lnemonotifications-qt5
 
 DISTFILES += \
     qml/lib/currencies.json
+
+INCLUDEPATH += /usr/include/nemonotifications-qt5

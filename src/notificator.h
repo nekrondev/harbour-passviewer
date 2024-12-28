@@ -5,7 +5,7 @@
 #include <QList>
 #include <QVariantList>
 #include <QDBusConnection>
-#include <nemonotifications-qt5/notification.h>
+#include <notification.h>
 
 class Notificator : public QObject
 {

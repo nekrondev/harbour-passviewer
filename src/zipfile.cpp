@@ -162,6 +162,8 @@ QByteArray ZipFile::getFile(QString filename) {
         return QByteArray();
     if (m_entries.value(filename).at(2) == 0)  // empty file
         return QByteArray();
+    if (m_entries.value(filename).at(2) > 10485760)  // max 10MiB as we work in RAM
+        return QByteArray();
     // get the ZIP file header
     m_file.seek(m_entries.value(filename).at(1));
     QByteArray headerString(m_file.read(sizeof(FileHeader)));

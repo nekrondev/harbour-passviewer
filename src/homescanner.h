@@ -17,6 +17,7 @@
 #include <QFileInfoList>
 #include <QMimeDatabase>
 #include <QLocale>
+#include <QStandardPaths>
 
 #include "zipfile.h"
 
@@ -25,6 +26,7 @@ class HomeScanner : public QObject
     Q_OBJECT
 public:
     explicit HomeScanner(QObject *parent = 0);
+    ~HomeScanner();
 
 signals:
     void passesFound(QVariantList list, QStringList paths, bool update);
@@ -35,6 +37,7 @@ public slots:
 
 private:
     QVariantMap m_buildPass(QString zipname);
+    QString m_unzipPassBundle(QString zipname);
     void m_cleanJson(QString &data);
     bool m_localizePass(QJsonDocument &json, ZipFile &zip);
 };

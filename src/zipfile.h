@@ -26,6 +26,7 @@ public:
     explicit ZipFile(QString filename);
 
     Q_INVOKABLE bool isValid() { return m_valid; }
+    Q_INVOKABLE QList<QString> getFileList() { return m_entries.keys(); }
     Q_INVOKABLE QByteArray getFile(QString filename);
     Q_INVOKABLE QString getTextFile(QString filename);
 

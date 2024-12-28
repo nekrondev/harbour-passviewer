@@ -30,8 +30,8 @@ PkgConfigBR:
   - Qt5Positioning
   - Qt5DBus
   - liblzma
+  - nemonotifications-qt5
 PkgBR:
-  - nemo-qml-plugin-notifications-qt5-devel
   - bzip2-devel
 
 # Build dependencies without a pkgconfig setup can be listed here
