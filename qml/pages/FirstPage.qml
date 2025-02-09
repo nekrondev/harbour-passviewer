@@ -38,7 +38,7 @@ Page {
 
             model: ListModel {
                 id: passList
-                ListElement { name: ""; relevantDate: ""; path: ""; points: -1; jsondata: ""; typeId: ""; updateable: false }
+                ListElement { name: ""; relevantDate: ""; path: ""; points: -1; jsondata: ""; typeId: ""; bundle: false; updateable: false }
             }
 
             delegate: ListItem {
@@ -102,6 +102,7 @@ Page {
 
                     MenuItem {
                         text: qsTr("Delete")
+                        visible: !bundle
                         onClicked: {
                             var delPath = path;
                             deleteRemorse.execute(entry, qsTr("Deleting"), function(){

@@ -8,6 +8,10 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Sun Feb 9 2025 Christof Bürgi <christof@buergi.lugs.ch> 1.7-1
+- Partial support for PassBook Bundles
+- Slight fixes to adapt for API changes
+
 * Sun Apr 21 2024 Christof Bürgi <christof@buergi.lugs.ch> 1.6-1
 - Barcodes can now contain NUL characters
 - Spanish translation added (thanks to Carmen F. B.)

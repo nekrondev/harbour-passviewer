@@ -1,11 +1,11 @@
 Name: harbour-passviewer
 Summary: Pass Viewer
-Version: 1.6
+Version: 1.7
 Release: 2
 # The contents of the Group field should be one of the groups listed here:
 # http://gitorious.org/meego-developer-tools/spectacle/blobs/master/data/GROUPS
 Group: Applications/Productivity
-URL: http://www.p2501.ch/
+URL: https://bitbucket.org/christof_buergi/harbour-passviewer/
 License: MIT/BSD
 # This must be generated before uploading a package to a remote build service.
 # Usually this line does not need to be modified.

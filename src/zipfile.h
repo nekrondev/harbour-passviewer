@@ -3,8 +3,7 @@
 
 /* This class reads ZIP files using Deflate, BZip2 and/or LZMA compression,
  * which should cover almost anything in the wild. Please note, however, that
- * decompression is done in memory, and the ZIP64 extension is only partially
- * supported. Thus, it is not suitable for large files. */
+ * decompression is done in memory. Thus, it is not suitable for large files. */
 
 #include <QObject>
 #include <QByteArray>
@@ -26,7 +25,7 @@ public:
     explicit ZipFile(QString filename);
 
     Q_INVOKABLE bool isValid() { return m_valid; }
-    Q_INVOKABLE QList<QString> getFileList() { return m_entries.keys(); }
+    Q_INVOKABLE QStringList getFileList() { return m_entries.keys(); }
     Q_INVOKABLE QByteArray getFile(QString filename);
     Q_INVOKABLE QString getTextFile(QString filename);
 

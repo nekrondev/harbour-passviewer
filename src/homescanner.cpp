@@ -74,6 +74,8 @@ QVariantMap HomeScanner::m_buildPass(QString zipname) {
     if (!zip.isValid())
         return QVariantMap();
     QString jsondata = zip.getTextFile("pass.json");
+    if (jsondata == "")
+        return QVariantMap();
     m_cleanJson(jsondata);
     QJsonDocument json(QJsonDocument::fromJson(jsondata.toUtf8()));
     if (json.isNull())
@@ -112,15 +114,20 @@ QVariantMap HomeScanner::m_buildPass(QString zipname) {
     // use the file basename if everything else fails
     if (name == "" || name == " ")
         name = QFileInfo(zipname).baseName();
+    // check if the file is from a bundle
+    bool bundle = zipname.startsWith(QStandardPaths::writableLocation(QStandardPaths::TempLocation));
     // check if the pass is updateable
-    bool updateable = json.object().contains("webServiceURL") && json.object().contains("serialNumber") && json.object().contains("authenticationToken");
+    bool updateable = (!bundle) && json.object().contains("webServiceURL") && json.object().contains("serialNumber") && json.object().contains("authenticationToken");
     // construct and return the pass
-    return QVariantMap({{"name", name}, {"path", zipname}, {"jsondata", jsondata}, {"typeId", typeId}, {"updateable", updateable}});
+    return QVariantMap({{"name", name}, {"path", zipname}, {"jsondata", jsondata}, {"typeId", typeId}, {"bundle", bundle}, {"updateable", updateable}});
 }
 
 QString HomeScanner::m_unzipPassBundle(QString zipname) {
-    // only check files with appropriate suffix
+    // only check ZIP files with appropriate suffix
     if (!zipname.endsWith(".pkpasses"))
+        return QString();
+    ZipFile zip(zipname);
+    if (!zip.isValid())
         return QString();
     // temp directory for unzipped passes
     QString tmpdir(QStandardPaths::writableLocation(QStandardPaths::TempLocation));
@@ -128,10 +135,7 @@ QString HomeScanner::m_unzipPassBundle(QString zipname) {
     if (!QDir(tmpdir).exists())
         QDir().mkpath(tmpdir);
     // check file for stored passes
-    ZipFile zip(zipname);
-    if (!zip.isValid())
-        return QString();
-    QList<QString> entrynames = zip.getFileList();
+    QStringList entrynames = zip.getFileList();
     bool unzipped = false;
     for (auto entry = entrynames.cbegin(); entry != entrynames.cend(); ++entry) {
         if (!entry->endsWith(".pkpass"))  // only check entries with the appropriate suffix
