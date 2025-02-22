@@ -152,4 +152,11 @@
         <translation>Código de barras a pantalla completa</translation>
     </message>
 </context>
+<context>
+    <name>utils</name>
+    <message>
+        <source>copied to clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 </TS>

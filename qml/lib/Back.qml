@@ -34,6 +34,11 @@ Rectangle {
                     textFormat: Text.PlainText
                     color: labelColor
                     font.pixelSize: Theme.fontSizeExtraSmall
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onPressAndHold: Utils.copyText(title + ": " + value, Clipboard, notificator);
+                    }
                 }
 
                 Label {
@@ -43,6 +48,11 @@ Rectangle {
                     font.pixelSize: Theme.fontSizeExtraSmall
                     width: body.width
                     wrapMode: Text.Wrap
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onPressAndHold: Utils.copyText(title + ": " + value, Clipboard, notificator);
+                    }
                 }
             }
         }

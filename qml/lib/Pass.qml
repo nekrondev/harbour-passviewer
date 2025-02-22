@@ -75,6 +75,11 @@ Rectangle {
                 color: textColor
                 font.pixelSize: Theme.fontSizeSmall
                 width: body.width - logo.width - headerFieldsRow.width - parent.spacing * 2
+
+                MouseArea {
+                    anchors.fill: parent
+                    onPressAndHold: Utils.copyText(logoText, Clipboard, notificator);
+                }
             }
 
             Row {
@@ -94,6 +99,11 @@ Rectangle {
                             textFormat: Text.PlainText
                             color: labelColor
                             font.pixelSize: Theme.fontSizeTiny
+
+                            MouseArea {
+                                anchors.fill: parent
+                                onPressAndHold: Utils.copyText(title + ": " + value, Clipboard, notificator);
+                            }
                         }
 
                         Label {
@@ -101,6 +111,11 @@ Rectangle {
                             textFormat: Text.StyledText
                             color: textColor
                             font.pixelSize: Theme.fontSizeTiny
+
+                            MouseArea {
+                                anchors.fill: parent
+                                onPressAndHold: Utils.copyText(title + ": " + value, Clipboard, notificator);
+                            }
                         }
                     }
                 }
@@ -119,6 +134,11 @@ Rectangle {
                     textFormat: Text.PlainText
                     color: labelColor
                     font.pixelSize: Theme.fontSizeExtraSmall
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onPressAndHold: Utils.copyText(boardingFromTitle + ": " + boardingFromValue, Clipboard, notificator);
+                    }
                 }
 
                 Label {
@@ -126,6 +146,11 @@ Rectangle {
                     textFormat: Text.StyledText
                     color: textColor
                     font.pixelSize: text.length <= 3 ? Theme.fontSizeHuge : Theme.fontSizeLarge
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onPressAndHold: Utils.copyText(boardingFromTitle + ": " + boardingFromValue, Clipboard, notificator);
+                    }
                 }
             }
 
@@ -138,6 +163,11 @@ Rectangle {
                     textFormat: Text.PlainText
                     color: labelColor
                     font.pixelSize: Theme.fontSizeExtraSmall
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onPressAndHold: Utils.copyText(boardingToTitle + ": " + boardingToValue, Clipboard, notificator);
+                    }
                 }
 
                 Label {
@@ -146,6 +176,11 @@ Rectangle {
                     textFormat: Text.StyledText
                     color: textColor
                     font.pixelSize: text.length <= 3 ? Theme.fontSizeHuge : Theme.fontSizeLarge
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onPressAndHold: Utils.copyText(boardingToTitle + ": " + boardingToValue, Clipboard, notificator);
+                    }
                 }
             }
         }
@@ -169,6 +204,11 @@ Rectangle {
                         textFormat: Text.PlainText
                         color: labelColor
                         font.pixelSize: Theme.fontSizeExtraSmall
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onPressAndHold: Utils.copyText(primaryTitle + ": " + primaryValue, Clipboard, notificator);
+                        }
                     }
 
                     Label {
@@ -178,6 +218,11 @@ Rectangle {
                         color: textColor
                         font.pixelSize: Theme.fontSizeLarge
                         wrapMode: Text.Wrap
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onPressAndHold: Utils.copyText(primaryTitle + ": " + primaryValue, Clipboard, notificator);
+                        }
                     }
                 }
 
@@ -207,6 +252,11 @@ Rectangle {
                         textFormat: Text.PlainText
                         color: labelColor
                         font.pixelSize: Theme.fontSizeExtraSmall
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onPressAndHold: Utils.copyText(title + ": " + value, Clipboard, notificator);
+                        }
                     }
 
                     Label {
@@ -214,6 +264,11 @@ Rectangle {
                         textFormat: Text.StyledText
                         color: textColor
                         font.pixelSize: Theme.fontSizeSmall
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onPressAndHold: Utils.copyText(title + ": " + value, Clipboard, notificator);
+                        }
                     }
                 }
             }
@@ -236,6 +291,11 @@ Rectangle {
                         textFormat: Text.PlainText
                         color: labelColor
                         font.pixelSize: Theme.fontSizeExtraSmall
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onPressAndHold: Utils.copyText(title + ": " + value, Clipboard, notificator);
+                        }
                     }
 
                     Label {
@@ -243,6 +303,11 @@ Rectangle {
                         textFormat: Text.StyledText
                         color: textColor
                         font.pixelSize: Theme.fontSizeSmall
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onPressAndHold: Utils.copyText(title + ": " + value, Clipboard, notificator);
+                        }
                     }
                 }
             }

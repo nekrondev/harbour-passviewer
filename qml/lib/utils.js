@@ -98,3 +98,8 @@ function barcodeSize(origWidth, origHeight, maxWidth, em) {
     }
     return [width, height];
 }
+
+function copyText(text, clipboard, notificator) {
+    clipboard.text = text;
+    notificator.bannerNotification(qsTr("copied to clipboard"), "");
+}

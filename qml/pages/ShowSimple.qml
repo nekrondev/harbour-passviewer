@@ -48,6 +48,11 @@ Page {
                 text: ''
                 textFormat: Text.PlainText
                 color: Theme.highlightColor
+
+                MouseArea {
+                    anchors.fill: parent
+                    onPressAndHold: Utils.copyText(logoText.text, Clipboard, notificator);
+                }
             }
 
             Repeater {
@@ -64,12 +69,22 @@ Page {
                         font.pixelSize: Theme.fontSizeSmall
                         color: Theme.highlightColor
                         x: Theme.paddingLarge
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onPressAndHold: Utils.copyText(title + ": " + value, Clipboard, notificator);
+                        }
                     }
 
                     Label {
                         text: value
                         textFormat: Text.PlainText
                         color: Theme.highlightColor
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onPressAndHold: Utils.copyText(title + ": " + value, Clipboard, notificator);
+                        }
                     }
                 }
             }
@@ -124,6 +139,11 @@ Page {
                         font.pixelSize: Theme.fontSizeSmall
                         color: Theme.highlightColor
                         x: Theme.paddingLarge
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onPressAndHold: Utils.copyText(title + ": " + value, Clipboard, notificator);
+                        }
                     }
 
                     Label {
@@ -133,6 +153,11 @@ Page {
                         color: Theme.highlightColor
                         width: body.width
                         wrapMode: Text.Wrap
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onPressAndHold: Utils.copyText(title + ": " + value, Clipboard, notificator);
+                        }
                     }
                 }
             }

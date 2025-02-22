@@ -152,4 +152,11 @@
         <translation>Vollbild Barcode</translation>
     </message>
 </context>
+<context>
+    <name>utils</name>
+    <message>
+        <source>copied to clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 </TS>
