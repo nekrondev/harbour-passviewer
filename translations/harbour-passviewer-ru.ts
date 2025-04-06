@@ -156,7 +156,7 @@
     <name>utils</name>
     <message>
         <source>copied to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">скопировано в буфер обмена</translation>
     </message>
 </context>
 </TS>

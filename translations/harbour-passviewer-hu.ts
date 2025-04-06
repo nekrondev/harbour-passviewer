@@ -156,7 +156,7 @@
     <name>utils</name>
     <message>
         <source>copied to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">a vágólapra másolva</translation>
     </message>
 </context>
 </TS>

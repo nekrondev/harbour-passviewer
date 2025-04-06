@@ -156,7 +156,7 @@
     <name>utils</name>
     <message>
         <source>copied to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>in die Zwischenablage kopiert</translation>
     </message>
 </context>
 </TS>

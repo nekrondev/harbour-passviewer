@@ -156,7 +156,7 @@
     <name>utils</name>
     <message>
         <source>copied to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">copiado en el portapapeles</translation>
     </message>
 </context>
 </TS>

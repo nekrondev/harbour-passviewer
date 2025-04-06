@@ -19,9 +19,10 @@ void HomeScanner::scanHome(bool update) {
     QStringList visiblePaths;
     QStringList passPaths;
     QVariantList passes;
+    static bool first = true;
     inspectPaths.append(QDir::homePath());  // start with the home directory
-    if (QDir("/media/sdcard").exists())
-        inspectPaths.append("/media/sdcard");  // also check the SD-Card
+    if ((!first) && QDir("/media/sdcard").exists())
+        inspectPaths.append("/media/sdcard");  // also check the SD-Card (not on the first run)
     while (!inspectPaths.isEmpty()) {
         QDir current(inspectPaths.at(0));
         inspectPaths.removeFirst();
@@ -62,6 +63,11 @@ void HomeScanner::scanHome(bool update) {
         }
     }
     emit passesFound(passes, visiblePaths, update);
+    if (first) {
+        // after first run, scan once more including the SD card
+        first = false;
+        scanHome(false);
+    }
 }
 
 void HomeScanner::scanHome(QString path) {
