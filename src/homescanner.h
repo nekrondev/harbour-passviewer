@@ -15,6 +15,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QFileInfoList>
+#include <QDateTime>
 #include <QMimeDatabase>
 #include <QLocale>
 #include <QStandardPaths>

@@ -118,6 +118,30 @@
         <source>Saves battery. &lt;b&gt;Requires&lt;/b&gt; &amp;quot;Faster position fix&amp;quot; switched on in the system settings.</source>
         <translation>Ahorra batería. &lt;b&gt;Es necesario activar la opción&lt;/b&gt; &amp;quot;Posicionamiento de gran precisión&amp;quot; en la configuración del sistema.</translation>
     </message>
+    <message>
+        <source>Sort by</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relevancy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Event Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Event Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sort</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ShowBack</name>

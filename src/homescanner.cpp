@@ -125,7 +125,7 @@ QVariantMap HomeScanner::m_buildPass(QString zipname) {
     // check if the pass is updateable
     bool updateable = (!bundle) && json.object().contains("webServiceURL") && json.object().contains("serialNumber") && json.object().contains("authenticationToken");
     // construct and return the pass
-    return QVariantMap({{"name", name}, {"path", zipname}, {"jsondata", jsondata}, {"typeId", typeId}, {"bundle", bundle}, {"updateable", updateable}});
+    return QVariantMap({{"name", name}, {"path", zipname}, {"jsondata", jsondata}, {"typeId", typeId}, {"bundle", bundle}, {"updateable", updateable}, {"mtime", QFileInfo(zipname).lastModified()}});
 }
 
 QString HomeScanner::m_unzipPassBundle(QString zipname) {

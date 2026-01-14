@@ -118,6 +118,30 @@
         <source>Saves battery. &lt;b&gt;Requires&lt;/b&gt; &amp;quot;Faster position fix&amp;quot; switched on in the system settings.</source>
         <translation>Экономит заряд. &lt;b&gt;Необходимо&lt;/b&gt; включить опцию &amp;quot;Более быстрое определение расположения&amp;quot; в настройках местонахождения.</translation>
     </message>
+    <message>
+        <source>Sort by</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relevancy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Event Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Event Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sort</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ShowBack</name>

@@ -291,6 +291,7 @@ Page {
 
     Connections {
         target: settingsStore
+        onSortByChanged: checkPassList()
         onCheckTimeChanged: checkPassList()
         onHoursBeforeChanged: checkPassList()
         onHoursAfterChanged: checkPassList()
@@ -473,9 +474,11 @@ Page {
         var close = false;
         if ("relevantDate" in data) {
             pass.relevantDate = dateTimeFormat.format(data.relevantDate, "medium", "short", false);
+            pass.rdate = new Date(data.relevantDate);
         }
         else {
             pass.relevantDate = "";
+            pass.rdate = null;
         }
         if (settingsStore.checkTime && "relevantDate" in data) {
             // close to target time?
@@ -522,20 +525,42 @@ Page {
     }
 
     function comparePasses(a, b) {
-        // sort active passes to the top
-        // "smaller" passes get sorted upwards
-        if (a.points !== -1 && b.points === -1)
-            return -1;
-        if (a.points === -1 && b.points !== -1)
-            return 1;
-        // if both are active, check who's more relevant
-        if (a.points !== b.points)
-            return a.points - b.points;
-        // group by pass type ID
-        if (a.typeId !== b.typeId)
-            return a.typeId.localeCompare(b.typeId);
-        // otherwise order by name
-        return a.name.localeCompare(b.name);
+        switch(settingsStore.sortBy) {
+        case 0:  // relevancy
+            // sort active passes to the top
+            // "smaller" passes get sorted upwards
+            if (a.points !== -1 && b.points === -1)
+                return -1;
+            if (a.points === -1 && b.points !== -1)
+                return 1;
+            // if both are active, check who's more relevant
+            if (a.points !== b.points)
+                return a.points - b.points;
+            // group by pass type ID
+            if (a.typeId !== b.typeId)
+                return a.typeId.localeCompare(b.typeId);
+            // otherwise order by name
+            return a.name.localeCompare(b.name);
+        case 1:  // event date
+            if (a.rdate !== null) {
+                if (b.rdate !== null)
+                    return b.rdate - a.rdate;
+                else
+                    return b.mtime - a.rdate;
+            }
+            else {
+                if (b.rdate !== null)
+                    return b.rdate - a.mtime;
+                else
+                    return b.mtime - a.mtime;
+            }
+        case 2:  // file date
+            return b.mtime - a.mtime;
+        case 3: // event name
+            return a.name.localeCompare(b.name);
+        default:
+            return 0;
+        }
     }
 
     function checkPassList() {
