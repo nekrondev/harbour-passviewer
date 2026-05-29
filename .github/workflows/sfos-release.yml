@@ -32,6 +32,12 @@ jobs:
           release: ${{ env.RELEASE }}
           arch: aarch64
 
+      - name: Build RPM (armv7hl)
+        uses: coderus/github-sfos-build@sfos5
+        with:
+          release: ${{ env.RELEASE }}
+          arch: armv7hl
+
       - name: Resolve release version
         id: version
         run: |
@@ -52,9 +58,9 @@ jobs:
           name: ${{ steps.version.outputs.name }}
           generate_release_notes: true
           body: |
-            Sailfish OS ${{ env.RELEASE }} build for **aarch64**.
+            Sailfish OS ${{ env.RELEASE }} builds for **aarch64** and **armv7hl**.
 
-            Install on device:
+            Install on device (pick the RPM matching your device architecture):
             ```sh
             pkcon install-local harbour-passviewer-*.rpm
             ```
