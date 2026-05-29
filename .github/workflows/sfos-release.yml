@@ -1,0 +1,61 @@
+name: SFOS Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version'
+        required: true
+        type: string
+
+env:
+  # Sailfish SDK image tag: https://hub.docker.com/r/coderus/sailfishos-platform-sdk/tags
+  RELEASE: '5.0.0.43'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build RPM (aarch64)
+        uses: coderus/github-sfos-build@sfos5
+        with:
+          release: ${{ env.RELEASE }}
+          arch: aarch64
+
+      - name: Resolve release version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            ver="${{ github.event.inputs.version }}"
+            echo "tag=v${ver}" >> "$GITHUB_OUTPUT"
+            echo "name=${ver}" >> "$GITHUB_OUTPUT"
+          else
+            tag="${GITHUB_REF#refs/tags/}"
+            echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+            echo "name=${tag#v}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: ${{ steps.version.outputs.name }}
+          generate_release_notes: true
+          body: |
+            Sailfish OS ${{ env.RELEASE }} build for **aarch64**.
+
+            Install on device:
+            ```sh
+            pkcon install-local harbour-passviewer-*.rpm
+            ```
+          files: RPMS/*.rpm
