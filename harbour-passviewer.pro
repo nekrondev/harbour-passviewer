@@ -19,12 +19,16 @@ SOURCES += src/harbour-passviewer.cpp \
     src/zint/qr.c \
     src/zint/common.c \
     src/zint/reedsol.c \
+    src/zint/zint_reedsol.c \
+    src/zint/zint_common_aztec.c \
     src/zint/aztec.c \
     src/zint/pdf417.c \
     src/zint/large.c \
     src/zint/library.c \
     src/zint/bmp.c \
     src/barcodeimageprovider.cpp \
+    src/barcodecodec.cpp \
+    src/aztecpayload.cpp \
     src/homewatcher.cpp \
     src/settingsstore.cpp \
     src/zint/gs1.c \
@@ -35,6 +39,7 @@ SOURCES += src/harbour-passviewer.cpp \
     src/currencyformat.cpp \
     src/passhandler.cpp \
     src/homescanner.cpp \
+    src/barcodedebug.cpp \
     src/passdb.cpp \
     src/passinfo.cpp \
     src/notificator.cpp
@@ -79,6 +84,10 @@ HEADERS += \
     src/zint/common.h \
     src/zint/sjis.h \
     src/zint/reedsol.h \
+    src/zint/zint_reedsol.h \
+    src/zint/zint_common_aztec.h \
+    src/zint/zintconfig.h \
+    src/zint/reedsol_logs.h \
     src/zint/aztec.h \
     src/zint/pdf417.h \
     src/zint/large.h \
@@ -86,6 +95,8 @@ HEADERS += \
     src/zint/maxipng.h \
     src/zint/font.h \
     src/barcodeimageprovider.h \
+    src/barcodecodec.h \
+    src/aztecpayload.h \
     src/homewatcher.h \
     src/settingsstore.h \
     src/zint/gs1.h \
@@ -95,6 +106,7 @@ HEADERS += \
     src/currencyformat.h \
     src/passhandler.h \
     src/homescanner.h \
+    src/barcodedebug.h \
     src/passdb.h \
     src/passinfo.h \
     src/notificator.h

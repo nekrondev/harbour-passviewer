@@ -67,7 +67,12 @@ struct zint_symbol *ZBarcode_Create()
     symbol->input_mode = DATA_MODE;
     strcpy(symbol->primary, "");
     memset(&(symbol->encoded_data[0][0]),0,sizeof(symbol->encoded_data));
-    for(i = 0; i < 178; i++) {
+    memset(&symbol->structapp, 0, sizeof(symbol->structapp));
+    symbol->warn_level = 0;
+    symbol->debug = 0;
+    symbol->content_segs = NULL;
+    symbol->content_seg_count = 0;
+    for(i = 0; i < 200; i++) {
                 symbol->row_height[i] = 0;
         }
     symbol->bitmap = NULL;
@@ -273,7 +278,7 @@ int reduced_charset(struct zint_symbol *symbol, unsigned char *source, int lengt
         unsigned char* preprocessed = (unsigned char*)_alloca(length + 1);
 #endif
 
-    switch(symbol->input_mode) {
+    switch(symbol->input_mode & 0x07) {
         case DATA_MODE:
             memcpy(preprocessed, source, length);
             preprocessed[length] = '\0';
@@ -281,6 +286,10 @@ int reduced_charset(struct zint_symbol *symbol, unsigned char *source, int lengt
         case UNICODE_MODE:
             error_number = latin1_process(symbol, source, preprocessed, &length);
             if(error_number != 0) { return error_number; }
+            break;
+        default:
+            memcpy(preprocessed, source, length);
+            preprocessed[length] = '\0';
             break;
     }
 
@@ -326,7 +335,7 @@ int ZBarcode_Encode(struct zint_symbol *symbol, unsigned char *source, int lengt
         error_buffer = error_number;
     }
 
-    if((symbol->input_mode < 0) || (symbol->input_mode > 2)) { symbol->input_mode = DATA_MODE; }
+    if (symbol->input_mode < 0) { symbol->input_mode = DATA_MODE; }
 
     memcpy(local_source, source, length);
     local_source[length] = '\0';

@@ -3,7 +3,6 @@
 
 #include <QByteArray>
 #include <QQuickImageProvider>
-#include <QTextCodec>
 #include <QImage>
 #include <QPixmap>
 

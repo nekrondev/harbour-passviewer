@@ -1,5 +1,9 @@
 #include "barcodeimageprovider.h"
 
+#include "aztecpayload.h"
+#include "barcodecodec.h"
+#include "barcodedebug.h"
+
 BarcodeImageProvider::BarcodeImageProvider() :
     QQuickImageProvider(QQuickImageProvider::Pixmap)
 {
@@ -7,26 +11,23 @@ BarcodeImageProvider::BarcodeImageProvider() :
 
 QPixmap BarcodeImageProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize) {
     QString type;
-    QTextCodec* codec;
+    QString encoding;
     QByteArray content;
     QPixmap empty;
     size->setWidth(0);
     size->setHeight(0);
-    // get the barcode type, encoding and content from the ID
     int firstslash = id.indexOf('/');
     int secondslash = id.indexOf('/', firstslash + 1);
     if (firstslash == -1 || secondslash == -1)
         return empty;
     type = id.left(firstslash);
-    codec = QTextCodec::codecForName(id.mid(firstslash + 1, secondslash - firstslash - 1).toUtf8());
-    if (!codec)
+    encoding = id.mid(firstslash + 1, secondslash - firstslash - 1);
+    if (!BarcodeCodec::isSupportedEncoding(encoding))
         return empty;
-    // decode the (Base64 encoded UTF-8) barcode content
-    content = QByteArray::fromBase64(id.mid(secondslash + 1).toLatin1());
-    // Code128 requires UTF-8. For everything else: convert content to the desired encoding.
-    if (type != "code128")
-        content = codec->fromUnicode(QString::fromUtf8(content.constData(), content.size()));
-    // build the request
+    content = BarcodeCodec::payloadFromBase64(id.mid(secondslash + 1).toLatin1(), encoding);
+    barcodeLogStage("imageprovider_zint_input", content);
+    if (content.isEmpty() && !id.mid(secondslash + 1).isEmpty())
+        return empty;
     zint_symbol* symbol = ZBarcode_Create();
     if (!symbol)
         return empty;
@@ -38,7 +39,10 @@ QPixmap BarcodeImageProvider::requestPixmap(const QString &id, QSize *size, cons
         symbol->symbology = BARCODE_QRCODE;
     }
     else if (type == "aztec") {
+        const AztecPayloadStyle aztecStyle = AztecPayload::classify(content, encoding);
+        barcodeLogStage("aztec_encode_style", QByteArray(AztecPayload::styleName(aztecStyle)));
         symbol->symbology = BARCODE_AZTEC;
+        AztecPayload::applyEncodeOptions(symbol, aztecStyle);
     }
     else if (type == "pdf417") {
         symbol->symbology = BARCODE_PDF417;
@@ -47,12 +51,10 @@ QPixmap BarcodeImageProvider::requestPixmap(const QString &id, QSize *size, cons
         ZBarcode_Delete(symbol);
         return empty;
     }
-    // create the barcode
     if (ZBarcode_Encode_and_Buffer(symbol, (unsigned char*)content.data(), content.size(), 0) != 0) {
         ZBarcode_Delete(symbol);
         return empty;
     }
-    // convert barcode to QImage for QPixmap
     QImage barcode(symbol->bitmap_width, symbol->bitmap_height, QImage::Format_RGB32);
     size->setWidth(symbol->bitmap_width);
     size->setHeight(symbol->bitmap_height);

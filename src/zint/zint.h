@@ -67,6 +67,18 @@ struct zint_render {
     struct zint_render_hexagon *hexagons;   /* Pointer to first hexagon */
 };
 
+struct zint_structapp {
+    int index;
+    int count;
+    char id[32];
+};
+
+struct zint_seg {
+    unsigned char *source;
+    int length;
+    int eci;
+};
+
 struct zint_symbol {
     int symbology;
     int height;
@@ -82,17 +94,22 @@ struct zint_symbol {
     int option_3;
     int show_hrt;
     int input_mode;
+    struct zint_structapp structapp;
+    int warn_level;
+    int debug;
     unsigned char text[128];
     int rows;
     int width;
     char primary[128];
-    unsigned char encoded_data[178][143];
-    int row_height[178]; /* Largest symbol is 177x177 QR Code */
-    char errtxt[100];
+    unsigned char encoded_data[200][144];
+    int row_height[200];
+    char errtxt[160];
     char *bitmap;
     int bitmap_width;
     int bitmap_height;
     struct zint_render *rendered;
+    struct zint_seg *content_segs;
+    int content_seg_count;
 };
 
 
@@ -200,10 +217,18 @@ struct zint_symbol {
 #define GS1_MODE	2
 #define KANJI_MODE	3
 #define SJIS_MODE	4
+#define FAST_MODE		0x0080
+#define EXTRA_ESCAPE_MODE	0x0100
 
 #define DM_SQUARE	100
+#define ZINT_AZTEC_FULL		128
+#define BARCODE_CONTENT_SEGS	0x20000
+#define BARCODE_AZTEC_COMPACT_BINARY 0x40000 /* harbour-passviewer: single B/S binary compaction */
+#define ZINT_DEBUG_PRINT	0x0001
+#define ZINT_DEBUG_TEST		0x0002
 
 #define WARN_INVALID_OPTION	2
+#define WARN_FAIL_ALL		2
 #define ERROR_TOO_LONG		5
 #define ERROR_INVALID_DATA	6
 #define ERROR_INVALID_CHECK	7
@@ -211,6 +236,16 @@ struct zint_symbol {
 #define ERROR_ENCODING_PROBLEM	9
 #define ERROR_FILE_ACCESS	10
 #define ERROR_MEMORY		11
+
+#define ZINT_WARN_INVALID_OPTION	2
+#define ZINT_WARN_NONCOMPLIANT		4
+#define ZINT_ERROR_TOO_LONG		5
+#define ZINT_ERROR_INVALID_DATA		6
+#define ZINT_ERROR_INVALID_CHECK	7
+#define ZINT_ERROR_INVALID_OPTION	8
+#define ZINT_ERROR_ENCODING_PROBLEM	9
+#define ZINT_ERROR_FILE_ACCESS		10
+#define ZINT_ERROR_MEMORY		11
 
 #if defined(__WIN32__) || defined(_WIN32) || defined(WIN32) || defined(_MSC_VER)
 #  if defined (DLL_EXPORT) || defined(PIC) || defined(_USRDLL)

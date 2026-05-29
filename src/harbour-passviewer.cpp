@@ -11,6 +11,7 @@
 
 #include "settingsstore.h"
 #include "barcodeimageprovider.h"
+#include "barcodecodec.h"
 #include "zipfileimageprovider.h"
 #include "homewatcher.h"
 #include "notificator.h"
@@ -38,6 +39,9 @@ int main(int argc, char *argv[])
 
     SettingsStore settingsStore;
     view->rootContext()->setContextProperty("settingsStore", &settingsStore);
+
+    BarcodeCodec barcodeCodec;
+    view->rootContext()->setContextProperty("barcodeCodec", &barcodeCodec);
 
     view->engine()->addImageProvider("barcode", new BarcodeImageProvider());
 

@@ -8,6 +8,11 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Thu May 28 2026 Nekron <noreply@example.com> 1.8-1
+- Fix Aztec barcodes for Apple Wallet binary (ISO-8859-1) transit passes
+- Classify Aztec payloads (compact binary, GS1, or mixed text) before encoding
+- Update vendored zint Aztec encoder; preserve raw barcode bytes end-to-end
+
 * Sun Feb 9 2025 Christof Bürgi <christof@buergi.lugs.ch> 1.7-1
 - Partial support for PassBook Bundles
 - Slight fixes to adapt for API changes

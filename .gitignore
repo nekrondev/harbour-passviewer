@@ -48,3 +48,5 @@ Thumbs.db
 *.mov
 *.wmv
 
+# Temporary upstream zint clone for cherry-picks
+.zint-upstream/

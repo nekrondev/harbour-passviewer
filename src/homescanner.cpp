@@ -1,5 +1,24 @@
 #include "homescanner.h"
 
+#include "barcodedebug.h"
+
+namespace {
+
+void logBarcodeFromJson(const char *stage, const QJsonObject &root)
+{
+    QJsonArray barcodes = root.value("barcodes").toArray();
+    if (barcodes.isEmpty() && root.contains("barcode"))
+        barcodes = QJsonArray{ root.value("barcode").toObject() };
+    if (barcodes.isEmpty())
+        return;
+    const QJsonObject bc = barcodes.at(0).toObject();
+    barcodeLogMessageStage(stage,
+                           bc.value("message").toString(),
+                           bc.value("messageEncoding").toString("iso-8859-1"));
+}
+
+}
+
 HomeScanner::HomeScanner(QObject *parent) : QObject(parent)
 {
 
@@ -86,6 +105,7 @@ QVariantMap HomeScanner::m_buildPass(QString zipname) {
     QJsonDocument json(QJsonDocument::fromJson(jsondata.toUtf8()));
     if (json.isNull())
         return QVariantMap();
+    logBarcodeFromJson("homescanner_after_utf8_parse", json.object());
     // get the type id
     QString typeId = json.object().value("passTypeIdentifier").toString();
     if (typeId == "")
@@ -102,8 +122,14 @@ QVariantMap HomeScanner::m_buildPass(QString zipname) {
     if (passStyle == "")
         return QVariantMap();
     // look for localization
-    if (m_localizePass(json, zip))
-        jsondata = QString(json.toJson());
+    m_localizePass(json, zip);
+    // re-serialize for QML so binary barcode bytes use consistent JSON escapes
+    jsondata = QString(json.toJson(QJsonDocument::Compact));
+    {
+        const QJsonDocument qmlJson(QJsonDocument::fromJson(jsondata.toUtf8()));
+        if (!qmlJson.isNull())
+            logBarcodeFromJson("homescanner_after_toJson_compact", qmlJson.object());
+    }
     // create the pass name
     QString name;
     QJsonArray primaries(json.object().value(passStyle).toObject().value("primaryFields").toArray());

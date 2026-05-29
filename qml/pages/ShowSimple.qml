@@ -207,14 +207,19 @@ Page {
         }
         // paint the first useable barcode
         var validCode = false;
-        for (var barcode = 0; barcode <= pass.barcodes.length; barcode++) {
+        for (var barcode = 0; barcode < pass.barcodes.length; barcode++) {
             switch(pass.barcodes[barcode].format.substring(15).toLowerCase()) {
             case 'code128':
             case 'qr':
             case 'aztec':
             case 'pdf417':
-                barcodeContent = 'message' in pass.barcodes[barcode] ? Qt.btoa(pass.barcodes[barcode].message) : '';
                 barcodeEncoding = 'messageEncoding' in pass.barcodes[barcode] ?  pass.barcodes[barcode].messageEncoding: 'iso-8859-1';
+                if ('message' in pass.barcodes[barcode]) {
+                    console.log("BARCODE_DEBUG qml_message_length", pass.barcodes[barcode].message.length);
+                    barcodeContent = barcodeCodec.messageToBase64(pass.barcodes[barcode].message, barcodeEncoding);
+                } else {
+                    barcodeContent = '';
+                }
                 barcodeType = pass.barcodes[barcode].format.substring(15).toLowerCase();
                 barcodeAltText = 'altText' in pass.barcodes[barcode] ? pass.barcodes[barcode].altText : '';
                 validCode = true;

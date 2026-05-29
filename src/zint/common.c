@@ -138,7 +138,7 @@ void lookup(char set_string[],const char *table[], char data, char dest[])
 
 int module_is_set(struct zint_symbol *symbol, int y_coord, int x_coord)
 {
-    return (symbol->encoded_data[y_coord][x_coord / 7] >> (x_coord % 7)) & 1;
+    return (symbol->encoded_data[y_coord][x_coord >> 3] >> (x_coord & 0x07)) & 1;
 #if 0
     switch(x_sub) {
         case 0: if((symbol->encoded_data[y_coord][x_char] & 0x01) != 0) { result = 1; } break;
@@ -178,7 +178,7 @@ void set_module(struct zint_symbol *symbol, int y_coord, int x_coord)
 
 void unset_module(struct zint_symbol *symbol, int y_coord, int x_coord)
 {
-    symbol->encoded_data[y_coord][x_coord / 7] &= ~(1 << (x_coord % 7));
+    symbol->encoded_data[y_coord][x_coord >> 3] &= ~(1 << (x_coord & 0x07));
 #if 0
     int x_char, x_sub;
 

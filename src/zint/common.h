@@ -78,4 +78,7 @@ extern int utf8toutf16(struct zint_symbol *symbol, unsigned char source[], int v
 }
 #endif /* __cplusplus */
 
+#include "zintconfig.h"
+#include "zint_common_aztec.h"
+
 #endif /* __COMMON_H */
